@@ -41,7 +41,8 @@ public class HitterScript : MonoBehaviour {
 		}else{
 			// is enemy
 			if(lastHitTime+hitIntervalTime<Time.time){
-				DoSlowHit();
+				//DoSlowHit();
+				DoFastHit();
 			}
 		}
 
@@ -74,9 +75,16 @@ public class HitterScript : MonoBehaviour {
 				anim.SetTrigger("Attack01RunTrigger");
 			}
 		}else{
+
+			anim.SetTrigger("Attack01Trigger");
+
+
+			lastHitTime = Time.time;
+			/*
 			hitBox1.SetActive(true);
 			lastHitTime = Time.time;
 			isHittingFast = true;
+			*/
 
 		}
 	}
@@ -89,10 +97,12 @@ public class HitterScript : MonoBehaviour {
 	}
 
 	void DoSlowHit(){
+
 		isHittingSlow = true;
 		hitBox2.SetActive(true);
 		lastHitTime = Time.time;
 		if(pS)pS.LookInCamDir();
+
 	}
 	
 	public void HitsDestructible (DestructibleScript inDS) { // is called in HitBoxScript
