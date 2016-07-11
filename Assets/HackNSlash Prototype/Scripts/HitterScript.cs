@@ -3,6 +3,9 @@ using System.Collections;
 
 public class HitterScript : MonoBehaviour {
 
+
+	public bool hitAlways = false;
+	public bool hitsOnlyPlayer = true;
 	public float hitForce = 10;
 	bool isHittingFast = false;
 	bool isHittingSlow = false;
@@ -14,14 +17,19 @@ public class HitterScript : MonoBehaviour {
 	public EnemyScript eS;
 	public float hitIntervalTime = 2;
 	public float hitIntervalTimeRandomRange = 1;
+	public float hitFastDuration = 0.1f;
+	public float hitSlowDuration = 0.5f;
 	public Animator anim;
 
 	// Use this for initialization
 	void Start () {
 		hitIntervalTime += Random.Range(-hitIntervalTimeRandomRange, hitIntervalTimeRandomRange);
 		hitBox1.SetActive(false);
-		if(!pS)originalRotHitBox2 = hitBox2.transform.parent.localRotation;
+		if(!pS && hitBox2)originalRotHitBox2 = hitBox2.transform.parent.localRotation;
 		else if(pS && pS.anim)anim = pS.anim;
+
+		if(hitAlways)
+			hitBox1.SetActive(true);
 	}
 
 	void Update(){
@@ -32,6 +40,8 @@ public class HitterScript : MonoBehaviour {
 	}
 
 	void HandleHitting(){
+
+		if (hitAlways) return;
 
 		if(pS){
 			// is player
@@ -46,13 +56,13 @@ public class HitterScript : MonoBehaviour {
 			}
 		}
 
-		if(isHittingFast && lastHitTime+0.1f<Time.time){
+		if(isHittingFast && lastHitTime+hitFastDuration<Time.time){
 			hitBox1.SetActive(false);
 			isHittingFast = false;
 		}
 
 		if(isHittingSlow){
-			if(lastHitTime+0.5f<Time.time){
+			if(lastHitTime+hitSlowDuration<Time.time){
 				hitBox2.transform.parent.Rotate(180*Time.deltaTime,0,0);
 				if(lastHitTime+1f<Time.time){
 					hitBox2.SetActive(false);
@@ -75,11 +85,17 @@ public class HitterScript : MonoBehaviour {
 				anim.SetTrigger("Attack01RunTrigger");
 			}
 		}else{
-
-			anim.SetTrigger("Attack01Trigger");
-
-
 			lastHitTime = Time.time;
+
+			if(anim)
+				anim.SetTrigger("Attack01Trigger");
+			else{
+
+				hitBox1.SetActive(true);
+				lastHitTime = Time.time;
+				isHittingFast = true;
+			}
+
 			/*
 			hitBox1.SetActive(true);
 			lastHitTime = Time.time;
@@ -106,6 +122,14 @@ public class HitterScript : MonoBehaviour {
 	}
 	
 	public void HitsDestructible (DestructibleScript inDS) { // is called in HitBoxScript
-		inDS.IsHitted(hitForce);
+		if(pS){
+			inDS.IsHitted(hitForce);
+		}else{
+			if(inDS == GameLogicControllerScript.i.playerS.dS){
+				inDS.IsHitted(hitForce);
+			}else if(!hitsOnlyPlayer){
+				inDS.IsHitted(hitForce);
+			}
+		}
 	}
 }

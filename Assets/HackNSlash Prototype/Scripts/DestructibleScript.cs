@@ -19,7 +19,7 @@ public class DestructibleScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		originalColor = appearanceAlive.GetComponent<Renderer>().material.color;
-		appearanceDead.SetActive(false);
+		if(appearanceDead)appearanceDead.SetActive(false);
 		bloodParticlesGO = Instantiate(bloodParticlesPrefab, transform.position, Quaternion.identity) as GameObject;
 		bloodParticlesGO.transform.parent = transform;
 		bloodParticlesGO.SetActive(false);
@@ -53,13 +53,17 @@ public class DestructibleScript : MonoBehaviour {
 	void Die(){
 		if(isDead) return;
 
-		isDead = true;
-		appearanceDead.SetActive(true);
-		appearanceAlive.SetActive(false);
-		GetComponent<HitterScript>().hitBox1.SetActive(false);
-		if(GetComponent<HitterScript>().hitBox2) GetComponent<HitterScript>().hitBox2.SetActive(false);
-		if(GetComponent<PlayerScript>())
-			StartCoroutine(WaitNRestart());
+		if(!appearanceDead)Destroy(gameObject);
+		else
+		{
+			isDead = true;
+			appearanceDead.SetActive(true);
+			appearanceAlive.SetActive(false);
+			GetComponent<HitterScript>().hitBox1.SetActive(false);
+			if(GetComponent<HitterScript>().hitBox2) GetComponent<HitterScript>().hitBox2.SetActive(false);
+			if(GetComponent<PlayerScript>())
+				StartCoroutine(WaitNRestart());
+		}
 	}
 
 	IEnumerator WaitNRestart(){
