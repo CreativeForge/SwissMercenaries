@@ -16,6 +16,9 @@ public class DestructibleScript : MonoBehaviour {
 	Color originalColor;
 	bool isHitted = false;
 
+	public GameObject lootObject;
+	public bool hasLoot = true;
+
 	// Use this for initialization
 	void Start () {
 		originalColor = appearanceAlive.GetComponent<Renderer>().material.color;
@@ -35,7 +38,26 @@ public class DestructibleScript : MonoBehaviour {
 	}
 
 	public void IsHitted(float inForce){
-		if(isDead) return;
+
+		GameObject clone;
+
+		if(isDead) {
+
+			// Plunder mode?
+			if((GameLogicControllerScript.i.GameMode == 1) && hasLoot) {
+
+				hasLoot = false;
+
+				// Create loot
+				for(int i = 0;i < Random.Range(1, 5);i++) {
+
+					clone = Instantiate(lootObject, gameObject.transform.position, Random.rotation) as GameObject;
+					clone.SetActive(true);
+
+				}
+
+			} else { return; }
+		}
 
 		isHitted = true;
 		lastHitTime = Time.time;
