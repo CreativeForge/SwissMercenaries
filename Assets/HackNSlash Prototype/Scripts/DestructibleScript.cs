@@ -18,7 +18,7 @@ public class DestructibleScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		originalColor = appearanceAlive.GetComponent<MeshRenderer>().material.color;
+		originalColor = appearanceAlive.GetComponent<Renderer>().material.color;
 		appearanceDead.SetActive(false);
 		bloodParticlesGO = Instantiate(bloodParticlesPrefab, transform.position, Quaternion.identity) as GameObject;
 		bloodParticlesGO.transform.parent = transform;
@@ -30,7 +30,7 @@ public class DestructibleScript : MonoBehaviour {
 	
 		if(isHitted && lastHitTime+0.5f<Time.time){
 			isHitted = false;
-			appearanceAlive.GetComponent<MeshRenderer>().material.color = originalColor;
+			appearanceAlive.GetComponent<Renderer>().material.color = originalColor;
 		}
 	}
 
@@ -43,7 +43,7 @@ public class DestructibleScript : MonoBehaviour {
 		Debug.Log("is hitted with force: "+inForce+"; health left: "+health);
 		bloodParticlesGO.SetActive(false);
 		bloodParticlesGO.SetActive(true);
-		appearanceAlive.GetComponent<MeshRenderer>().material.color = Color.red;
+		appearanceAlive.GetComponent<Renderer>().material.color = Color.red;
 		GameLogicControllerScript.i.AdjustHealthVisualisation();
 		if(health <= 0){
 			Die();
