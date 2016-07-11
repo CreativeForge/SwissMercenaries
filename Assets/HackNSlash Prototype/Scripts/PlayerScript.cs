@@ -11,8 +11,6 @@ public class PlayerScript : MonoBehaviour {
 	float originalSpeedMod = 1;
 	float currentSpeedMod = 1;
 
-	//public bool isGrounded;
-
 	private Transform m_Cam;                  // A reference to the main camera in the scenes transform
 	private Vector3 m_CamForward;             // The current forward direction of the camera
 	private Vector3 m_Move;						// the world-relative desired move direction, calculated from the camForward and user input.
@@ -34,9 +32,14 @@ public class PlayerScript : MonoBehaviour {
 	bool isGrounded;
 
 
+
+	Vector3 originalPosition;
+
+
 	void Awake(){
 		myR = GetComponent<Rigidbody>();
 		dS = GetComponent<DestructibleScript>();
+		originalPosition = transform.position;
 	}
 
 	void Start () {
@@ -56,7 +59,7 @@ public class PlayerScript : MonoBehaviour {
 	}
 	
 	void Update () {
-		if(dS.GetIsDead) return;
+		if(dS.IsDead) return;
 
 		/*
 		if (!m_Jump){
@@ -75,10 +78,7 @@ public class PlayerScript : MonoBehaviour {
 
 	}
 
-	private void FixedUpdate()
-	{
-		if(dS.GetIsDead) return;
-
+	void HandleIsGrounded(){
 		isGrounded = false;
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position+Vector3.up*0.01f, Vector3.down, out hit, 0.08f)){
@@ -92,7 +92,14 @@ public class PlayerScript : MonoBehaviour {
 			Debug.DrawLine(transform.position+Vector3.up, hit.point, Color.red);
 		}else{
 			Debug.DrawLine(transform.position+Vector3.up, transform.position+Vector3.down*2, Color.green);
-		}
+		}	
+	}
+
+	private void FixedUpdate()
+	{
+		if(dS.IsDead) return;
+
+		HandleIsGrounded();
 
 		// read inputs
 
@@ -135,7 +142,7 @@ public class PlayerScript : MonoBehaviour {
 	}
 
 
-	public void Push(Vector3 inForce){
+	public void Push(Vector3 inForce){ // can be pushed by an enemy
 		if(doPush || isRecovering)return;
 		pushForce = inForce;
 		doPush = true;
@@ -167,6 +174,10 @@ public class PlayerScript : MonoBehaviour {
 		Vector3 tDir = new Vector3(m_Cam.position.x, transform.position.y, m_Cam.position.z) - transform.position;
 		//Debug.DrawLine(transform.position,transform.position - tDir);
 		transform.LookAt(transform.position - tDir);	
+	}
+
+	public void SetToOriginalPosition(){
+		transform.position = originalPosition;
 	}
 }
 

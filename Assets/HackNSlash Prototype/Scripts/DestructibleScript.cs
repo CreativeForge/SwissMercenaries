@@ -68,10 +68,10 @@ public class DestructibleScript : MonoBehaviour {
 
 				}
 
-			} else { return; }
+			} 
+			return;
 		}
-
-
+			
 		if(anim){
 			anim.SetTrigger("IsHittedTrigger");
 			//Debug.Log("ishittet anim");
@@ -79,44 +79,21 @@ public class DestructibleScript : MonoBehaviour {
 
 		isHitted = true;
 		lastHitTime = Time.time;
-		health -= inForce;
+		Health -= inForce;
 		//Debug.Log("is hitted with force: "+inForce+"; health left: "+health);
 		bloodParticlesGO.SetActive(false);
 		bloodParticlesGO.SetActive(true);
 		appearanceAlive.GetComponent<Renderer>().material.color = Color.red;
-		GameLogicControllerScript.i.AdjustHealthVisualisation();
-		if(health <= 0){
-			Die();
-		}
+
 	}
 
 	void Die(){
 		if(isDead) return;
 		isDead = true;
 
-		// Am I a player?
-		if(GetComponent<PlayerScript>() == null) {
-
-			// HitterScript-Component of all enemies
-			//Component[] allEnemyScripts = transform.parent.GetComponentsInChildren<DestructibleScript>();
-			DestructibleScript[] allEnemyScripts = FindObjectsOfType<DestructibleScript>();
-			uint countDeadEnemies = 0;
-
-			foreach(DestructibleScript ds in allEnemyScripts) {
-
-				if(ds.GetIsDead && ds.HasLoot)
-					countDeadEnemies++;
-
-			}
-
-			// Are all enemies dead?
-			if(transform.parent.childCount <= countDeadEnemies) {
-
-				// Change to plunder game mode
-				GameLogicControllerScript.i.GameMode = 1;
-
-			}
-
+		// If im not a player
+		if(!pS) {
+			GameLogicControllerScript.i.CheckEnemyDeathCount();
 		}
 
 		if(!appearanceDead && !anim){
@@ -134,8 +111,6 @@ public class DestructibleScript : MonoBehaviour {
 				appearanceDead.SetActive(true);
 				appearanceAlive.SetActive(false);
 			}
-
-
 		}
 
 		/*
@@ -152,7 +127,23 @@ public class DestructibleScript : MonoBehaviour {
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}*/
 
-	public bool GetIsDead {
+	public float Health {
+
+		get { return health; }
+
+		set {
+			Debug.Log("set h"+ value);
+			health = Mathf.Clamp(value,0,100);
+			GameLogicControllerScript.i.AdjustHealthVisualisation();
+
+			if(health <= 0){
+				Die();
+			}
+		}
+
+	}
+
+	public bool IsDead {
 		get { return isDead; }
 	}
 

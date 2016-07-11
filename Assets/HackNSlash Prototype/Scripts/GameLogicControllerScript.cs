@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameLogicControllerScript : MonoBehaviour {
 
@@ -16,16 +17,30 @@ public class GameLogicControllerScript : MonoBehaviour {
 	// ...
 	private int gameMode = 0;
 	private float gameModeCounter = 20;
+	private Text counterText;
 
+	uint allLootableEnemiesCount;
+	DestructibleScript[] allDestructibleScripts;
 
 	// Use this for initialization
 	void Awake () {
 		i = this;
 		canvasGO.SetActive(true);
+		counterText = canvasGO.transform.FindChild("Counter").GetComponent<Text>();
 	}
 
 	void Start(){
 		playerS = FindObjectOfType<PlayerScript>();
+
+		allDestructibleScripts = FindObjectsOfType<DestructibleScript>();
+		allLootableEnemiesCount = 0;
+		foreach(DestructibleScript tDS in allDestructibleScripts){
+			if(tDS.HasLoot)
+				allLootableEnemiesCount++;
+		}
+
+		Debug.Log("allDestructibleScripts: "+allDestructibleScripts+"all count: "+allLootableEnemiesCount);
+
 	}
 
 	public void AdjustHealthVisualisation(){
@@ -52,12 +67,38 @@ public class GameLogicControllerScript : MonoBehaviour {
 
 		}
 
+
+		HandleCheatInput();
+	}
+
+	void HandleCheatInput(){
+		if(Input.GetKeyDown(KeyCode.H)){
+			Debug.Log("h");
+			playerS.dS.Health = 100;
+		}
+	}
+
+	public void CheckEnemyDeathCount(){
+
+		uint countDeadEnemies = 0;
+
+		foreach(DestructibleScript ds in allDestructibleScripts){
+			if(ds.IsDead && ds.HasLoot)
+				countDeadEnemies++;
+		}
+
+		// Are all enemies dead?
+		if(allLootableEnemiesCount == countDeadEnemies) {
+
+			// Change to plunder game mode
+			GameMode = 1;
+		}
 	}
 
 	// On GUI drawing
 	void OnGUI() {
 
-		canvasGO.transform.FindChild("Counter").GetComponent<Text>().text = gameModeCounter.ToString();
+		counterText.text = gameModeCounter.ToString();
 
 	}
 
@@ -81,6 +122,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 				
 				// plunder
 				case 1:
+					playerS.SetToOriginalPosition();
 					gameModeCounter = 20;
 					canvasGO.transform.FindChild("Counter").gameObject.SetActive(true);
 					break;

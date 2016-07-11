@@ -37,7 +37,7 @@ public class HitterScript : MonoBehaviour {
 	void Update(){
 
 		// if is enemy and is dead, or is player and is dead
-		if((eS && eS.dS && eS.dS.GetIsDead) || (pS && pS.dS && pS.dS.GetIsDead ))return;
+		if((eS && eS.dS && eS.dS.IsDead) || (pS && pS.dS && pS.dS.IsDead ))return;
 
 		HandleHitting();
 	}
