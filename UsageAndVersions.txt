@@ -1,0 +1,32 @@
+
+### SWISSMERCENARIES EDITOR ###
+
+this editor is a pro-editor (you need to have an intro to use it). 
+you can edit levels
+
+# HOTKEYS CAMERA
+<wasd> move xy
+<rf> move up/down
+<qe> rotate left/right
+<2x> rotate forward/backward£
+
+# HOTKEYS OBJECTS
+> use <shift> and camera hotkeys
+
+# TECH
+levels consist of gameelemets (GameElement) stored as JSON-Arrays. 
+
+# OBJECTS
+organisation: [type/subtype] > Prefab
+unity3d: registration in leveleditor.cs 
+one object consists of:
+- prefabGame: used in Game
+- prefabEditor: used in Editor (no scripts, no collider!)
+- small description
+
+# OPTIMIZE
+textures: sips -Z 1024 *.png
+
+# VERSIONS
+0.11 20160709 more assets added
+0.10 20160709 first version, minimal functions

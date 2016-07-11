@@ -1,0 +1,151 @@
+fileFormatVersion: 2
+guid: c96fa1812c6cc48479b3da5832b55e6b
+timeCreated: 1439630598
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Bilding_square_base_1
+    100002: Bilding_square_base_2
+    100004: Bilding_square_base_3
+    100006: Bilding_square_base_4
+    100008: Bilding_square_base_5
+    100010: Bilding_square_base_6
+    100012: Bilding_square_roof_1
+    100014: Bilding_square_roof_2
+    100016: Bilding_square_roof_3
+    100018: Bilding_square_roof_4
+    100020: Bilding_square_wall_1
+    100022: Bilding_square_wall_2
+    100024: Bilding_square_wall_3
+    100026: Bilding_square_wall_4
+    100028: Bilding_square_wall_5
+    100030: Bilding_square_wall_6
+    100032: //RootNode
+    400000: Bilding_square_base_1
+    400002: Bilding_square_base_2
+    400004: Bilding_square_base_3
+    400006: Bilding_square_base_4
+    400008: Bilding_square_base_5
+    400010: Bilding_square_base_6
+    400012: Bilding_square_roof_1
+    400014: Bilding_square_roof_2
+    400016: Bilding_square_roof_3
+    400018: Bilding_square_roof_4
+    400020: Bilding_square_wall_1
+    400022: Bilding_square_wall_2
+    400024: Bilding_square_wall_3
+    400026: Bilding_square_wall_4
+    400028: Bilding_square_wall_5
+    400030: Bilding_square_wall_6
+    400032: //RootNode
+    2300000: Bilding_square_base_1
+    2300002: Bilding_square_base_2
+    2300004: Bilding_square_base_3
+    2300006: Bilding_square_base_4
+    2300008: Bilding_square_base_5
+    2300010: Bilding_square_base_6
+    2300012: Bilding_square_roof_1
+    2300014: Bilding_square_roof_2
+    2300016: Bilding_square_roof_3
+    2300018: Bilding_square_roof_4
+    2300020: Bilding_square_wall_1
+    2300022: Bilding_square_wall_2
+    2300024: Bilding_square_wall_3
+    2300026: Bilding_square_wall_4
+    2300028: Bilding_square_wall_5
+    2300030: Bilding_square_wall_6
+    3300000: Bilding_square_base_1
+    3300002: Bilding_square_base_2
+    3300004: Bilding_square_base_3
+    3300006: Bilding_square_base_4
+    3300008: Bilding_square_base_5
+    3300010: Bilding_square_base_6
+    3300012: Bilding_square_roof_1
+    3300014: Bilding_square_roof_2
+    3300016: Bilding_square_roof_3
+    3300018: Bilding_square_roof_4
+    3300020: Bilding_square_wall_1
+    3300022: Bilding_square_wall_2
+    3300024: Bilding_square_wall_3
+    3300026: Bilding_square_wall_4
+    3300028: Bilding_square_wall_5
+    3300030: Bilding_square_wall_6
+    4300000: Bilding_square_base_1
+    4300002: Bilding_square_base_2
+    4300004: Bilding_square_base_3
+    4300006: Bilding_square_base_4
+    4300008: Bilding_square_base_5
+    4300010: Bilding_square_base_6
+    4300012: Bilding_square_roof_1
+    4300014: Bilding_square_roof_2
+    4300016: Bilding_square_roof_3
+    4300018: Bilding_square_roof_4
+    4300020: Bilding_square_wall_1
+    4300022: Bilding_square_wall_2
+    4300024: Bilding_square_wall_3
+    4300026: Bilding_square_wall_4
+    4300028: Bilding_square_wall_5
+    4300030: Bilding_square_wall_6
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
