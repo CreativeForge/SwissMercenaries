@@ -55,7 +55,7 @@ public class PlayerScript : MonoBehaviour {
 	}
 	
 	void Update () {
-		if(dS.GetIsDead()) return;
+		if(dS.GetIsDead) return;
 
 		/*
 		if (!m_Jump){
@@ -76,7 +76,7 @@ public class PlayerScript : MonoBehaviour {
 
 	private void FixedUpdate()
 	{
-		if(dS.GetIsDead()) return;
+		if(dS.GetIsDead) return;
 
 		isGrounded = false;
 		RaycastHit hit;

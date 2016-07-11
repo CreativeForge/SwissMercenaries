@@ -58,8 +58,35 @@ public class DestructibleScript : MonoBehaviour {
 		appearanceAlive.SetActive(false);
 		GetComponent<HitterScript>().hitBox1.SetActive(false);
 		if(GetComponent<HitterScript>().hitBox2) GetComponent<HitterScript>().hitBox2.SetActive(false);
-		if(GetComponent<PlayerScript>())
+
+		// Am I a player?
+		if(GetComponent<PlayerScript>()) {
+			
 			StartCoroutine(WaitNRestart());
+		
+		// Or an enemy?
+		} else {
+
+			// HitterScript-Component of all enemies
+			Component[] allEnemyScripts = transform.parent.GetComponentsInChildren<DestructibleScript>();
+			uint countDeadEnemies = 0;
+
+			foreach(DestructibleScript ds in allEnemyScripts) {
+
+				if(ds.GetIsDead)
+					countDeadEnemies++;
+
+			}
+
+			// Are all enemies dead?
+			if(transform.parent.childCount <= countDeadEnemies) {
+
+				// Change to plunder game mode
+				GameLogicControllerScript.i.GameMode = 1;
+
+			}
+
+		}
 	}
 
 	IEnumerator WaitNRestart(){
