@@ -36,6 +36,7 @@ public class HitterScript : MonoBehaviour {
 
 	void Update(){
 
+		// if is enemy and is dead, or is player and is dead
 		if((eS && eS.dS && eS.dS.GetIsDead) || (pS && pS.dS && pS.dS.GetIsDead ))return;
 
 		HandleHitting();
@@ -67,6 +68,7 @@ public class HitterScript : MonoBehaviour {
 				isHittingFast = false;
 			}
 
+			/*
 			if(isHittingSlow){
 				if(lastHitTime+hitSlowDuration<Time.time){
 					hitBox2.transform.parent.Rotate(180*Time.deltaTime,0,0);
@@ -76,7 +78,7 @@ public class HitterScript : MonoBehaviour {
 						hitBox2.transform.parent.localRotation = originalRotHitBox2;
 					}
 				}
-			}
+			}*/
 		}
 	}
 
@@ -126,19 +128,21 @@ public class HitterScript : MonoBehaviour {
 	}
 
 	public void FromAnimationTriggerDoHitBox(){
-		// called in AnimationEvent from the attack animation "Attack01RunTrigger" or "Attack01Trigger"
+		// called in AnimationEvent from the attack-animation "Attack01RunTrigger" or "Attack01Trigger"
 		hitBox1.SetActive(true);
 		lastHitTime = Time.time;
 		isHittingFast = true;
 
 	}
 
+	/*
 	void DoSlowHit(){ // not yet in use
 		isHittingSlow = true;
 		hitBox2.SetActive(true);
 		lastHitTime = Time.time;
 		if(pS)pS.LookInCamDir();
 	}
+	*/
 	
 	public bool HitsDestructible (DestructibleScript inDS) { // is called in HitBoxScript
 		if(pS){ // player hits something
