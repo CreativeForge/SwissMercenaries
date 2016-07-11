@@ -14,6 +14,6 @@ public class PlayerAnimationTriggerScript : MonoBehaviour {
 	}
 
 	public void FromAnimationTriggerDoHitBox(){
-		GameLogicControllerScript.i.playerS.GetComponent<HitterScript>().FromAnimationTriggerDoHitBox();
+		GetComponentInParent<HitterScript>().FromAnimationTriggerDoHitBox();
 	}
 }
