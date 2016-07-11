@@ -67,7 +67,7 @@ public class DestructibleScript : MonoBehaviour {
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 
-	public bool GetIsDead(){
-		return isDead;
+	public bool GetIsDead {
+		get { return isDead; }
 	}
 }
