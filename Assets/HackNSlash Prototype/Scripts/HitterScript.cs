@@ -36,7 +36,7 @@ public class HitterScript : MonoBehaviour {
 
 	void Update(){
 
-		if((eS && eS.dS && eS.dS.GetIsDead()) || (pS && pS.dS && pS.dS.GetIsDead() ))return;
+		if((eS && eS.dS && eS.dS.GetIsDead) || (pS && pS.dS && pS.dS.GetIsDead ))return;
 
 		HandleHitting();
 	}

@@ -16,6 +16,9 @@ public class DestructibleScript : MonoBehaviour {
 	Color originalColor;
 	bool isHitted = false;
 
+	public GameObject lootObject;
+	public bool hasLoot = true;
+
 	PlayerScript pS;
 
 	public Animator anim;
@@ -47,7 +50,26 @@ public class DestructibleScript : MonoBehaviour {
 	}
 
 	public void IsHitted(float inForce){
-		if(isDead) return;
+
+		GameObject clone;
+
+		if(isDead) {
+
+			// Plunder mode?
+			if((GameLogicControllerScript.i.GameMode == 1) && hasLoot) {
+
+				hasLoot = false;
+
+				// Create loot
+				for(int i = 0;i < Random.Range(1, 5);i++) {
+
+					clone = Instantiate(lootObject, gameObject.transform.position, Random.rotation) as GameObject;
+					clone.SetActive(true);
+
+				}
+
+			} else { return; }
+		}
 
 
 		if(anim){
@@ -71,6 +93,35 @@ public class DestructibleScript : MonoBehaviour {
 	void Die(){
 		if(isDead) return;
 		isDead = true;
+
+		appearanceDead.SetActive(true);
+		appearanceAlive.SetActive(false);
+		GetComponent<HitterScript>().hitBox1.SetActive(false);
+		if(GetComponent<HitterScript>().hitBox2) GetComponent<HitterScript>().hitBox2.SetActive(false);
+
+		// Am I a player?
+		if(GetComponent<PlayerScript>() == null) {
+
+			// HitterScript-Component of all enemies
+			Component[] allEnemyScripts = transform.parent.GetComponentsInChildren<DestructibleScript>();
+			uint countDeadEnemies = 0;
+
+			foreach(DestructibleScript ds in allEnemyScripts) {
+
+				if(ds.GetIsDead)
+					countDeadEnemies++;
+
+			}
+
+			// Are all enemies dead?
+			if(transform.parent.childCount <= countDeadEnemies) {
+
+				// Change to plunder game mode
+				GameLogicControllerScript.i.GameMode = 1;
+
+			}
+
+		}
 
 		if(!appearanceDead){
 			Destroy(gameObject);
@@ -105,7 +156,7 @@ public class DestructibleScript : MonoBehaviour {
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}*/
 
-	public bool GetIsDead(){
-		return isDead;
+	public bool GetIsDead {
+		get { return isDead; }
 	}
 }
