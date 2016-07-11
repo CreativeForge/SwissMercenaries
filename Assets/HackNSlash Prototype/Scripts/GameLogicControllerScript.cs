@@ -90,7 +90,28 @@ public class GameLogicControllerScript : MonoBehaviour {
 					break;
 
 			}
+
+			// GUI Flash
+			StartCoroutine(FlashGUI(0.4f));
+
 		}
 
 	}
+
+	// Timeout method
+	IEnumerator FlashGUI(float timeOut) {
+
+		float flashTime = timeOut / 2f;
+
+		canvasGO.transform.FindChild("WhitePanel").gameObject.SetActive(true);
+		canvasGO.transform.FindChild("WhitePanel").GetComponent<CanvasRenderer>().SetAlpha(0.0f);
+		canvasGO.transform.FindChild("WhitePanel").GetComponent<Image>().CrossFadeAlpha(1.0f, flashTime, false);
+		yield return new WaitForSeconds(flashTime);
+		canvasGO.transform.FindChild("WhitePanel").GetComponent<Image>().CrossFadeAlpha(0.0f, flashTime, false);
+		yield return new WaitForSeconds(flashTime);
+		canvasGO.transform.FindChild("WhitePanel").gameObject.SetActive(false);
+		yield return null;
+
+	}
+
 }
