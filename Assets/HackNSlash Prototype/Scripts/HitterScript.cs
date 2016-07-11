@@ -14,12 +14,14 @@ public class HitterScript : MonoBehaviour {
 	public EnemyScript eS;
 	public float hitIntervalTime = 2;
 	public float hitIntervalTimeRandomRange = 1;
+	public Animator anim;
 
 	// Use this for initialization
 	void Start () {
 		hitIntervalTime += Random.Range(-hitIntervalTimeRandomRange, hitIntervalTimeRandomRange);
 		hitBox1.SetActive(false);
 		if(!pS)originalRotHitBox2 = hitBox2.transform.parent.localRotation;
+		else if(pS && pS.anim)anim = pS.anim;
 	}
 
 	void Update(){
@@ -61,10 +63,29 @@ public class HitterScript : MonoBehaviour {
 	}
 
 	void DoFastHit(){
-		isHittingFast = true;
+		if(pS){
+			//hitBox1.SetActive(true); // is called from animationTrigger in FromAnimationTriggerDoHitBox()
+
+			//pS.LookInCamDir();
+
+			if(pS.GetVelocity()<0.1f) {
+				anim.SetTrigger("Attack01Trigger");
+			}else{
+				anim.SetTrigger("Attack01RunTrigger");
+			}
+		}else{
+			hitBox1.SetActive(true);
+			lastHitTime = Time.time;
+			isHittingFast = true;
+
+		}
+	}
+
+	public void FromAnimationTriggerDoHitBox(){
 		hitBox1.SetActive(true);
 		lastHitTime = Time.time;
-		if(pS)pS.LookInCamDir();
+		isHittingFast = true;
+
 	}
 
 	void DoSlowHit(){
@@ -74,7 +95,7 @@ public class HitterScript : MonoBehaviour {
 		if(pS)pS.LookInCamDir();
 	}
 	
-	public void HitsDestructible (DestructibleScript inDS) {
+	public void HitsDestructible (DestructibleScript inDS) { // is called in HitBoxScript
 		inDS.IsHitted(hitForce);
 	}
 }
