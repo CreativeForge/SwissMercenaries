@@ -53,14 +53,17 @@ public class DestructibleScript : MonoBehaviour {
 	void Die(){
 		if(isDead) return;
 
-		if(!appearanceDead)Destroy(gameObject);
+		if(!appearanceDead)
+			Destroy(gameObject);
 		else
 		{
 			isDead = true;
 			appearanceDead.SetActive(true);
 			appearanceAlive.SetActive(false);
-			GetComponent<HitterScript>().hitBox1.SetActive(false);
-			if(GetComponent<HitterScript>().hitBox2) GetComponent<HitterScript>().hitBox2.SetActive(false);
+			GameObject tHitBox1 = GetComponent<HitterScript>().hitBox1;
+			if(tHitBox1) tHitBox1.SetActive(false);
+			GameObject tHitBox2 = GetComponent<HitterScript>().hitBox2;
+			if(tHitBox2) tHitBox2.SetActive(false);
 			if(GetComponent<PlayerScript>())
 				StartCoroutine(WaitNRestart());
 		}
