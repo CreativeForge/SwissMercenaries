@@ -94,6 +94,7 @@ public class HitterScript : MonoBehaviour {
 
 			//hitBox1.SetActive(true); // is called from animationTrigger in FromAnimationTriggerDoHitBox()
 
+			// enable if player should hit in camera direction
 			//pS.LookInCamDir();
 
 			if(pS.GetVelocity()<0.1f) {
@@ -125,30 +126,30 @@ public class HitterScript : MonoBehaviour {
 	}
 
 	public void FromAnimationTriggerDoHitBox(){
+		// called in AnimationEvent from the attack animation "Attack01RunTrigger" or "Attack01Trigger"
 		hitBox1.SetActive(true);
 		lastHitTime = Time.time;
 		isHittingFast = true;
 
 	}
 
-	void DoSlowHit(){
-
+	void DoSlowHit(){ // not yet in use
 		isHittingSlow = true;
 		hitBox2.SetActive(true);
 		lastHitTime = Time.time;
 		if(pS)pS.LookInCamDir();
-
 	}
 	
 	public bool HitsDestructible (DestructibleScript inDS) { // is called in HitBoxScript
-		if(pS){
+		if(pS){ // player hits something
 			inDS.IsHitted(hitForce);
 			return true;
-		}else{
-			if(inDS == GameLogicControllerScript.i.playerS.dS){
+		}else{ // enemy hits something
+			if(inDS == GameLogicControllerScript.i.playerS.dS){ // enemy hits player
 				inDS.IsHitted(hitForce);
+				if(hitAlways) GameLogicControllerScript.i.playerS.Push((GameLogicControllerScript.i.playerS.transform.position-transform.position)*300);
 				return true;
-			}else if(!hitsOnlyPlayer){
+			}else if(!hitsOnlyPlayer){ // enemy hits not-player
 				inDS.IsHitted(hitForce);
 				return true;
 			}

@@ -28,8 +28,7 @@ public class HitBoxScript : MonoBehaviour {
 			if(!parentHitterScript){
 				Debug.LogWarning("hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent);
 				Debug.LogWarning("hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent.name);
-			}
-			if(parentHitterScript.HitsDestructible(dS)){
+			}else if(parentHitterScript.HitsDestructible(dS)){
 				if(GetComponent<ProjectileScript>()){
 					Destroy(gameObject);
 				}

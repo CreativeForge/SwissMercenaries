@@ -37,7 +37,7 @@ public class DestructibleScript : MonoBehaviour {
 	void Update () {
 		if(isDead){
 			if(pS && lastHitTime+5f<Time.time){
-				Debug.Log("restart4");
+				Debug.Log("Restart after death");
 				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 			}
 			return;
@@ -74,13 +74,13 @@ public class DestructibleScript : MonoBehaviour {
 
 		if(anim){
 			anim.SetTrigger("IsHittedTrigger");
-			Debug.Log("ishittet anim");
+			//Debug.Log("ishittet anim");
 		}
 
 		isHitted = true;
 		lastHitTime = Time.time;
 		health -= inForce;
-		Debug.Log("is hitted with force: "+inForce+"; health left: "+health);
+		//Debug.Log("is hitted with force: "+inForce+"; health left: "+health);
 		bloodParticlesGO.SetActive(false);
 		bloodParticlesGO.SetActive(true);
 		appearanceAlive.GetComponent<Renderer>().material.color = Color.red;
@@ -93,11 +93,6 @@ public class DestructibleScript : MonoBehaviour {
 	void Die(){
 		if(isDead) return;
 		isDead = true;
-
-		appearanceDead.SetActive(true);
-		appearanceAlive.SetActive(false);
-		GetComponent<HitterScript>().hitBox1.SetActive(false);
-		if(GetComponent<HitterScript>().hitBox2) GetComponent<HitterScript>().hitBox2.SetActive(false);
 
 		// Am I a player?
 		if(GetComponent<PlayerScript>() == null) {
@@ -124,7 +119,7 @@ public class DestructibleScript : MonoBehaviour {
 
 		}
 
-		if(!appearanceDead){
+		if(!appearanceDead && !anim){
 			Destroy(gameObject);
 		}else{
 			
