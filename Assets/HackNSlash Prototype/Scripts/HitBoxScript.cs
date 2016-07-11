@@ -12,7 +12,7 @@ public class HitBoxScript : MonoBehaviour {
 
 	public void SetParentHitterScript(HitterScript inS){
 		parentHitterScript = inS;
-		Debug.Log("set hitterscript: "+parentHitterScript + "self: "+name);
+		//Debug.Log("set hitterscript: "+parentHitterScript + "self: "+name);
 
 	}
 	
@@ -26,8 +26,8 @@ public class HitBoxScript : MonoBehaviour {
 		if(dS){
 
 			if(!parentHitterScript){
-				Debug.Log("hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent);
-				Debug.Log("hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent.name);
+				Debug.LogWarning("hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent);
+				Debug.LogWarning("hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent.name);
 			}
 			if(parentHitterScript.HitsDestructible(dS)){
 				if(GetComponent<ProjectileScript>()){

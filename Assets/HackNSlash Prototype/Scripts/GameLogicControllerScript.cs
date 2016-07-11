@@ -20,9 +20,9 @@ public class GameLogicControllerScript : MonoBehaviour {
 	}
 
 	public void AdjustHealthVisualisation(){
-		Debug.Log("healthT: "+healthT);
-		Debug.Log("playerS: "+playerS);
-		Debug.Log("playerS.dS: "+playerS.dS);
+		//Debug.Log("healthT: "+healthT);
+		//Debug.Log("playerS: "+playerS);
+		//Debug.Log("playerS.dS: "+playerS.dS);
 		healthT.localScale = new Vector3(playerS.dS.health/100f,1,1);
 	}
 	

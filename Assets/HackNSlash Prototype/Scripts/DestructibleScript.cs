@@ -16,6 +16,10 @@ public class DestructibleScript : MonoBehaviour {
 	Color originalColor;
 	bool isHitted = false;
 
+	PlayerScript pS;
+
+	public Animator anim;
+
 	// Use this for initialization
 	void Start () {
 		originalColor = appearanceAlive.GetComponent<Renderer>().material.color;
@@ -23,11 +27,19 @@ public class DestructibleScript : MonoBehaviour {
 		bloodParticlesGO = Instantiate(bloodParticlesPrefab, transform.position, Quaternion.identity) as GameObject;
 		bloodParticlesGO.transform.parent = transform;
 		bloodParticlesGO.SetActive(false);
+		pS = GetComponent<PlayerScript>();
 	}
 
 	// Update is called once per frame
 	void Update () {
-	
+		if(isDead){
+			if(pS && lastHitTime+5f<Time.time){
+				Debug.Log("restart4");
+				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+			}
+			return;
+		}
+
 		if(isHitted && lastHitTime+0.5f<Time.time){
 			isHitted = false;
 			appearanceAlive.GetComponent<Renderer>().material.color = originalColor;
@@ -36,6 +48,12 @@ public class DestructibleScript : MonoBehaviour {
 
 	public void IsHitted(float inForce){
 		if(isDead) return;
+
+
+		if(anim){
+			anim.SetTrigger("IsHittedTrigger");
+			Debug.Log("ishittet anim");
+		}
 
 		isHitted = true;
 		lastHitTime = Time.time;
@@ -52,27 +70,40 @@ public class DestructibleScript : MonoBehaviour {
 
 	void Die(){
 		if(isDead) return;
+		isDead = true;
 
-		if(!appearanceDead)
+		if(!appearanceDead){
 			Destroy(gameObject);
-		else
-		{
-			isDead = true;
-			appearanceDead.SetActive(true);
-			appearanceAlive.SetActive(false);
+		}else{
+			
 			GameObject tHitBox1 = GetComponent<HitterScript>().hitBox1;
 			if(tHitBox1) tHitBox1.SetActive(false);
 			GameObject tHitBox2 = GetComponent<HitterScript>().hitBox2;
 			if(tHitBox2) tHitBox2.SetActive(false);
-			if(GetComponent<PlayerScript>())
-				StartCoroutine(WaitNRestart());
+
+			if(anim){
+				anim.SetTrigger("DieTrigger");
+			}else{
+				appearanceDead.SetActive(true);
+				appearanceAlive.SetActive(false);
+			}
+
+
 		}
+
+		/*
+		if(pS){
+			Debug.Log("restart");
+			WaitNRestart1();
+		}*/
 	}
 
-	IEnumerator WaitNRestart(){
+	/*IEnumerator WaitNRestart1(){
+		Debug.Log("restart2");
 		yield return new WaitForSeconds(2);
+		Debug.Log("restart3");
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-	}
+	}*/
 
 	public bool GetIsDead(){
 		return isDead;
