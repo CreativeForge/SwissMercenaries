@@ -103,12 +103,13 @@ public class DestructibleScript : MonoBehaviour {
 		if(GetComponent<PlayerScript>() == null) {
 
 			// HitterScript-Component of all enemies
-			Component[] allEnemyScripts = transform.parent.GetComponentsInChildren<DestructibleScript>();
+			//Component[] allEnemyScripts = transform.parent.GetComponentsInChildren<DestructibleScript>();
+			DestructibleScript[] allEnemyScripts = FindObjectsOfType<DestructibleScript>();
 			uint countDeadEnemies = 0;
 
 			foreach(DestructibleScript ds in allEnemyScripts) {
 
-				if(ds.GetIsDead)
+				if(ds.GetIsDead && ds.HasLoot)
 					countDeadEnemies++;
 
 			}
@@ -158,5 +159,9 @@ public class DestructibleScript : MonoBehaviour {
 
 	public bool GetIsDead {
 		get { return isDead; }
+	}
+
+	public bool HasLoot {
+		get { return hasLoot; }
 	}
 }
