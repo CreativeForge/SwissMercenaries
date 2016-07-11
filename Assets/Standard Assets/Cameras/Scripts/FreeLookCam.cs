@@ -70,11 +70,16 @@ namespace UnityStandardAssets.Cameras
         private void HandleRotationMovement()
         {
 			if(Time.timeScale < float.Epsilon)
-			return;
+				return;
 
             // Read the user input
-            var x = CrossPlatformInputManager.GetAxis("Mouse X");
-            var y = CrossPlatformInputManager.GetAxis("Mouse Y");
+			#if UNITY_STANDALONE_OSX
+			var x = CrossPlatformInputManager.GetAxis("Horizontal JoystickR Mac");
+			var y = CrossPlatformInputManager.GetAxis("Vertical JoystickR Mac");
+			#else
+			var x = CrossPlatformInputManager.GetAxis("Horizontal JoystickR");
+			var y = CrossPlatformInputManager.GetAxis("Vertical JoystickR");
+			#endif
 
             // Adjust the look angle by an amount proportional to the turn speed and horizontal input.
             m_LookAngle += x*m_TurnSpeed;
