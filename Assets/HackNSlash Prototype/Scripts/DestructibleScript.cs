@@ -59,7 +59,6 @@ public class DestructibleScript : MonoBehaviour {
 
 		if(Invincible) return;
 
-		GameObject clone;
 
 		if(isDead) {
 
@@ -68,11 +67,13 @@ public class DestructibleScript : MonoBehaviour {
 
 				hasLoot = false;
 
+				ragdollCenter.GetComponent<Rigidbody>().AddForce(Vector3.up*1000);
+
 				// Create loot
 				for(int i = 0;i < Random.Range(3, 8);i++) {
-
-					clone = Instantiate(lootObject, gameObject.transform.position, Random.rotation) as GameObject;
-					clone.SetActive(true);
+					GameObject clone;
+					clone = Instantiate(lootObject, transform.position+Vector3.up*0.3f, Random.rotation) as GameObject;
+					clone.GetComponent<Rigidbody>().AddExplosionForce(30, transform.position, 1);
 
 				}
 				SetColor(Color.black);
