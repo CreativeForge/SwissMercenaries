@@ -124,6 +124,10 @@ public class GameLogicControllerScript : MonoBehaviour {
 		}
 
 
+		if(Input.GetKeyDown(KeyCode.Escape)){
+			Application.Quit();
+		}
+
 		HandleCheatInput();
 	}
 
