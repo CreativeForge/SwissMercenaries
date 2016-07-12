@@ -107,9 +107,9 @@ public class DestructibleScript : MonoBehaviour {
 		}else{
 			
 			GameObject tHitBox1 = GetComponent<HitterScript>().hitBox1;
-			if(tHitBox1) tHitBox1.SetActive(false);
+			if(tHitBox1) Destroy(tHitBox1);
 			GameObject tHitBox2 = GetComponent<HitterScript>().hitBox2;
-			if(tHitBox2) tHitBox2.SetActive(false);
+			if(tHitBox2) Destroy(tHitBox2);
 
 			if(anim){
 				anim.SetTrigger("DieTrigger");
