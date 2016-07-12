@@ -5,7 +5,8 @@ public class HitterScript : MonoBehaviour {
 
 	public bool alwaysDangerous = false;
 	public bool hitsOnlyPlayer = true;
-	public bool shooting = false;
+	public bool isShooter = false;
+	bool shooting = false;
 	public GameObject projectilePrefab;
 	public float hitForce = 10;
 	bool isHittingFast = false;
@@ -39,6 +40,13 @@ public class HitterScript : MonoBehaviour {
 		if((eS && eS.dS && eS.dS.IsDead) || (pS && pS.dS && pS.dS.IsDead ))return;
 
 		HandleHitting();
+	}
+
+	public void StartShooting(){
+		if(isShooter)
+			shooting = true;
+		else
+			Debug.LogWarning("is not a shooter");
 	}
 
 	void HandleHitting(){

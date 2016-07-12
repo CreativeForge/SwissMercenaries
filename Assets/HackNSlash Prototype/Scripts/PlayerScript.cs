@@ -141,7 +141,8 @@ public class PlayerScript : MonoBehaviour {
 			isRecovering = true;
 		}
 			
-		if(anim)anim.SetFloat("Velocity",GetVelocity());
+		if(anim)anim.SetFloat("Velocity",GetVelocity()/8);
+		Debug.Log("vel: "+GetVelocity()/8);
 	}
 
 

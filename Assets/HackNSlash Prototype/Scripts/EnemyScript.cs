@@ -9,7 +9,7 @@ public class EnemyScript : MonoBehaviour {
 
 	public bool lookAtPlayer = false;
 	public bool stopNearPlayer = false;
-	public bool startWalkingWhenPlayerEntersTrigger = false;
+	public bool startAttackingWhenPlayerEntersTrigger = false;
 	bool isWalking = false;
 	bool playerHasEnteredTrigger = false;
 
@@ -35,6 +35,11 @@ public class EnemyScript : MonoBehaviour {
 
 	public void PlayerEnteredTrigger(){
 		playerHasEnteredTrigger = true;
-		if(startWalkingWhenPlayerEntersTrigger) isWalking = true;
+		if(startAttackingWhenPlayerEntersTrigger){
+			if(GetComponent<HitterScript>().isShooter){
+				GetComponent<HitterScript>().StartShooting(); 
+			}else
+				isWalking = true;
+		}
 	}
 }
