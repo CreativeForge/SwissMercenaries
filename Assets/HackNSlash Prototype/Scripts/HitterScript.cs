@@ -35,7 +35,11 @@ public class HitterScript : MonoBehaviour {
 		if(alwaysDangerous)
 			hitBox1.SetActive(true);
 
+		StartCoroutine(WaitNSetWeaponTrail());
+	}
 
+	IEnumerator WaitNSetWeaponTrail(){
+		yield return 0;
 		if(weaponTrailGO) {
 			weaponTrailGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail");
 			weaponTrailGO.SetActive(false);
