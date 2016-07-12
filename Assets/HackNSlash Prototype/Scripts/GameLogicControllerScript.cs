@@ -104,7 +104,12 @@ public class GameLogicControllerScript : MonoBehaviour {
 		}
 	}
 
-	public void CheckEnemyDeathCount(){
+	public void EnemyDies(){
+		CheckEnemyDeathCount();
+		playerS.Money += 10;
+	}
+
+	void CheckEnemyDeathCount(){
 
 		uint countDeadEnemies = 0;
 

@@ -100,7 +100,8 @@ public class DestructibleScript : MonoBehaviour {
 
 		// If im not a player
 		if(!pS) {
-			GameLogicControllerScript.i.CheckEnemyDeathCount();
+			// Enemy dies
+			GameLogicControllerScript.i.EnemyDies();
 		}
 
 		if(!appearanceDead && !anim){
