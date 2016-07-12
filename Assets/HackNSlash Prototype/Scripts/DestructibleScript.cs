@@ -81,13 +81,13 @@ public class DestructibleScript : MonoBehaviour {
 			//Debug.Log("ishittet anim");
 		}
 
+		SetColor(Color.red);
 		isHitted = true;
 		lastHitTime = Time.time;
 		Health -= inForce;
 		//Debug.Log("is hitted with force: "+inForce+"; health left: "+health);
 		bloodParticlesGO.SetActive(false);
 		bloodParticlesGO.SetActive(true);
-		SetColor(Color.red);
 	}
 
 	void SetColor(Color inColor){
@@ -97,6 +97,8 @@ public class DestructibleScript : MonoBehaviour {
 	void Die(){
 		if(isDead) return;
 		isDead = true;
+
+		SetColor(new Color(0.4f,0,0));
 
 		// If im not a player
 		if(!pS) {
