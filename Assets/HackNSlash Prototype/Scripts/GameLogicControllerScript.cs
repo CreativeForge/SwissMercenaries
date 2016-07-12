@@ -25,6 +25,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 	public Text plunderText;
 	public Text tutorialText;
 	public Text moneyText;
+	public Text enemyText;
 	public Material normalSkyBoxMat;
 	public Material plunderSkyBoxMat;
 
@@ -82,9 +83,9 @@ public class GameLogicControllerScript : MonoBehaviour {
 			if(tDS.HasLoot)
 				allLootableEnemiesCount++;
 		}
-
-		Debug.Log("allDestructibleScripts: "+allDestructibleScripts+"all count: "+allLootableEnemiesCount);
-
+		AdjustEnemyCountVisualisation(0);
+		AdjustMoneyVisualisation();
+			
 	}
 
 	public void AdjustHealthVisualisation(){
@@ -98,7 +99,11 @@ public class GameLogicControllerScript : MonoBehaviour {
 		//Debug.Log("healthT: "+healthT);
 		//Debug.Log("playerS: "+playerS);
 		//Debug.Log("playerS.dS: "+playerS.dS);
-		moneyText.text = "Gold: "+playerS.Money;
+		moneyText.text = "Gold gesammelt: "+playerS.Money;
+	}
+
+	public void AdjustEnemyCountVisualisation(uint inCount){
+		enemyText.text = "Landsknechte getötet: "+inCount+"/"+allLootableEnemiesCount;
 	}
 	
 	// Update is called once per frame
@@ -156,6 +161,9 @@ public class GameLogicControllerScript : MonoBehaviour {
 			// Change to plunder game mode
 			GameMode = 1;
 		}
+
+		AdjustEnemyCountVisualisation(countDeadEnemies);
+
 	}
 
 	public void PlayerDies(){

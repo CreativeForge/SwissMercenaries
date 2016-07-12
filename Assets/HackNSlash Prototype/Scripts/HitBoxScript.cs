@@ -6,11 +6,11 @@ public class HitBoxScript : MonoBehaviour {
 	HitterScript parentHitterScript;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		if (transform.parent) SetParentHitterScript(GetComponentInParent<HitterScript>());
 		/*if(!parentHitterScript){
-			Debug.LogWarning("on start) hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent);
-			Debug.LogWarning("on start) hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent.name);
+			Debug.LogError("on start) hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent);
+			Debug.LogError("on start) hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent.name);
 		}*/
 	}
 
@@ -32,7 +32,7 @@ public class HitBoxScript : MonoBehaviour {
 			if(!parentHitterScript){
 				Debug.LogWarning("hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent);
 				Debug.LogWarning("hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent.name);
-			}else if(parentHitterScript.HitsDestructible(dS)){
+			}else if(parentHitterScript.HitsDestructible(dS)){ // hit happens here in HitsDestructible
 				if(GetComponent<ProjectileScript>()){
 					Destroy(gameObject);
 				}

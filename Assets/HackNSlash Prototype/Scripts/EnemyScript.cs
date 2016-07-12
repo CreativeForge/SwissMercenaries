@@ -34,8 +34,13 @@ public class EnemyScript : MonoBehaviour {
 		}
 		if(isWalking){
 			if(Vector3.Distance(rB.position, tPlayerPos)>2 || !stopNearPlayer){
-				rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed * speed * speed);
-				if(anim)anim.SetFloat("Velocity",0.5f * speed );
+				if(anim){
+					rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed * speed * speed);
+					anim.SetFloat("Velocity",0.5f * speed );
+				}else{
+					rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed);
+
+				}
 			}else
 				if(anim)anim.SetFloat("Velocity",0);
 		}
