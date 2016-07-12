@@ -71,7 +71,7 @@ public class HitterScript : MonoBehaviour {
 			}
 
 			if(isHittingFast && lastHitTime+hitFastDuration<Time.time){
-				hitBox1.SetActive(false);
+				if(hitBox1)hitBox1.SetActive(false);
 				isHittingFast = false;
 			}
 
@@ -90,11 +90,15 @@ public class HitterScript : MonoBehaviour {
 	}
 
 	void DoShoot(){
+		Vector3 centerP = GameLogicControllerScript.i.playerS.GetComponent<Collider>().bounds.center;
+		float tDist = Vector3.Distance(transform.position, centerP);
+		lastHitTime = Time.time;
+
+		if(tDist>40)return;
+
 		GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity) as GameObject;
-		projectile.transform.LookAt(GameLogicControllerScript.i.playerS.GetComponent<Collider>().bounds.center);
 		projectile.GetComponent<HitBoxScript>().SetParentHitterScript(this);
 
-		lastHitTime = Time.time;
 	}
 
 	void DoFastHit(){
@@ -119,10 +123,11 @@ public class HitterScript : MonoBehaviour {
 			if(anim)
 				anim.SetTrigger("Attack01RunTrigger");
 			else{
-
-				hitBox1.SetActive(true);
+				
+				if(hitBox1)hitBox1.SetActive(true);
 				lastHitTime = Time.time;
 				isHittingFast = true;
+				
 			}
 
 			/*
@@ -139,7 +144,7 @@ public class HitterScript : MonoBehaviour {
 
 		if((eS && eS.dS && eS.dS.IsDead) || (pS && pS.dS && pS.dS.IsDead ))return;
 
-		hitBox1.SetActive(true);
+		if(hitBox1)hitBox1.SetActive(true);
 		lastHitTime = Time.time;
 		isHittingFast = true;
 

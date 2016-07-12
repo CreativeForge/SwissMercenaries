@@ -41,10 +41,11 @@ public class GameLogicControllerScript : MonoBehaviour {
 		panelModeChangeGO = canvasGO.transform.FindChild("WhitePanel").gameObject;
 
 		if(!normalSkyBoxMat)normalSkyBoxMat=RenderSettings.skybox;
+
+		playerS = FindObjectOfType<PlayerScript>();
 	}
 
 	void Start(){
-		playerS = FindObjectOfType<PlayerScript>();
 
 		allDestructibleScripts = FindObjectsOfType<DestructibleScript>();
 		allLootableEnemiesCount = 0;

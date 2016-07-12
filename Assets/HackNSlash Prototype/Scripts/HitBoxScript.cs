@@ -8,10 +8,14 @@ public class HitBoxScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (transform.parent) SetParentHitterScript(GetComponentInParent<HitterScript>());
+		/*if(!parentHitterScript){
+			Debug.LogWarning("on start) hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent);
+			Debug.LogWarning("on start) hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent.name);
+		}*/
 	}
 
 	public void SetParentHitterScript(HitterScript inS){
-		parentHitterScript = inS;
+		if(!parentHitterScript)parentHitterScript = inS;
 		//Debug.Log("set hitterscript: "+parentHitterScript + "self: "+name);
 
 	}

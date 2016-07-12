@@ -142,7 +142,6 @@ public class PlayerScript : MonoBehaviour {
 		}
 			
 		if(anim)anim.SetFloat("Velocity",GetVelocity()/8);
-		Debug.Log("vel: "+GetVelocity()/8);
 	}
 
 
