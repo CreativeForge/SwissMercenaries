@@ -148,6 +148,8 @@ public class PlayerScript : MonoBehaviour {
 		}
 			
 		if(anim)anim.SetFloat("Velocity",GetVelocity()/8);
+
+		if(!isGrounded) myR.AddForce(Vector3.down*20);
 	}
 
 

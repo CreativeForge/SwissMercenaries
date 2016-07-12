@@ -97,7 +97,7 @@ public class DestructibleScript : MonoBehaviour {
 	}
 
 	void SetColor(Color inColor){
-		appearanceAlive.GetComponent<Renderer>().material.color = inColor;
+		if(appearanceAlive)appearanceAlive.GetComponent<Renderer>().material.color = inColor;
 		appearanceDead.GetComponent<Renderer>().material.color = inColor;
 	}
 
@@ -128,7 +128,7 @@ public class DestructibleScript : MonoBehaviour {
 				appearanceDead.SetActive(true);
 				colliderDead.SetActive(true);
 				appearanceAlive.SetActive(false);
-				colliderAlive.SetActive(false);
+				StartCoroutine(WaitNDestroyAliveCollider());
 
 				//Move MainCollider to ragdoll position
 				if(ragdollCenter){
@@ -146,6 +146,11 @@ public class DestructibleScript : MonoBehaviour {
 			Debug.Log("restart");
 			WaitNRestart1();
 		}*/
+	}
+
+	IEnumerator WaitNDestroyAliveCollider(){
+		yield return 0;
+		Destroy(colliderAlive);
 	}
 
 	/*IEnumerator WaitNRestart1(){
