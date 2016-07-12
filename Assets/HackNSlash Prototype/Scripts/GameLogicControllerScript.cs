@@ -35,6 +35,8 @@ public class GameLogicControllerScript : MonoBehaviour {
 
 	GameObject camGO;
 
+	public bool inEditorUsed = true;
+
 	// Use this for initialization
 	void Awake () {
 		i = this;
@@ -48,6 +50,11 @@ public class GameLogicControllerScript : MonoBehaviour {
 
 		playerS = FindObjectOfType<PlayerScript>();
 
+		ReloadCamera();
+
+	}
+
+	void ReloadCamera(){
 		Camera cam = Camera.main;
 		if(cam) {
 			if(cam.transform.parent){
@@ -57,11 +64,12 @@ public class GameLogicControllerScript : MonoBehaviour {
 					cam.gameObject.SetActive(false);
 				}
 			}else{
+				// in editor
 				cam.gameObject.SetActive(false);	
 			}
 
 		}
-		
+
 		camGO = Instantiate(CameraPrefab) as GameObject;
 		playerS.SetCamT(camGO.transform);
 	}
@@ -150,6 +158,18 @@ public class GameLogicControllerScript : MonoBehaviour {
 		}
 	}
 
+	public void PlayerDies(){
+		ReloadLevel();
+	}
+
+	void ReloadLevel(){
+		if(inEditorUsed){
+			//TODO:  next Level!
+		}else{
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+		}
+	}
+
 	// On GUI drawing
 	void OnGUI() {
 
@@ -172,8 +192,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 				// kill
 				case 0:
 					
-					// next Level!
-					SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+					ReloadLevel();
 
 					/*gameModeCounter = 20;
 					counterTextGO.gameObject.SetActive(false);

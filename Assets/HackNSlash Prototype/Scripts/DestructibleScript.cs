@@ -43,7 +43,7 @@ public class DestructibleScript : MonoBehaviour {
 		if(isDead){
 			if(pS && lastHitTime+5f<Time.time){
 				Debug.Log("Restart after death");
-				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+				GameLogicControllerScript.i.PlayerDies();
 			}
 			return;
 		}
