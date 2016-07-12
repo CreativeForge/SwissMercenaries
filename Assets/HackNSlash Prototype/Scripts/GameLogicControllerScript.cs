@@ -127,7 +127,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 			playerS.dS.Health = 100;
 		}
 		if(Input.GetKeyDown(KeyCode.I)){
-			playerS.dS.Invincible = true;
+			playerS.dS.Invincible = !playerS.dS.Invincible;
 		}
 
 		/* // is done in myFreeLookCamScript
