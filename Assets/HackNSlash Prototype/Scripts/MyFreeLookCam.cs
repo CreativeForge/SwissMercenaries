@@ -28,6 +28,8 @@ namespace UnityStandardAssets.Cameras
 		private Quaternion m_PivotTargetRot;
 		private Quaternion m_TransformTargetRot;
 
+		public bool freezeCam = false;
+
         protected override void Awake()
         {
             base.Awake();
@@ -49,6 +51,10 @@ namespace UnityStandardAssets.Cameras
                 Cursor.lockState = m_LockCursor ? CursorLockMode.Locked : CursorLockMode.None;
                 Cursor.visible = !m_LockCursor;
             }
+
+			if(Input.GetKeyDown(KeyCode.F)){
+				freezeCam = !freezeCam;
+			}
         }
 
 
@@ -81,6 +87,11 @@ namespace UnityStandardAssets.Cameras
 			var x = CrossPlatformInputManager.GetAxis("Horizontal JoystickR");
 			var y = CrossPlatformInputManager.GetAxis("Vertical JoystickR");
 			#endif
+
+			if(freezeCam){
+				x=0;
+				y=0;
+			}
 
             // Adjust the look angle by an amount proportional to the turn speed and horizontal input.
             m_LookAngle += x*m_TurnSpeed;

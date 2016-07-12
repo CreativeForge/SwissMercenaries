@@ -33,6 +33,8 @@ public class GameLogicControllerScript : MonoBehaviour {
 	uint allLootableEnemiesCount;
 	DestructibleScript[] allDestructibleScripts;
 
+	GameObject camGO;
+
 	// Use this for initialization
 	void Awake () {
 		i = this;
@@ -63,7 +65,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 	}
 
 	void Start(){
-		GameObject camGO = Instantiate(CameraPrefab) as GameObject;
+		camGO = Instantiate(CameraPrefab) as GameObject;
 
 		allDestructibleScripts = FindObjectsOfType<DestructibleScript>();
 		allLootableEnemiesCount = 0;
@@ -113,13 +115,16 @@ public class GameLogicControllerScript : MonoBehaviour {
 
 	void HandleCheatInput(){
 		if(Input.GetKeyDown(KeyCode.H)){
-			Debug.Log("h");
 			playerS.dS.Health = 100;
 		}
 		if(Input.GetKeyDown(KeyCode.I)){
-			Debug.Log("i");
 			playerS.dS.Invincible = true;
 		}
+
+		/* // is done in myFreeLookCamScript
+		if(Input.GetKeyDown(KeyCode.F)){
+			camGO.GetComponent<
+		}*/
 	}
 
 	public void EnemyDies(){
