@@ -23,6 +23,7 @@ public class DestructibleScript : MonoBehaviour {
 	PlayerScript pS;
 
 	public Animator anim;
+	public bool useAnimOnDeath = false;
 
 	// Use this for initialization
 	void Start () {
@@ -115,7 +116,7 @@ public class DestructibleScript : MonoBehaviour {
 			GameObject tHitBox2 = GetComponent<HitterScript>().hitBox2;
 			if(tHitBox2) Destroy(tHitBox2);
 
-			if(anim){
+			if(useAnimOnDeath){
 				anim.SetTrigger("DieTrigger");
 			}else{
 				appearanceDead.SetActive(true);
