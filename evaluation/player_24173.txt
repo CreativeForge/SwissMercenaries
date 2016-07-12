@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"playerId":"24173","sessionId":45,"name":"Heinzer15","prename":"","age":25,"lovedCasual":0,"lovedCore":0,"lovedGenre":"","comment":""}
+=======
+{"playerId":"24173","sessionId":12,"name":"Heinzer15","prename":"","age":25,"lovedCasual":0,"lovedCore":0,"lovedGenre":"","comment":""}
+>>>>>>> nothing to do
