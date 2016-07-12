@@ -13,6 +13,7 @@ public class DestructibleScript : MonoBehaviour {
 	public GameObject colliderDead;
 	public GameObject appearanceAlive;
 	public GameObject appearanceDead;
+	public Transform ragdollCenter;
 
 	public float lastHitTime = 0;
 	Color originalColor;
@@ -127,6 +128,15 @@ public class DestructibleScript : MonoBehaviour {
 				colliderDead.SetActive(true);
 				appearanceAlive.SetActive(false);
 				colliderAlive.SetActive(false);
+
+				//Move MainCollider to ragdoll position
+				if(ragdollCenter){
+					transform.DetachChildren();
+					GetComponent<Rigidbody>().isKinematic = true;
+					transform.parent = ragdollCenter;
+					transform.localPosition = Vector3.zero;
+				}
+
 			}
 		}
 
