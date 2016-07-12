@@ -64,12 +64,13 @@ public class DestructibleScript : MonoBehaviour {
 				hasLoot = false;
 
 				// Create loot
-				for(int i = 0;i < Random.Range(1, 5);i++) {
+				for(int i = 0;i < Random.Range(3, 8);i++) {
 
 					clone = Instantiate(lootObject, gameObject.transform.position, Random.rotation) as GameObject;
 					clone.SetActive(true);
 
 				}
+				SetColor(Color.black);
 
 			} 
 			return;

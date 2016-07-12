@@ -128,6 +128,9 @@ public class HitterScript : MonoBehaviour {
 
 	public void FromAnimationTriggerDoHitBox(){
 		// called in AnimationEvent from the attack-animation "Attack01RunTrigger" or "Attack01Trigger"
+
+		if((eS && eS.dS && eS.dS.IsDead) || (pS && pS.dS && pS.dS.IsDead ))return;
+
 		hitBox1.SetActive(true);
 		lastHitTime = Time.time;
 		isHittingFast = true;

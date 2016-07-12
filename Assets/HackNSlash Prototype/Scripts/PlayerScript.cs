@@ -31,6 +31,7 @@ public class PlayerScript : MonoBehaviour {
 
 	bool isGrounded;
 
+	static uint money = 0;
 
 
 	Vector3 originalPosition;
@@ -180,6 +181,20 @@ public class PlayerScript : MonoBehaviour {
 
 	public void SetToOriginalPosition(){
 		transform.position = originalPosition;
+	}
+
+	public uint Money{
+		get {
+			return money;
+		}
+
+		set{
+			if(value<0)
+				money = 0;
+			else
+				money = value;
+			GameLogicControllerScript.i.AdjustMoneyVisualisation();
+		}
 	}
 }
 

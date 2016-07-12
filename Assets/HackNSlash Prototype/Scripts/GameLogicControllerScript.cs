@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 using System.Collections;
 using System.Collections.Generic;
 
@@ -17,7 +19,14 @@ public class GameLogicControllerScript : MonoBehaviour {
 	// ...
 	private int gameMode = 0;
 	private float gameModeCounter = 20;
+	private GameObject panelModeChangeGO;
+	private GameObject counterTextGO;
 	private Text counterText;
+	public Text plunderText;
+	public Text tutorialText;
+	public Text moneyText;
+	public Material normalSkyBoxMat;
+	public Material plunderSkyBoxMat;
 
 	uint allLootableEnemiesCount;
 	DestructibleScript[] allDestructibleScripts;
@@ -26,7 +35,12 @@ public class GameLogicControllerScript : MonoBehaviour {
 	void Awake () {
 		i = this;
 		canvasGO.SetActive(true);
-		counterText = canvasGO.transform.FindChild("Counter").GetComponent<Text>();
+		counterTextGO = canvasGO.transform.FindChild("Counter").gameObject;
+		counterText = counterTextGO.GetComponent<Text>();
+
+		panelModeChangeGO = canvasGO.transform.FindChild("WhitePanel").gameObject;
+
+		if(!normalSkyBoxMat)normalSkyBoxMat=RenderSettings.skybox;
 	}
 
 	void Start(){
@@ -48,6 +62,13 @@ public class GameLogicControllerScript : MonoBehaviour {
 		//Debug.Log("playerS: "+playerS);
 		//Debug.Log("playerS.dS: "+playerS.dS);
 		healthT.localScale = new Vector3(playerS.dS.health/100f,1,1);
+	}
+
+	public void AdjustMoneyVisualisation(){
+		//Debug.Log("healthT: "+healthT);
+		//Debug.Log("playerS: "+playerS);
+		//Debug.Log("playerS.dS: "+playerS.dS);
+		moneyText.text = "Gold: "+playerS.Money;
 	}
 	
 	// Update is called once per frame
@@ -120,17 +141,29 @@ public class GameLogicControllerScript : MonoBehaviour {
 
 				// kill
 				case 0:
-					gameModeCounter = 20;
-					canvasGO.transform.FindChild("Counter").gameObject.SetActive(false);
+					
+					// next Level!
+					SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+					/*gameModeCounter = 20;
+					counterTextGO.gameObject.SetActive(false);
+					plunderText.gameObject.SetActive(false);
+					tutorialText.gameObject.SetActive(true);
+					RenderSettings.skybox = normalSkyBoxMat;
+					*/
 					break;
 				
 				// plunder
 				case 1:
 					playerS.SetToOriginalPosition();
 					gameModeCounter = 20;
-					canvasGO.transform.FindChild("Counter").gameObject.SetActive(true);
+					counterTextGO.SetActive(true);
+					plunderText.gameObject.SetActive(true);
+					tutorialText.gameObject.SetActive(false);
+				moneyText.gameObject.SetActive(true);
+					RenderSettings.skybox = plunderSkyBoxMat;
 					break;
-				
+
 				// unexpected
 				default:
 					break;
@@ -149,13 +182,13 @@ public class GameLogicControllerScript : MonoBehaviour {
 
 		float flashTime = timeOut / 2f;
 
-		canvasGO.transform.FindChild("WhitePanel").gameObject.SetActive(true);
-		canvasGO.transform.FindChild("WhitePanel").GetComponent<CanvasRenderer>().SetAlpha(0.0f);
-		canvasGO.transform.FindChild("WhitePanel").GetComponent<Image>().CrossFadeAlpha(1.0f, flashTime, false);
+		panelModeChangeGO.gameObject.SetActive(true);
+		panelModeChangeGO.GetComponent<CanvasRenderer>().SetAlpha(0.0f);
+		panelModeChangeGO.GetComponent<Image>().CrossFadeAlpha(1.0f, flashTime, false);
 		yield return new WaitForSeconds(flashTime);
-		canvasGO.transform.FindChild("WhitePanel").GetComponent<Image>().CrossFadeAlpha(0.0f, flashTime, false);
+		panelModeChangeGO.GetComponent<Image>().CrossFadeAlpha(0.0f, flashTime, false);
 		yield return new WaitForSeconds(flashTime);
-		canvasGO.transform.FindChild("WhitePanel").gameObject.SetActive(false);
+		panelModeChangeGO.SetActive(false);
 		yield return null;
 
 	}
