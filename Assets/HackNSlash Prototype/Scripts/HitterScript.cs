@@ -23,6 +23,8 @@ public class HitterScript : MonoBehaviour {
 	public float hitSlowDuration = 0.5f;
 	public Animator anim;
 
+	public GameObject weaponTrailGO;
+
 	// Use this for initialization
 	void Start () {
 		hitIntervalTime += Random.Range(-hitIntervalTimeRandomRange, hitIntervalTimeRandomRange);
@@ -32,6 +34,16 @@ public class HitterScript : MonoBehaviour {
 
 		if(alwaysDangerous)
 			hitBox1.SetActive(true);
+
+		StartCoroutine(WaitNSetWeaponTrail());
+	}
+
+	IEnumerator WaitNSetWeaponTrail(){
+		yield return 0;
+		if(weaponTrailGO) {
+			weaponTrailGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail");
+			weaponTrailGO.SetActive(false);
+		}
 	}
 
 	void Update(){
@@ -73,6 +85,8 @@ public class HitterScript : MonoBehaviour {
 			if(isHittingFast && lastHitTime+hitFastDuration<Time.time){
 				if(hitBox1)hitBox1.SetActive(false);
 				isHittingFast = false;
+
+				if(weaponTrailGO) weaponTrailGO.SetActive(false);
 			}
 
 			/*
@@ -109,6 +123,8 @@ public class HitterScript : MonoBehaviour {
 
 			// enable if player should hit in camera direction
 			//pS.LookInCamDir();
+
+			if(weaponTrailGO) weaponTrailGO.SetActive(true);
 
 			if(pS.GetVelocity()<0.1f) {
 				anim.SetTrigger("Attack01Trigger");
