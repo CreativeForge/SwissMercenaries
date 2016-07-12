@@ -9,6 +9,8 @@ public class DestructibleScript : MonoBehaviour {
 	public GameObject bloodParticlesPrefab;
 	public GameObject bloodParticlesGO;
 
+	public GameObject colliderAlive;
+	public GameObject colliderDead;
 	public GameObject appearanceAlive;
 	public GameObject appearanceDead;
 
@@ -29,6 +31,7 @@ public class DestructibleScript : MonoBehaviour {
 	void Start () {
 		originalColor = appearanceAlive.GetComponent<Renderer>().material.color;
 		if(appearanceDead)appearanceDead.SetActive(false);
+		if(colliderDead)colliderDead.SetActive(false);
 		bloodParticlesGO = Instantiate(bloodParticlesPrefab, transform.position, Quaternion.identity) as GameObject;
 		bloodParticlesGO.transform.parent = transform;
 		bloodParticlesGO.SetActive(false);
@@ -93,6 +96,7 @@ public class DestructibleScript : MonoBehaviour {
 
 	void SetColor(Color inColor){
 		appearanceAlive.GetComponent<Renderer>().material.color = inColor;
+		appearanceDead.GetComponent<Renderer>().material.color = inColor;
 	}
 
 	void Die(){
@@ -120,7 +124,9 @@ public class DestructibleScript : MonoBehaviour {
 				anim.SetTrigger("DieTrigger");
 			}else{
 				appearanceDead.SetActive(true);
+				colliderDead.SetActive(true);
 				appearanceAlive.SetActive(false);
+				colliderAlive.SetActive(false);
 			}
 		}
 
