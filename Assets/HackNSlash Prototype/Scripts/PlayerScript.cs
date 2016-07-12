@@ -108,6 +108,8 @@ public class PlayerScript : MonoBehaviour {
 		if(doPush || isRecovering){
 			h=0;
 			v=0;
+		}else{
+			myR.velocity = new Vector3(0, myR.velocity.y, 0);
 		}
 		// calculate move direction to pass to character
 		if (m_Cam != null){

@@ -15,6 +15,7 @@ public class DestructibleScript : MonoBehaviour {
 	public float lastHitTime = 0;
 	Color originalColor;
 	bool isHitted = false;
+	bool invincible = false;
 
 	public GameObject lootObject;
 	public bool hasLoot = true;
@@ -45,11 +46,13 @@ public class DestructibleScript : MonoBehaviour {
 
 		if(isHitted && lastHitTime+0.5f<Time.time){
 			isHitted = false;
-			appearanceAlive.GetComponent<Renderer>().material.color = originalColor;
+			SetColor(originalColor);
 		}
 	}
 
 	public void IsHitted(float inForce){
+
+		if(Invincible) return;
 
 		GameObject clone;
 
@@ -83,8 +86,11 @@ public class DestructibleScript : MonoBehaviour {
 		//Debug.Log("is hitted with force: "+inForce+"; health left: "+health);
 		bloodParticlesGO.SetActive(false);
 		bloodParticlesGO.SetActive(true);
-		appearanceAlive.GetComponent<Renderer>().material.color = Color.red;
+		SetColor(Color.red);
+	}
 
+	void SetColor(Color inColor){
+		appearanceAlive.GetComponent<Renderer>().material.color = inColor;
 	}
 
 	void Die(){
@@ -132,7 +138,6 @@ public class DestructibleScript : MonoBehaviour {
 		get { return health; }
 
 		set {
-			Debug.Log("set h"+ value);
 			health = Mathf.Clamp(value,0,100);
 			GameLogicControllerScript.i.AdjustHealthVisualisation();
 
@@ -149,5 +154,15 @@ public class DestructibleScript : MonoBehaviour {
 
 	public bool HasLoot {
 		get { return hasLoot; }
+	}
+
+	public bool Invincible{
+		get { return invincible; }
+
+		set {
+			invincible = value;
+			if(invincible)SetColor(Color.yellow);
+			else SetColor(originalColor);
+		}	
 	}
 }

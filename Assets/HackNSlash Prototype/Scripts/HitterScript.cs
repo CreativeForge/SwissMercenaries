@@ -3,8 +3,7 @@ using System.Collections;
 
 public class HitterScript : MonoBehaviour {
 
-
-	public bool hitAlways = false;
+	public bool alwaysDangerous = false;
 	public bool hitsOnlyPlayer = true;
 	public bool shooting = false;
 	public GameObject projectilePrefab;
@@ -30,7 +29,7 @@ public class HitterScript : MonoBehaviour {
 		if(!pS && hitBox2)originalRotHitBox2 = hitBox2.transform.parent.localRotation;
 		else if(pS && pS.anim)anim = pS.anim;
 
-		if(hitAlways)
+		if(alwaysDangerous)
 			hitBox1.SetActive(true);
 	}
 
@@ -44,7 +43,7 @@ public class HitterScript : MonoBehaviour {
 
 	void HandleHitting(){
 
-		if (hitAlways) return;
+		if (alwaysDangerous) return;
 
 		if(shooting && lastHitTime+hitFastDuration<Time.time){
 			DoShoot();
@@ -151,7 +150,7 @@ public class HitterScript : MonoBehaviour {
 		}else{ // enemy hits something
 			if(inDS == GameLogicControllerScript.i.playerS.dS){ // enemy hits player
 				inDS.IsHitted(hitForce);
-				if(hitAlways) GameLogicControllerScript.i.playerS.Push((GameLogicControllerScript.i.playerS.transform.position-transform.position)*300);
+				if(alwaysDangerous) GameLogicControllerScript.i.playerS.Push((GameLogicControllerScript.i.playerS.transform.position-transform.position)*300);
 				return true;
 			}else if(!hitsOnlyPlayer){ // enemy hits not-player
 				inDS.IsHitted(hitForce);

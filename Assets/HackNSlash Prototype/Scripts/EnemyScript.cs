@@ -9,7 +9,9 @@ public class EnemyScript : MonoBehaviour {
 
 	public bool lookAtPlayer = false;
 	public bool stopNearPlayer = false;
+	public bool startWalkingWhenPlayerEntersTrigger = false;
 	bool isWalking = false;
+	bool playerHasEnteredTrigger = false;
 
 	public Animator anim;
 
@@ -32,6 +34,7 @@ public class EnemyScript : MonoBehaviour {
 	}
 
 	public void PlayerEnteredTrigger(){
-		isWalking = true;
+		playerHasEnteredTrigger = true;
+		if(startWalkingWhenPlayerEntersTrigger) isWalking = true;
 	}
 }

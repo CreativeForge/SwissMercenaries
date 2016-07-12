@@ -76,6 +76,10 @@ public class GameLogicControllerScript : MonoBehaviour {
 			Debug.Log("h");
 			playerS.dS.Health = 100;
 		}
+		if(Input.GetKeyDown(KeyCode.I)){
+			Debug.Log("i");
+			playerS.dS.Invincible = true;
+		}
 	}
 
 	public void CheckEnemyDeathCount(){
