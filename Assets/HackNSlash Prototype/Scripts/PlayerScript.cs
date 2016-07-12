@@ -43,18 +43,24 @@ public class PlayerScript : MonoBehaviour {
 		originalPosition = transform.position;
 	}
 
+	public void SetCamT(Transform inT){
+		m_Cam = inT;
+	}
+
 	void Start () {
 		iniRot = transform.rotation;
 		// get the transform of the main camera
-		if (Camera.main != null)
-		{
-			m_Cam = Camera.main.transform;
-		}
-		else
-		{
-			Debug.LogWarning(
-				"Warning: no main camera found. Third person character needs a Camera tagged \"MainCamera\", for camera-relative controls.");
-			// we use self-relative controls in this case, which probably isn't what the user wants, but hey, we warned them!
+		if(!m_Cam){
+			if (Camera.main != null)
+			{
+				m_Cam = Camera.main.transform;
+			}
+			else
+			{
+				Debug.LogWarning(
+					"Warning: no main camera found. Third person character needs a Camera tagged \"MainCamera\", for camera-relative controls.");
+				// we use self-relative controls in this case, which probably isn't what the user wants, but hey, we warned them!
+			}
 		}
 
 	}

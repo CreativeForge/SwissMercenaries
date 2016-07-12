@@ -61,11 +61,12 @@ public class GameLogicControllerScript : MonoBehaviour {
 			}
 
 		}
-			
+		
+		camGO = Instantiate(CameraPrefab) as GameObject;
+		playerS.SetCamT(camGO.transform);
 	}
 
 	void Start(){
-		camGO = Instantiate(CameraPrefab) as GameObject;
 
 		allDestructibleScripts = FindObjectsOfType<DestructibleScript>();
 		allLootableEnemiesCount = 0;
