@@ -28,6 +28,8 @@ public class GameLogicControllerScript : MonoBehaviour {
 	public Material normalSkyBoxMat;
 	public Material plunderSkyBoxMat;
 
+	public GameObject CameraPrefab;
+
 	uint allLootableEnemiesCount;
 	DestructibleScript[] allDestructibleScripts;
 
@@ -43,9 +45,21 @@ public class GameLogicControllerScript : MonoBehaviour {
 		if(!normalSkyBoxMat)normalSkyBoxMat=RenderSettings.skybox;
 
 		playerS = FindObjectOfType<PlayerScript>();
+
+		Camera cam = Camera.main;
+		if(cam) {
+			if(cam.transform.parent.name == "Pivot"){
+				cam.transform.parent.parent.gameObject.SetActive(false);
+			}else{
+				cam.gameObject.SetActive(false);
+			}
+
+		}
+			
 	}
 
 	void Start(){
+		GameObject camGO = Instantiate(CameraPrefab) as GameObject;
 
 		allDestructibleScripts = FindObjectsOfType<DestructibleScript>();
 		allLootableEnemiesCount = 0;

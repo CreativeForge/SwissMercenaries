@@ -1,8 +1,42 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*
+ * 	
+ * 
+ * 
+ * GameLogic {
+ * 
+ * 
+ * }
+ * 
+ *    LevelEditor {
+ * 		// Array GameElement
+
+		LoadLevel()
+		- UpdateElementVisual (update visual elements)
+		- UpdateRelationVisualisationAndCheckError
+ *    }
+ * 
+			GameElement < LevelElement (Unity3dEditor) {
+
+			}
+ * 
+ * */
+
 public class GameLogic : MonoBehaviour {
 
+	// versions
+	private float versionGame = 0.05f; // versioning
+	public float GetVersionGame() {
+		return versionGame;
+	}
+	private float versionEditor = 0.1f; // versioning
+	public float GetVersionEditor() {
+		return versionEditor;
+	}
+
+	// cam
 	Camera camGame = null;
 	Camera camEditor = null;
 	public void SetGameCamera( GameObject camObj ){

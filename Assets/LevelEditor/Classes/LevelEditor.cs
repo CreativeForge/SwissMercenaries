@@ -58,6 +58,8 @@ public class LevelEditor : MonoBehaviour {
 
 		Vector3 editorCursorActualPoint=new Vector3();
 
+		GameElement editorLastTouchedGameElement = null;
+
 	// load game level (used from GameLogic) 
 	public void LoadGameLevel( int newLevel ) {
 
@@ -331,6 +333,12 @@ public class LevelEditor : MonoBehaviour {
 	Rect filterTypeVisual = new Rect(0,0,0,0);
 	Rect filterTypeSubVisual = new Rect(0,0,0,0);
 
+	// selectiondialoge
+	bool selectionDialoge = true;
+	string selectFilter = ""; // names etc.  #name types ...  !abc.* !
+	Rect selectionDialogeVisual = new Rect(0,0,0,0);
+	GameElement[] selectionAffectedElements = {};
+
 	// prefab elements
 	// varia 
 	public LevelElement[] levelElements = { 
@@ -392,6 +400,9 @@ public class LevelEditor : MonoBehaviour {
 						geType.guiBoolArgument = el.argumentNeeded; 
 						geType.guiLabel = el.argumentLabel;	 
 						geType.guiDescription = el.argumentDescription;
+
+						geType.argumentInputType = el.inputType;
+						geType.argumentInputTypeSelect = el.inputTypeSelect;
 
 						geType.guiShowInMenu = visibleInEditor;
 
@@ -909,7 +920,7 @@ public class LevelEditor : MonoBehaviour {
 						 	//	if (elem.prefabEditorDummyArguments==null) Debug.Log(". LeveLElementOption NULL"+elem.prefabEditorDummyArguments);
 							// else Debug.Log(". LeveLElementOption FOUND!"+elem.prefabEditorDummyArguments);
 
-							Debug.Log(". LeveLElementOption ??? "+elem.type+" / "+elem.subtype+"  "+elem.argument);
+							// Debug.Log(". LeveLElementOption ??? "+elem.type+" / "+elem.subtype+"  "+elem.argument);
 
 								// argument?
 								// no alternative elements for argument
@@ -1216,6 +1227,8 @@ public class LevelEditor : MonoBehaviour {
 		public Texture2D editorSelectedImage;
 		public Texture2D editorMoveImage;
 		public Texture2D editorDeleteImage;
+
+		public Texture2D editorAffectedImage;
 
 
 	// Insert & delete line
@@ -1602,6 +1615,13 @@ public class LevelEditor : MonoBehaviour {
 				(mouseY>filterTypeSubVisual.y)&&(mouseY<(filterTypeSubVisual.y+filterTypeSubVisual.height))) {
 				return true;
 			}
+
+		if ((mouseX>selectionDialogeVisual.x)&&(mouseX<(selectionDialogeVisual.x+selectionDialogeVisual.width))
+			&&
+			(mouseY>selectionDialogeVisual.y)&&(mouseY<(selectionDialogeVisual.y+selectionDialogeVisual.height))) {
+			return true;
+		}
+
 		// Debug.Log ("CheckMouseInEditor() > FALSE; ");
 		return false;
 	}
@@ -1649,6 +1669,17 @@ public class LevelEditor : MonoBehaviour {
 			gameLogic.SetGameState( GameLogic.GameLogicModal.Editor );
 
 		}
+	
+		
+		// get latest
+		// version
+			float ver = gameLogic.GetVersionGame();
+			if (gameLogic.modal == GameLogic.GameLogicModal.Editor) ver = gameLogic.GetVersionEditor();
+		if (GUI.Button (new Rect (Screen.width - 260, 0, 80, 20), " v."+ver, editorSwitchButtonStyle)) {
+			
+		}
+
+
 		}
 
 		// EVALUATION SYSTEM
@@ -1917,6 +1948,17 @@ public class LevelEditor : MonoBehaviour {
 		// editor
 		if (gameLogic !=null &&  gameLogic.modal==GameLogic.GameLogicModal.Editor) {
 
+			// textfield > return
+			bool enter = false;
+			// Input.eatKeyPressOnTextFieldFocus = false;
+			if (Event.current.Equals (Event.KeyboardEvent ("return"))) {
+				enter = true;
+			}
+			if (enter) {  
+				// Debug.Log("RETURN!!!");
+				GUI.FocusControl(null);
+			}
+
 			// infos about the mouse point (for putting in 
 
 			// editor X / Y
@@ -2013,7 +2055,9 @@ public class LevelEditor : MonoBehaviour {
 			// camera
 			widthWorking=widthWorking+80;
 			// OVERLAY
-			if (GUI.Button (new Rect (editorX + widthWorking, editorY, 38, 20), "INFO ", editorButtonActiveStyle)) {
+			GUIStyle activestyle = editorButtonStyle;
+			if (cameraOverlayTypes)  activestyle = editorButtonActiveStyle;
+			if (GUI.Button (new Rect (editorX + widthWorking, editorY, 38, 20), "INFO ", activestyle )) {
 				cameraOverlayTypes=!cameraOverlayTypes;
 				// SetCameraY(0.0f);
 			}
@@ -2115,6 +2159,19 @@ public class LevelEditor : MonoBehaviour {
 			bool showElements=false;
 			if (editorTool.Equals ("CREATE")) { showElements=true; }
 			if (editorTool.Equals ("EDIT")) { 
+				if (editorSelected==null) {
+					// edit > on edit
+					editorSelected = editorLastTouchedGameElement;
+					if (editorSelected!=null) {
+						if (!filterType.Equals("*")) {
+							if (filterType.Equals(editorSelected.type)) {
+								
+							} else {
+								filterType = editorSelected.type;
+							}
+						}
+					}
+				}
 				if (editorSelected!=null) {
 					// showElements=true; 
 					editorY = editorY + 22;
@@ -2527,6 +2584,8 @@ public class LevelEditor : MonoBehaviour {
 								if (editorToolMove.Equals ("drag")) {
 									// Debug.Log("Moving "+mouseX);
 									UpdateGameElementToPosition(gaelement,Input.mousePosition);
+								
+										editorLastTouchedGameElement = editorSelected;
 								}
 							}
 						}
@@ -2540,6 +2599,8 @@ public class LevelEditor : MonoBehaviour {
 							if (raster!=0.0f) {
 								if (editorSelected!=null) {
 									// Debug.Log ("Selected: "+editorSelected.position.x+"/"+editorSelected.position.y);
+
+									
 
 									float offsetX=0.25f;
 									float offsetY=0.25f;
@@ -2719,6 +2780,17 @@ public class LevelEditor : MonoBehaviour {
 				}
 				filterX = filterX + arrTypesUniqueX.Count*80;
 			// }
+
+			// NAMES
+			filterX = filterX + 10;
+			GUIStyle activestylex = editorButtonStyle;
+			if (cameraOverlayTypes)  activestylex = editorButtonActiveStyle;
+			if (GUI.Button (new Rect (filterX, filterY, 50, 20), "NAMES ", activestylex )) {
+				cameraOverlayTypes=!cameraOverlayTypes;
+				// SetCameraY(0.0f);
+			}
+			filterX = filterX + 60;
+
 			filterTypeVisual.x = 0;
 			filterTypeVisual.width = filterX;
 			filterTypeVisual.y = filterY;
@@ -2766,7 +2838,7 @@ public class LevelEditor : MonoBehaviour {
 				}
 			}
 
-			GUI.Label (new Rect(101,Screen.height-20,Screen.width,20),"Use <awsd> for moving <qe> rotate side <rf> up/down <x2> lookup/down <c> reset  | Objs: ["+arrLevel.Count+"] Elements "+ strSelection ,editorComment);
+			GUI.Label (new Rect(101,Screen.height-20,Screen.width,20),"CAMERA: Use <awsd> for moving <qe> rotate side <rf> up/down <x2> lookup/down <c> reset  OBJECT: + <shift> | Objs: ["+arrLevel.Count+"] Elements "+ strSelection ,editorComment);
 			  
 
 		}
@@ -2956,6 +3028,9 @@ public class LevelEditor : MonoBehaviour {
 									GameElement arg = editorPrefab.Copy();
 									AddElement(arg);
 									UpdateGameElementToPosition(arg, Input.mousePosition);
+
+									// copy to the actualGameElement
+									editorLastTouchedGameElement = arg;
 
 									// Debug.Log ("CREATE NOW");
 
@@ -3239,6 +3314,17 @@ public class LevelEditor : MonoBehaviour {
 						}
 						if ((Input.GetKey ("f"))) {
 							editorSelected.position.y = editorSelected.position.y - vectorMove.y;
+							UpdateElementVisual(editorSelected);
+						}
+
+						// up & down 
+						if ((Input.GetKey ("q"))) {
+							// scroll = scroll + 0.3f;
+							editorSelected.rotation = editorSelected.rotation + 3.0f;
+							UpdateElementVisual(editorSelected);
+						}
+						if ((Input.GetKey ("e"))) {
+							editorSelected.rotation = editorSelected.rotation - 3.0f;
 							UpdateElementVisual(editorSelected);
 						}
 					}

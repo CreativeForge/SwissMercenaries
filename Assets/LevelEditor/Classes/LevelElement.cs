@@ -14,6 +14,9 @@ public class LevelElement {
 	public string argumentLabel = "arg";
 	public string argumentDescription = "";
 
+	public string inputType = ""; // names, name, notification, selection or abc.def
+	public string inputTypeSelect = ""; // x,y,z
+
 	public float editorDisplaySize = 1.0f;
 
 	public LevelElement (  ) {

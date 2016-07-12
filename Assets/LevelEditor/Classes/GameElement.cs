@@ -2,6 +2,8 @@
 using System.Collections;
 using System;
 
+// SERIALIZABLE FOR UNITYEDITOR > LEVELELEMENT.CS
+
 public class GameElement {
 
 	// public string state = ""; // "": active-direct / "wait": wait > released
@@ -13,7 +15,8 @@ public class GameElement {
 	public string subtype="";
 	
 	public string argument="";
-
+	public string argumentInputType = ""; // name, names, notifcation, path, points ... env.* || path.point || select
+	public string argumentInputTypeSelect = ""; // name, names, notifcation
 
 	public string argumentsub = "";
 
@@ -85,6 +88,8 @@ public class GameElement {
 		copyX.position = new Vector3(position.x,position.y,position.z);
 		// copyX.size = new Vector3(size.x,size.y,size.z);
 		copyX.argument = argument;
+		copyX.argumentInputType = argumentInputType;
+		copyX.argumentInputTypeSelect = argumentInputTypeSelect;
 		copyX.argumentsub = argumentsub;
 
 		copyX.index = index;
