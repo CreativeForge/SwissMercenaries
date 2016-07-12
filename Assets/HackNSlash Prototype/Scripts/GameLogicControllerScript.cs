@@ -48,10 +48,14 @@ public class GameLogicControllerScript : MonoBehaviour {
 
 		Camera cam = Camera.main;
 		if(cam) {
-			if(cam.transform.parent.name == "Pivot"){
-				cam.transform.parent.parent.gameObject.SetActive(false);
+			if(cam.transform.parent){
+				if(cam.transform.parent.name == "Pivot"){
+					cam.transform.parent.parent.gameObject.SetActive(false);
+				}else{
+					cam.gameObject.SetActive(false);
+				}
 			}else{
-				cam.gameObject.SetActive(false);
+				cam.gameObject.SetActive(false);	
 			}
 
 		}
