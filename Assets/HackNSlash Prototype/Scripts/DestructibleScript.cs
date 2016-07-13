@@ -166,6 +166,8 @@ public class DestructibleScript : MonoBehaviour {
 
 		set {
 			float diff = value-health;
+			if(diff==0)return;
+
 			health = Mathf.Clamp(value,0,100);
 			if(pS){
 				GameLogicControllerScript.i.AdjustHealthVisualisation();
