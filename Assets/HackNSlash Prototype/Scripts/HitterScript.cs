@@ -9,6 +9,7 @@ public class HitterScript : MonoBehaviour {
 	bool shooting = false;
 	public GameObject projectilePrefab;
 	public float hitForce = 10;
+	float originalHitForce;
 	bool isHittingFast = false;
 	bool isHittingSlow = false;
 	public GameObject hitBox1;
@@ -23,7 +24,9 @@ public class HitterScript : MonoBehaviour {
 	public float hitSlowDuration = 0.5f;
 	public Animator anim;
 
-	public GameObject weaponTrailGO;
+	public GameObject weaponTrailCurrentGO;
+	public GameObject weaponTrailNormalGO;
+	public GameObject weaponTrailHolyGO;
 
 	// Use this for initialization
 	void Start () {
@@ -36,14 +39,27 @@ public class HitterScript : MonoBehaviour {
 			hitBox1.SetActive(true);
 
 		StartCoroutine(WaitNSetWeaponTrail());
+
+		originalHitForce = hitForce;
 	}
 
 	IEnumerator WaitNSetWeaponTrail(){
 		yield return 0;
-		if(weaponTrailGO) {
-			weaponTrailGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail");
-			weaponTrailGO.SetActive(false);
+		if(pS) {
+			weaponTrailNormalGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail");
+			weaponTrailHolyGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail (1)");
+			weaponTrailNormalGO.SetActive(false);
+			weaponTrailHolyGO.SetActive(false);
+			weaponTrailCurrentGO = weaponTrailNormalGO;
 		}
+	}
+
+	public void ModHitForce(float inMod){
+		hitForce *= inMod;
+	}
+
+	public void ResetHitForce(){
+		hitForce = originalHitForce;
 	}
 
 	void Update(){
@@ -86,7 +102,7 @@ public class HitterScript : MonoBehaviour {
 				if(hitBox1)hitBox1.SetActive(false);
 				isHittingFast = false;
 
-				if(weaponTrailGO) weaponTrailGO.SetActive(false);
+				if(pS && !pS.isInHolyRoge) weaponTrailCurrentGO.SetActive(false);
 			}
 
 			/*
@@ -124,7 +140,7 @@ public class HitterScript : MonoBehaviour {
 			// enable if player should hit in camera direction
 			//pS.LookInCamDir();
 
-			if(weaponTrailGO) weaponTrailGO.SetActive(true);
+			weaponTrailCurrentGO.SetActive(true);
 
 			if(pS.GetVelocity()<0.1f) {
 				anim.SetTrigger("Attack01Trigger");

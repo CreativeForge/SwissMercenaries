@@ -18,31 +18,34 @@ public class NotificationCenterPrototype : MonoBehaviour {
 	public void UpdateHealthEnemy(float inValue, Vector3 inPos){
 
 		if(inValue<0)
-			ShowCombatText(""+inValue,inPos,CombatText.TextType.EnemyDamage);
+			ShowCombatText(""+Mathf.Round(inValue),inPos,CombatText.TextType.EnemyDamage);
 		else
-			ShowCombatText("+"+inValue,inPos,CombatText.TextType.EnemyHeal);	
+			ShowCombatText("+"+Mathf.Round(inValue),inPos,CombatText.TextType.EnemyHeal);	
 	}
 	public void UpdateHealthPlayer(float inValue, Vector3 inPos){
 
 		if(inValue<0)
-			ShowCombatText(""+inValue,inPos,CombatText.TextType.Damage);
+			ShowCombatText(""+Mathf.Round(inValue),inPos,CombatText.TextType.Damage);
 		else
-			ShowCombatText("+"+inValue,inPos,CombatText.TextType.Heal);	
+			ShowCombatText("+"+Mathf.Round(inValue),inPos,CombatText.TextType.Heal);	
 	}
 
 	public void UpdateMoney(float inValue, Vector3 inPos){
 		if(inValue<0)
-			ShowCombatText(""+inValue,inPos,CombatText.TextType.Money);
+			ShowCombatText(""+Mathf.Round(inValue),inPos,CombatText.TextType.Money);
 		else
-			ShowCombatText("+"+inValue,inPos,CombatText.TextType.Money);	
+			ShowCombatText("+"+Mathf.Round(inValue),inPos,CombatText.TextType.Money);	
 	}
 
 	public void UpdateFaith(float inValue, Vector3 inPos){
 		if(inValue<0)
-			ShowCombatText(""+inValue,inPos,CombatText.TextType.Faith);
+			ShowCombatText(""+Mathf.Round(inValue),inPos,CombatText.TextType.Faith);
 		else
-			ShowCombatText("+"+inValue,inPos,CombatText.TextType.Faith);	
+			ShowCombatText("+"+Mathf.Round(inValue),inPos,CombatText.TextType.Faith);	
 	}
+
+
+
 	public void ShowCombatText(string value, Vector3 position, CombatText.TextType textType){
 		Vector3 screenPos = Camera.main.WorldToScreenPoint (position + new Vector3 (FloatingCombatTextPrefab.GetComponent<CombatText>().OffsetX,
 			FloatingCombatTextPrefab.GetComponent<CombatText>().OffsetY,

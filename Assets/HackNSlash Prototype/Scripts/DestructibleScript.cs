@@ -42,10 +42,6 @@ public class DestructibleScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(isDead){
-			if(pS && lastHitTime+5f<Time.time){
-				Debug.Log("Restart after death");
-				GameLogicControllerScript.i.PlayerDies();
-			}
 			return;
 		}
 
@@ -108,7 +104,9 @@ public class DestructibleScript : MonoBehaviour {
 		SetColor(new Color(0.4f,0,0));
 
 		// If im not a player
-		if(!pS) {
+		if(pS){
+			pS.Die();
+		}else if(HasLoot) {
 			// Enemy dies
 			GameLogicControllerScript.i.EnemyDies();
 		}

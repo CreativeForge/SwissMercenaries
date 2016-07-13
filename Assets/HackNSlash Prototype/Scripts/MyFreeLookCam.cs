@@ -52,7 +52,7 @@ namespace UnityStandardAssets.Cameras
                 Cursor.visible = !m_LockCursor;
             }
 
-			if(Input.GetKeyDown(KeyCode.F)){
+			if(Input.GetKeyDown(KeyCode.C)){
 				freezeCam = !freezeCam;
 			}
         }

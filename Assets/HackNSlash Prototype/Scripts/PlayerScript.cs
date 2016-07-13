@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class PlayerScript : MonoBehaviour {
 
 	public float speed = 0.4f;
+	float originalSpeed;
 	public float jumpForce = 200;
 	float originalSpeedMod = 1;
 	float currentSpeedMod = 1;
@@ -23,11 +24,17 @@ public class PlayerScript : MonoBehaviour {
 	bool doPush = false;
 	bool isRecovering = false;
 
+	public bool isInHolyRoge = false;
+	public GameObject holyHaloGO;
+	float holyRageDuration = 10;
+	float holyRageStartTime = 0;
+
 	private Vector3 curNormal  = Vector3.up; // smoothed terrain normal 
 	private Quaternion iniRot ; // initial rotation
 
 	public Animator anim;
 	public DestructibleScript dS;
+	HitterScript hS;
 
 	bool isGrounded;
 
@@ -41,7 +48,9 @@ public class PlayerScript : MonoBehaviour {
 	void Awake(){
 		myR = GetComponent<Rigidbody>();
 		dS = GetComponent<DestructibleScript>();
+		hS = GetComponent<HitterScript>();
 		originalPosition = transform.position;
+		originalSpeed = speed;
 	}
 
 	public void SetCamT(Transform inT){
@@ -85,7 +94,13 @@ public class PlayerScript : MonoBehaviour {
 		}
 
 		HandleFaithShrinking();
+		HandleHolyRage();
+	}
 
+	void HandleHolyRage(){
+		if(holyRageStartTime+holyRageDuration<Time.time){
+			EndHolyRage();
+		}
 	}
 
 	void HandleFaithShrinking(){
@@ -225,12 +240,44 @@ public class PlayerScript : MonoBehaviour {
 			float diff = value-faith;
 			if(diff==0)return;
 
-			Debug.Log("faith set: " + value);
 			faith = Mathf.Clamp(value,0,100);
+			if(faith>99){
+				StartHolyRage();
+			}
 			GameLogicControllerScript.i.AdjustFaithVisualisation();
 			if(diff>Mathf.Abs(1))GameLogicControllerScript.i.notificationC.UpdateFaith(diff,transform.position);
 		}
 		
+	}
+
+
+	void StartHolyRage(){
+		isInHolyRoge = true;
+		holyHaloGO.SetActive(true);
+		holyRageStartTime = Time.time;
+		dS.Invincible = true;
+		Faith = 10;
+		dS.Health = 100;
+		speed = originalSpeed*2;
+		hS.ModHitForce(2);
+		hS.weaponTrailCurrentGO = hS.weaponTrailHolyGO;
+		hS.weaponTrailCurrentGO.SetActive(true);
+	}
+
+
+	void EndHolyRage(){
+		isInHolyRoge = false;
+		dS.Invincible = false;
+		holyHaloGO.SetActive(false);
+		speed = originalSpeed;
+		hS.ResetHitForce();
+		hS.weaponTrailCurrentGO = hS.weaponTrailNormalGO;
+		if(hS.weaponTrailHolyGO)hS.weaponTrailHolyGO.SetActive(false);
+	}
+
+	public void Die(){
+		EndHolyRage();
+		GameLogicControllerScript.i.PlayerDies();
 	}
 }
 

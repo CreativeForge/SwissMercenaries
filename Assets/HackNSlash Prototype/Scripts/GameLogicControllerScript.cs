@@ -61,17 +61,17 @@ public class GameLogicControllerScript : MonoBehaviour {
 	}
 
 	void ReloadCamera(){
-		Camera cam = Camera.main;
-		if(cam) {
-			if(cam.transform.parent){
-				if(cam.transform.parent.name == "Pivot"){
-					cam.transform.parent.parent.gameObject.SetActive(false);
+		Camera tCam = Camera.main;
+		if(tCam) {
+			if(tCam.transform.parent){
+				if(tCam.transform.parent.name == "Pivot"){
+					tCam.transform.parent.parent.gameObject.SetActive(false);
 				}else{
-					cam.gameObject.SetActive(false);
+					tCam.gameObject.SetActive(false);
 				}
 			}else{
 				// in editor
-				cam.gameObject.SetActive(false);	
+				tCam.gameObject.SetActive(false);	
 			}
 
 		}
@@ -148,6 +148,9 @@ public class GameLogicControllerScript : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.I)){
 			playerS.dS.Invincible = !playerS.dS.Invincible;
 		}
+		if(Input.GetKeyDown(KeyCode.F)){
+			playerS.Faith = 100;
+		}
 
 		/* // is done in myFreeLookCamScript
 		if(Input.GetKeyDown(KeyCode.F)){
@@ -157,8 +160,8 @@ public class GameLogicControllerScript : MonoBehaviour {
 
 	public void EnemyDies(){
 		CheckEnemyDeathCount();
-		playerS.Money += 10;
-		playerS.Faith += 10;
+		//playerS.Money += 10;
+		playerS.Faith += 20;
 	}
 
 	void CheckEnemyDeathCount(){
@@ -182,6 +185,11 @@ public class GameLogicControllerScript : MonoBehaviour {
 	}
 
 	public void PlayerDies(){
+		StartCoroutine(WaitNRestartLevel(5));
+	}
+
+	IEnumerator WaitNRestartLevel(float inTime){
+		yield return new WaitForSeconds(inTime);
 		ReloadLevel();
 	}
 

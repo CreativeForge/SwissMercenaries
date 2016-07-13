@@ -128,7 +128,7 @@ public class CombatText : MonoBehaviour {
             startTime = Time.time;
             StartCoroutine(handleCombatText());
 
-			/*
+
             if (positionCounter > 6)
             {
                 this.transform.position += new Vector3(15 / Screen.width, 0, 0);
@@ -150,7 +150,7 @@ public class CombatText : MonoBehaviour {
             if (positionCounter > 8)
             {
                 positionCounter = 0;
-            }*/
+            }
 			
             ////gamelogic.positionCounter = positionCounter;
 
