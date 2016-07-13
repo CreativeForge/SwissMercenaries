@@ -320,6 +320,7 @@ public class LevelEditor : MonoBehaviour {
 
 	// specific levelElements
 	public LevelElement[] BaseLevelElements = { new LevelElement ("town"), new LevelElement ("country") , new LevelElement ("test")  };
+	public LevelElement[] LightLevelElements= {  new LevelElement ("light")   };
 	public LevelElement[] GoalLevelElements= { new LevelElement ("survivetime"), new LevelElement ("killamount")   };
 	public LevelElement[] ImmovablesLevelElements = { new LevelElement ("scheune"), new LevelElement ("city"),  new LevelElement ("fountain")    };
 	public LevelElement[] MovableLevelElements = { new LevelElement ("box")   };
@@ -367,6 +368,7 @@ public class LevelEditor : MonoBehaviour {
 
 		// most important categories
 		RegisterLevelElements( "base", BaseLevelElements );
+		RegisterLevelElements( "light", LightLevelElements );
 		RegisterLevelElements( "goal", GoalLevelElements );
 		RegisterLevelElements( "immovable", ImmovablesLevelElements );
 		RegisterLevelElements( "movable", MovableLevelElements );
@@ -893,6 +895,24 @@ public class LevelEditor : MonoBehaviour {
 					// Debug.LogError("Could find Type("+elem.type+"/"+elem.subtype+")");
 					// elPrefab.prefabGameObject=
 					// create gameobject
+
+				// Tool 
+				// is it a tool?
+				if (elem.subtype.Substring(0,1).Equals("+")) {
+					// it is a tool!
+					// Debug.Log("TOOL: "+elPrefab.guiDescription);
+					string typesToSpread = ""+elPrefab.guiDescription; // ,
+					string[] words = typesToSpread.Split(',');
+					int i=0;
+					foreach (string word in words) {
+						string elementName = word;
+						Debug.Log(i+". "+elementName);
+					}
+					if (words.Length>0) {
+						
+					}
+				}
+
 
 					// specials
 					// base only 
@@ -3059,7 +3079,10 @@ public class LevelEditor : MonoBehaviour {
 // check here ...
 								// if (editorPrefab.prefabGameObject!=null) {
 
-									GameElement editorPrefabX = GetElementType (editorArea,editorSubArea);
+								GameElement editorPrefabX = GetElementType (editorArea,editorSubArea);
+
+								// ...
+
 
 								GameElement arg = editorPrefabX.Copy();
 									AddElement(arg);
