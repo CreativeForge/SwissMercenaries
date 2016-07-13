@@ -14,6 +14,10 @@ public class PlayerAnimationTriggerScript : MonoBehaviour {
 	}
 
 	public void FromAnimationTriggerDoHitBox(){
-		GetComponentInParent<HitterScript>().FromAnimationTriggerDoHitBox();
+		HitterScript hitterS = GetComponentInParent<HitterScript>();
+		if(hitterS)
+			hitterS.FromAnimationTriggerDoHitBox();
+		else
+			Debug.LogWarning("no hitterscript found: "+name);
 	}
 }

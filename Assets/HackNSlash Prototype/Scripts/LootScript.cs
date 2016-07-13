@@ -8,6 +8,10 @@ public class LootScript : MonoBehaviour {
 	bool isMoving = false;
 	Rigidbody rB;
 	float speed = 10;
+	public uint moneyBonus = 0;
+	public float healthBonus = 0;
+	public float fightingSpiritBonus = 0;
+	public float faithBonus = 0;
 
 	void Start(){
 		rB = GetComponent<Rigidbody>();
@@ -23,7 +27,7 @@ public class LootScript : MonoBehaviour {
 	}
 
 	IEnumerator WaitNActivateTrigger(){
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(0.7f);
 		triggerGO.SetActive(true);
 	}
 
@@ -31,14 +35,15 @@ public class LootScript : MonoBehaviour {
 	void OnTriggerEnter (Collider other) {
 
 		// if triggerGO not yet active
-		if(!isMoving)return;
+		if(triggerGO && !isMoving)return;
 
 		if(other.GetComponent<PlayerScript>() != null) {
 
 			// When player picks loot up
 			Destroy(this.gameObject);
 			Instantiate(particlePrefab, transform.position, particlePrefab.transform.rotation);
-			GameLogicControllerScript.i.playerS.Money += 10;
+			GameLogicControllerScript.i.playerS.Money += moneyBonus;
+			GameLogicControllerScript.i.playerS.dS.Health += healthBonus;
 		}
 	}
 

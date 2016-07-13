@@ -25,6 +25,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 	public Text plunderText;
 	public Text tutorialText;
 	public Text moneyText;
+	public Text enemyText;
 	public Material normalSkyBoxMat;
 	public Material plunderSkyBoxMat;
 
@@ -33,7 +34,12 @@ public class GameLogicControllerScript : MonoBehaviour {
 	uint allLootableEnemiesCount;
 	DestructibleScript[] allDestructibleScripts;
 
-	GameObject camGO;
+	public GameObject camGO;
+	public Camera cam;
+
+	public bool inEditorUsed = true;
+
+	public NotificationCenterPrototype notificationC;
 
 	// Use this for initialization
 	void Awake () {
@@ -47,7 +53,13 @@ public class GameLogicControllerScript : MonoBehaviour {
 		if(!normalSkyBoxMat)normalSkyBoxMat=RenderSettings.skybox;
 
 		playerS = FindObjectOfType<PlayerScript>();
+		notificationC = GetComponent<NotificationCenterPrototype>();
 
+		ReloadCamera();
+
+	}
+
+	void ReloadCamera(){
 		Camera cam = Camera.main;
 		if(cam) {
 			if(cam.transform.parent){
@@ -57,12 +69,14 @@ public class GameLogicControllerScript : MonoBehaviour {
 					cam.gameObject.SetActive(false);
 				}
 			}else{
+				// in editor
 				cam.gameObject.SetActive(false);	
 			}
 
 		}
-		
+
 		camGO = Instantiate(CameraPrefab) as GameObject;
+		cam = Camera.main;
 		playerS.SetCamT(camGO.transform);
 	}
 
@@ -74,9 +88,9 @@ public class GameLogicControllerScript : MonoBehaviour {
 			if(tDS.HasLoot)
 				allLootableEnemiesCount++;
 		}
-
-		Debug.Log("allDestructibleScripts: "+allDestructibleScripts+"all count: "+allLootableEnemiesCount);
-
+		AdjustEnemyCountVisualisation(0);
+		AdjustMoneyVisualisation();
+			
 	}
 
 	public void AdjustHealthVisualisation(){
@@ -90,7 +104,11 @@ public class GameLogicControllerScript : MonoBehaviour {
 		//Debug.Log("healthT: "+healthT);
 		//Debug.Log("playerS: "+playerS);
 		//Debug.Log("playerS.dS: "+playerS.dS);
-		moneyText.text = "Gold: "+playerS.Money;
+		moneyText.text = "Gold gesammelt: "+playerS.Money;
+	}
+
+	public void AdjustEnemyCountVisualisation(uint inCount){
+		enemyText.text = "Landsknechte getötet: "+inCount+"/"+allLootableEnemiesCount;
 	}
 	
 	// Update is called once per frame
@@ -111,6 +129,10 @@ public class GameLogicControllerScript : MonoBehaviour {
 		}
 
 
+		if(Input.GetKeyDown(KeyCode.Escape)){
+			Application.Quit();
+		}
+
 		HandleCheatInput();
 	}
 
@@ -119,7 +141,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 			playerS.dS.Health = 100;
 		}
 		if(Input.GetKeyDown(KeyCode.I)){
-			playerS.dS.Invincible = true;
+			playerS.dS.Invincible = !playerS.dS.Invincible;
 		}
 
 		/* // is done in myFreeLookCamScript
@@ -148,6 +170,21 @@ public class GameLogicControllerScript : MonoBehaviour {
 			// Change to plunder game mode
 			GameMode = 1;
 		}
+
+		AdjustEnemyCountVisualisation(countDeadEnemies);
+
+	}
+
+	public void PlayerDies(){
+		ReloadLevel();
+	}
+
+	void ReloadLevel(){
+		if(inEditorUsed){
+			//TODO:  next Level!
+		}else{
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+		}
 	}
 
 	// On GUI drawing
@@ -172,8 +209,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 				// kill
 				case 0:
 					
-					// next Level!
-					SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+					ReloadLevel();
 
 					/*gameModeCounter = 20;
 					counterTextGO.gameObject.SetActive(false);

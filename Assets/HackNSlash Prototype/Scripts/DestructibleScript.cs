@@ -13,6 +13,7 @@ public class DestructibleScript : MonoBehaviour {
 	public GameObject colliderDead;
 	public GameObject appearanceAlive;
 	public GameObject appearanceDead;
+	public Transform ragdollCenter;
 
 	public float lastHitTime = 0;
 	Color originalColor;
@@ -43,7 +44,7 @@ public class DestructibleScript : MonoBehaviour {
 		if(isDead){
 			if(pS && lastHitTime+5f<Time.time){
 				Debug.Log("Restart after death");
-				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+				GameLogicControllerScript.i.PlayerDies();
 			}
 			return;
 		}
@@ -58,7 +59,6 @@ public class DestructibleScript : MonoBehaviour {
 
 		if(Invincible) return;
 
-		GameObject clone;
 
 		if(isDead) {
 
@@ -67,11 +67,13 @@ public class DestructibleScript : MonoBehaviour {
 
 				hasLoot = false;
 
+				ragdollCenter.GetComponent<Rigidbody>().AddForce(Vector3.up*1000);
+
 				// Create loot
 				for(int i = 0;i < Random.Range(3, 8);i++) {
-
-					clone = Instantiate(lootObject, gameObject.transform.position, Random.rotation) as GameObject;
-					clone.SetActive(true);
+					GameObject clone;
+					clone = Instantiate(lootObject, transform.position+Vector3.up*0.3f, Random.rotation) as GameObject;
+					clone.GetComponent<Rigidbody>().AddExplosionForce(30, transform.position, 1);
 
 				}
 				SetColor(Color.black);
@@ -95,7 +97,7 @@ public class DestructibleScript : MonoBehaviour {
 	}
 
 	void SetColor(Color inColor){
-		appearanceAlive.GetComponent<Renderer>().material.color = inColor;
+		if(appearanceAlive)appearanceAlive.GetComponent<Renderer>().material.color = inColor;
 		appearanceDead.GetComponent<Renderer>().material.color = inColor;
 	}
 
@@ -126,7 +128,16 @@ public class DestructibleScript : MonoBehaviour {
 				appearanceDead.SetActive(true);
 				colliderDead.SetActive(true);
 				appearanceAlive.SetActive(false);
-				colliderAlive.SetActive(false);
+				StartCoroutine(WaitNDestroyAliveCollider());
+
+				//Move MainCollider to ragdoll position
+				if(ragdollCenter){
+					transform.DetachChildren();
+					GetComponent<Rigidbody>().isKinematic = true;
+					transform.parent = ragdollCenter;
+					transform.localPosition = Vector3.zero;
+				}
+
 			}
 		}
 
@@ -135,6 +146,11 @@ public class DestructibleScript : MonoBehaviour {
 			Debug.Log("restart");
 			WaitNRestart1();
 		}*/
+	}
+
+	IEnumerator WaitNDestroyAliveCollider(){
+		yield return 0;
+		Destroy(colliderAlive);
 	}
 
 	/*IEnumerator WaitNRestart1(){
@@ -149,9 +165,13 @@ public class DestructibleScript : MonoBehaviour {
 		get { return health; }
 
 		set {
+			float diff = value-health;
 			health = Mathf.Clamp(value,0,100);
-			GameLogicControllerScript.i.AdjustHealthVisualisation();
-
+			if(pS){
+				GameLogicControllerScript.i.AdjustHealthVisualisation();
+				GameLogicControllerScript.i.notificationC.UpdateHealthPlayer(diff, transform.position);
+			}else
+				GameLogicControllerScript.i.notificationC.UpdateHealthEnemy(diff, transform.position);
 			if(health <= 0){
 				Die();
 			}

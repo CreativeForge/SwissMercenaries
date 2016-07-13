@@ -8,6 +8,7 @@ public class EnemyScript : MonoBehaviour {
 	public DestructibleScript dS;
 
 	public bool lookAtPlayer = false;
+	public bool smoothLookAtPlayer = false;
 	public bool stopNearPlayer = false;
 	public bool startAttackingWhenPlayerEntersTrigger = false;
 	bool isWalking = false;
@@ -23,11 +24,23 @@ public class EnemyScript : MonoBehaviour {
 	void FixedUpdate () {
 		if(dS && dS.IsDead)return;
 		Vector3 tPlayerPos = GameLogicControllerScript.i.playerS.transform.position;
-		if(lookAtPlayer)transform.LookAt(new Vector3(tPlayerPos.x, transform.position.y, tPlayerPos.z));
+		if(smoothLookAtPlayer){
+			Vector3 targetPos = new Vector3(tPlayerPos.x, transform.position.y, tPlayerPos.z);
+			Vector3 relativePos = targetPos - transform.position;
+			Quaternion TargetRotation = Quaternion.LookRotation(relativePos);
+			transform.rotation = Quaternion.Lerp(transform.rotation,TargetRotation,Time.fixedDeltaTime*5);
+		}else if(lookAtPlayer){
+			transform.LookAt(new Vector3(tPlayerPos.x, transform.position.y, tPlayerPos.z));
+		}
 		if(isWalking){
 			if(Vector3.Distance(rB.position, tPlayerPos)>2 || !stopNearPlayer){
-				rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed);
-				if(anim)anim.SetFloat("Velocity",0.5f * speed);
+				if(anim){
+					rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed * speed * speed);
+					anim.SetFloat("Velocity",0.5f * speed );
+				}else{
+					rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed);
+
+				}
 			}else
 				if(anim)anim.SetFloat("Velocity",0);
 		}
