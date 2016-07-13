@@ -140,7 +140,7 @@ public class GameLogic : MonoBehaviour {
 
 	public void LoadGameLevel( int level ) {
 
-		try {
+		//try {
 
 			if (levelEditor == null) {
 				GameObject levelEditorObject = GameObject.Find("_LevelEditor");
@@ -148,10 +148,10 @@ public class GameLogic : MonoBehaviour {
 			}
 			levelEditor.LoadGameLevel(level);
 
-		}
-		catch {
+		//}
+			//catch {
 			Debug.LogWarning("can't load _LevelEditor");
-		}
+			//}
 
 
 	}

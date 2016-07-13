@@ -896,25 +896,11 @@ public class LevelEditor : MonoBehaviour {
 					// elPrefab.prefabGameObject=
 					// create gameobject
 
-				// Tool 
-				// is it a tool?
-				if (elem.subtype.Substring(0,1).Equals("+")) {
-					// it is a tool!
-					// Debug.Log("TOOL: "+elPrefab.guiDescription);
-					string typesToSpread = ""+elPrefab.guiDescription; // ,
-					string[] words = typesToSpread.Split(',');
-					int i=0;
-					foreach (string word in words) {
-						string elementName = word;
-						Debug.Log(i+". "+elementName);
-					}
-					if (words.Length>0) {
-						
-					}
-				}
+
 
 
 					// specials
+					// Debug.Log("TOOL: "+elPrefab.guiDescription);
 					// base only 
 				/*
 				 * if (elPrefab.type.Equals ("base")) {
@@ -1417,7 +1403,7 @@ public class LevelEditor : MonoBehaviour {
 			addFileNameAddOn = "_"+playerId+"_"+sessionId;
 		}
 
-		try {
+	//	try {
 			
 			string jsonText = System.IO.File.ReadAllText( addEvaluationsFolder+ "level"+level+addFileNameAddOn+".txt");
 			JSONObject jsonObj = new JSONObject(jsonText);
@@ -1448,9 +1434,9 @@ public class LevelEditor : MonoBehaviour {
 			// save it now ... 
 			SaveLevel ( 2001 );
 
-		} catch( Exception e ) {
-			Debug.LogWarning("_LevelEditor.CouldNotLoadLevel "+level);
-		}
+	//	} catch( Exception e ) {
+	//		Debug.LogWarning("_LevelEditor.LoadGameLevel() // CouldNotLoadLevel "+level );
+		//	}
 		
 		// update visualisation
 		UpdateRelationVisualisationAndCheckError ();

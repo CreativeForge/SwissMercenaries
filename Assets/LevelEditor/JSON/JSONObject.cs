@@ -312,7 +312,7 @@ public class JSONObject {
 								type = Type.NUMBER;
 							} catch(System.FormatException) {
 								type = Type.NULL;
-								Debug.LogWarning("improper JSON formatting:" + str);
+								Debug.LogWarning("JSON.Object().Parse() // improper JSON formatting:" + str);
 							}
 							return;
 					}
