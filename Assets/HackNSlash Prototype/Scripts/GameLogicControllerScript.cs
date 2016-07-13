@@ -34,9 +34,12 @@ public class GameLogicControllerScript : MonoBehaviour {
 	uint allLootableEnemiesCount;
 	DestructibleScript[] allDestructibleScripts;
 
-	GameObject camGO;
+	public GameObject camGO;
+	public Camera cam;
 
 	public bool inEditorUsed = true;
+
+	public NotificationCenterPrototype notificationC;
 
 	// Use this for initialization
 	void Awake () {
@@ -50,6 +53,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 		if(!normalSkyBoxMat)normalSkyBoxMat=RenderSettings.skybox;
 
 		playerS = FindObjectOfType<PlayerScript>();
+		notificationC = GetComponent<NotificationCenterPrototype>();
 
 		ReloadCamera();
 
@@ -72,6 +76,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 		}
 
 		camGO = Instantiate(CameraPrefab) as GameObject;
+		cam = Camera.main;
 		playerS.SetCamT(camGO.transform);
 	}
 

@@ -10,6 +10,7 @@ public class LootScript : MonoBehaviour {
 	float speed = 10;
 	public uint moneyBonus = 0;
 	public float healthBonus = 0;
+	public float fightingSpiritBonus = 0;
 	public float faithBonus = 0;
 
 	void Start(){

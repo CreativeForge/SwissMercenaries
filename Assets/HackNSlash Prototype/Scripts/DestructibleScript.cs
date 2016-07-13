@@ -165,9 +165,13 @@ public class DestructibleScript : MonoBehaviour {
 		get { return health; }
 
 		set {
+			float diff = value-health;
 			health = Mathf.Clamp(value,0,100);
-			GameLogicControllerScript.i.AdjustHealthVisualisation();
-
+			if(pS){
+				GameLogicControllerScript.i.AdjustHealthVisualisation();
+				GameLogicControllerScript.i.notificationC.UpdateHealthPlayer(diff, transform.position);
+			}else
+				GameLogicControllerScript.i.notificationC.UpdateHealthEnemy(diff, transform.position);
 			if(health <= 0){
 				Die();
 			}
