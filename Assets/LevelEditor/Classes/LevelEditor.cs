@@ -143,6 +143,14 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 
+	// Messages
+	public ArrayList arrEditorMessages=new ArrayList();
+	void AddEditorMessage( string msg ) {
+		LevelEditorMessage msgx = new LevelEditorMessage ();
+		msgx.message = msg;
+		arrEditorMessages.Add(msgx);
+	}
+
 	// GameElement (Definition > own class) 
 
 
@@ -1694,6 +1702,14 @@ public class LevelEditor : MonoBehaviour {
 			if (!CountElementsTypeIndexOf("gamelogiccontroller")) { 
 				GUI.Label (new Rect (10, Screen.height*0.5f+24, 500, 20), "3. NO GAMELOGIC CONTROLLER > ADD ONE > /BASE/GAME... ", guixt);
 			}
+
+			// messages
+			for (int a=0; a<arrEditorMessages.Count; a++) {
+					LevelEditorMessage msgObj = (LevelEditorMessage)arrEditorMessages [a];
+					GUI.Label (new Rect (10, Screen.height*0.5f+60+a*22, 500, 20), ""+msgObj.message, guixt);
+						
+			}
+
 		}
 		if (GUI.Button (new Rect (Screen.width -160 + 80, 0, 80, 20), "EDITOR", guixt)) {
 			gameLogic.SetGameState( GameLogic.GameLogicModal.Editor );
@@ -3070,11 +3086,18 @@ public class LevelEditor : MonoBehaviour {
 								if (editorSubArea.IndexOf("+")!=-1) { 
 									if (editorPrefabX.guiDescription.Equals("")) return;
 									string[] words = 	editorPrefabX.guiDescription.Split(',');
-									int index = UnityEngine.Random.Range(0,words.Length);
+									int max = words.Length-1;
+									if (max<0) max=0;
+									int index = UnityEngine.Random.Range(0,max);
+									Debug.Log("LevelEditor.Update() //  ["+index+"]<"+words.Length+" ");
 									string subtypeConf = words[index];
 									GameElement editorPrefabXX = GetElementType (editorArea,subtypeConf);
 									if (editorPrefabXX!=null) {
 										editorPrefabX = editorPrefabXX ;
+									} else {
+										Debug.LogWarning("LevelEditor.Update() //  Searching for Painting Tool. Config Array: Unity3dLevelEditor: "+editorArea+"/"+subtypeConf);
+										AddEditorMessage("[Tool "+editorArea+"/"+subtypeConf+"]: Could not find part: "+subtypeConf);
+										return; 
 									}
 								}
 
