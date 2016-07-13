@@ -11,10 +11,10 @@ using GameLab.NotficationCenter;
 public class EnterRemove : TriggerBase {
 	
 	
-	public override void OnPlayerFirstEnter( LogicPlayer logicPlayer, Collider col ) {
+	public override void OnPlayerFirstEnter( PlayerScript PlayerScript, Collider col ) {
 		
 		// gameLogic.LoadGameNextLevel ();
-		// gameLogic.AddNotification ("[level.done]", logicPlayer.gameObject.transform.position );
+		// gameLogic.AddNotification ("[level.done]", PlayerScript.gameObject.transform.position );
 		
 		// Debug.Log ("[EnterRemove] ARGUMENT: "+argument);
 		// timeToGo = Time.time + 5.0f; 

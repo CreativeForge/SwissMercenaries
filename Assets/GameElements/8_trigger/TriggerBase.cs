@@ -36,7 +36,7 @@ public class TriggerBase : MonoBehaviour {
 	}
 
   protected virtual void Awake() {
- //   this.gameLogic = GameObject.FindObjectOfType<GameLogic>();
+ 	this.gameLogic = GameObject.FindObjectOfType<GameLogic>();
     //Debug.Log(this + " found gameLogic " + gameLogic);
   }
 
@@ -47,15 +47,15 @@ public class TriggerBase : MonoBehaviour {
   void OnTriggerEnter(Collider other) {
 
 		// check for player
-		LogicPlayer logicPlayer = other.GetComponent<LogicPlayer>();
-		if (logicPlayer != null) {
+		PlayerScript PlayerScript = other.GetComponent<PlayerScript>();
+		if (PlayerScript != null) {
 			// Debug.Log ("OnTriggerPlayerEnter");
 			if (!enterFirstTime) {
-					OnPlayerFirstEnter( logicPlayer, other );
+					OnPlayerFirstEnter( PlayerScript, other );
 				enterFirstTime=true;				
 			}
 
-			OnPlayerEnter( logicPlayer, other );
+			OnPlayerEnter( PlayerScript, other );
 
 
 		}
@@ -66,15 +66,15 @@ public class TriggerBase : MonoBehaviour {
 
 
 		// check for player
-		LogicPlayer logicPlayer = other.GetComponent<LogicPlayer>();
-		if (logicPlayer != null) {
+		PlayerScript PlayerScript = other.GetComponent<PlayerScript>();
+		if (PlayerScript != null) {
 			// Debug.Log ("OnTriggerPlayerEnter");
 			if (!exitFirstTime) {
-					OnPlayerFirstExit( logicPlayer, other );
+					OnPlayerFirstExit( PlayerScript, other );
 				exitFirstTime=true;				
 			}
 
-				OnPlayerExit( logicPlayer, other );
+				OnPlayerExit( PlayerScript, other );
 
 		}
 		
@@ -87,22 +87,22 @@ public class TriggerBase : MonoBehaviour {
 	 * */
 
 	// first time
-	public virtual void OnPlayerFirstEnter( LogicPlayer logicPlayer, Collider col ) {
+	public virtual void OnPlayerFirstEnter( PlayerScript PlayerScript, Collider col ) {
 		
 		
 		
 	}
 
 	// xTimes
-	public virtual void OnPlayerEnter( LogicPlayer logicPlayer, Collider col ) {
+	public virtual void OnPlayerEnter( PlayerScript PlayerScript, Collider col ) {
 
 	}
 
-	public virtual void OnPlayerFirstExit( LogicPlayer logicPlayer, Collider col ) {
+	public virtual void OnPlayerFirstExit( PlayerScript PlayerScript, Collider col ) {
 		
 	}
 
-	public virtual void OnPlayerExit( LogicPlayer logicPlayer, Collider col ) {
+	public virtual void OnPlayerExit( PlayerScript PlayerScript, Collider col ) {
 		
 	}
 

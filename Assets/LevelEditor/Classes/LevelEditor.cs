@@ -201,6 +201,21 @@ public class LevelEditor : MonoBehaviour {
 		
 	}
 
+	// count elements
+	public bool CountElementsTypeIndexOf( string searchFor ) {
+		int count = 0;
+		for (int a=0; a<arrLevel.Count; a++) {
+			GameElement gelement = (GameElement)arrLevel [a];
+			if (gelement.type.IndexOf (searchFor)!=-1) {
+				return true;
+			}
+			if (gelement.subtype.IndexOf (searchFor)!=-1) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// RemoveElementsType
 	public  void RemoveElementsType( string elementArea, string elementSubArea ) {
 		int startx=arrLevel.Count-1;
@@ -415,10 +430,10 @@ public class LevelEditor : MonoBehaviour {
 			}
 
 	// Evaluation INGAME
-	bool flagEvaluationAvailable = true; // is this availabe at all?
+	bool flagEvaluationAvailable = false; // is this availabe at all?
 		bool showEvaluationDialog = true;
 
-	bool flagEvaluation = true;  // ingame will be evaluated!
+	bool flagEvaluation = false;  // ingame will be evaluated!
 
 		// all over evaluation functions
 		// user "0" 
@@ -1664,6 +1679,21 @@ public class LevelEditor : MonoBehaviour {
 		guixt = editorSwitchButtonStyle;
 		if (gameLogic.modal == GameLogic.GameLogicModal.Editor) {
 			guixt = editorSwitchButtonStyleActive ;
+
+			// default?
+			if (!CountElementsTypeIndexOf("directlight")) { 
+				GUI.Label (new Rect (10, Screen.height*0.5f-24, 500, 20), "1. NO DIRECT LIGHT IN SCENE! USE DEFAULT >> ADD ONE UNDER /ENV/ ", guixt);
+			}
+
+			// default?
+			if (!CountElementsTypeIndexOf("player")) { 
+				GUI.Label (new Rect (10, Screen.height*0.5f, 500, 20), "2. NO PLAYER > ADD ONE > /PLAYER/. ", guixt);
+			}
+
+			// default?
+			if (!CountElementsTypeIndexOf("gamelogiccontroller")) { 
+				GUI.Label (new Rect (10, Screen.height*0.5f+24, 500, 20), "3. NO GAMELOGIC CONTROLLER > ADD ONE > /BASE/GAME... ", guixt);
+			}
 		}
 		if (GUI.Button (new Rect (Screen.width -160 + 80, 0, 80, 20), "EDITOR", guixt)) {
 			gameLogic.SetGameState( GameLogic.GameLogicModal.Editor );
@@ -2878,6 +2908,8 @@ public class LevelEditor : MonoBehaviour {
 
 	void Update() {
 
+
+
 		// editor
 		if (gameLogic !=null &&  gameLogic.modal==GameLogic.GameLogicModal.Editor) {
 
@@ -3024,8 +3056,12 @@ public class LevelEditor : MonoBehaviour {
 
 							if (editorPrefab!=null) {
 
+// check here ...
 								// if (editorPrefab.prefabGameObject!=null) {
-									GameElement arg = editorPrefab.Copy();
+
+									GameElement editorPrefabX = GetElementType (editorArea,editorSubArea);
+
+								GameElement arg = editorPrefabX.Copy();
 									AddElement(arg);
 									UpdateGameElementToPosition(arg, Input.mousePosition);
 
@@ -3062,6 +3098,24 @@ public class LevelEditor : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
+
+		// DefaultLight
+
+		// check for directlight
+		// no > activate default 
+		// ...
+		// DefaultDirectionalLight
+		// check if there is a 
+		GameObject defaultLight = GameObject.Find("DefaultDirectionalLight");
+		if (defaultLight!=null) { 
+			// Debug.Log("CountElementsTypeIndexOf(): "+CountElementsTypeIndexOf("directlight"));
+			if (CountElementsTypeIndexOf("directlight")) {
+				// activate it
+				defaultLight.GetComponent<Light>().enabled = false;
+			} else {
+				defaultLight.GetComponent<Light>().enabled = true;
+			}
+		}
 
 		// ingame
 		if (gameLogic != null && gameLogic.modal == GameLogic.GameLogicModal.Running) {

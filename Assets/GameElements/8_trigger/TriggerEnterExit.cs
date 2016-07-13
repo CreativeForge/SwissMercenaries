@@ -12,10 +12,10 @@ public class TriggerEnterExit : TriggerBase {
 
 	float timeToGo = 0.0f;
 
-	public override void OnPlayerFirstEnter( LogicPlayer logicPlayer, Collider col ) {
+	public override void OnPlayerFirstEnter( PlayerScript PlayerScript, Collider col ) {
 
 		// gameLogic.LoadGameNextLevel ();
-		// gameLogic.AddNotification ("[level.done]", logicPlayer.gameObject.transform.position );
+		// gameLogic.AddNotification ("[level.done]", PlayerScript.gameObject.transform.position );
 
 		timeToGo = Time.time + 2.0f; 
 	

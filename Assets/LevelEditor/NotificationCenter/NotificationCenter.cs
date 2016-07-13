@@ -82,8 +82,8 @@ namespace GameLab.NotficationCenter
 		private List<TriggerOnNotification> listenerList =new List<TriggerOnNotification>();
 
 		private GameLogic gameLogic;
-//		private LogicPlayer player1;
-//		private LogicPlayer player2;
+//		private PlayerScript player1;
+//		private PlayerScript player2;
 
 
 		// Use this for initialization
@@ -92,8 +92,8 @@ namespace GameLab.NotficationCenter
 			// GameLogic	gameLogic = GameObject.FindObjectOfType<GameLogic>();
 
 			/*
-			LogicPlayer[] gos = GameObject.FindObjectsOfType<LogicPlayer>();
-			foreach (LogicPlayer go in gos) {
+			PlayerScript[] gos = GameObject.FindObjectsOfType<PlayerScript>();
+			foreach (PlayerScript go in gos) {
 				if (go.GetCharacter().type == CharacterType.Player1) {
 					this.player1 = go;
 				}

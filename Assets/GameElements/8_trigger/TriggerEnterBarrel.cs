@@ -17,10 +17,10 @@ public class TriggerEnterBarrel: TriggerBase {
 		
 	}
 
-	public override void OnPlayerFirstEnter( LogicPlayer logicPlayer, Collider col ) {
+	public override void OnPlayerFirstEnter( PlayerScript PlayerScript, Collider col ) {
 
 		// gameLogic.LoadGameNextLevel ();
-		//gameLogic.AddNotification ("[level.done]", logicPlayer.gameObject.transform.position );
+		//gameLogic.AddNotification ("[level.done]", PlayerScript.gameObject.transform.position );
 
 		// barrel.StartRolling();
 	

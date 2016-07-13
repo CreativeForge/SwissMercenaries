@@ -15,51 +15,51 @@ public class TriggerEnterNotification : TriggerBase {
 	string notificationKey = "[player.death]";
 	//string notificationArgument = "";
 
-	public override void OnPlayerEnter( LogicPlayer logicPlayer, Collider col ) {
-		// AddNotification ("[player.death]", logicPlayer.gameObject.transform.position, NotificationPriority.ThrowAwayAfterProcessing);
+	public override void OnPlayerEnter( PlayerScript PlayerScript, Collider col ) {
+		// AddNotification ("[player.death]", PlayerScript.gameObject.transform.position, NotificationPriority.ThrowAwayAfterProcessing);
 		if (triggerType == TriggerType.OnEnter) {
-			CheckIfPickupItem(logicPlayer);
-			AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( logicPlayer ), NotificationPriority.ThrowAwayAfterProcessing);
+			CheckIfPickupItem(PlayerScript);
+			AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ), NotificationPriority.ThrowAwayAfterProcessing);
 		}
 	}
 
-		public override void OnPlayerFirstEnter( LogicPlayer logicPlayer, Collider col ) {
-			// AddNotification ("[player.death]", logicPlayer.gameObject.transform.position, NotificationPriority.ThrowAwayAfterProcessing);
+		public override void OnPlayerFirstEnter( PlayerScript PlayerScript, Collider col ) {
+			// AddNotification ("[player.death]", PlayerScript.gameObject.transform.position, NotificationPriority.ThrowAwayAfterProcessing);
 			if (triggerType == TriggerType.OnFirstEnter)
 			{
-				AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( logicPlayer ), NotificationPriority.ThrowAwayAfterProcessing);
+				AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ), NotificationPriority.ThrowAwayAfterProcessing);
 			}
 		}
 	
-	public override void OnPlayerExit(  LogicPlayer logicPlayer, Collider col ) {
+	public override void OnPlayerExit(  PlayerScript PlayerScript, Collider col ) {
 		if (triggerType == TriggerType.OnExit) {
-			AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( logicPlayer ), NotificationPriority.ThrowAwayAfterProcessing);
+			AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ), NotificationPriority.ThrowAwayAfterProcessing);
 		}
 	}
 
-	public override void OnPlayerFirstExit(  LogicPlayer logicPlayer, Collider col ) {
+	public override void OnPlayerFirstExit(  PlayerScript PlayerScript, Collider col ) {
 		if (triggerType == TriggerType.OnFirstExit) {
-			AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( logicPlayer ) , NotificationPriority.ThrowAwayAfterProcessing);
+			AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ) , NotificationPriority.ThrowAwayAfterProcessing);
 		}
 	}
 
-	public Vector3 GetReleasePosition ( LogicPlayer logicPlayer ) {
+	public Vector3 GetReleasePosition ( PlayerScript PlayerScript ) {
 
 		if ( notifcationPoint == TriggerNotificationPoint.Player ) {
-			// return logicPlayer.gameObject.transform.position;
+			// return PlayerScript.gameObject.transform.position;
 		}
 		 
 		return transform.position;
 	}
 
 	// Checks if item is pickup item and updates player stats
-	private void CheckIfPickupItem(LogicPlayer logicPlayer)
+	private void CheckIfPickupItem(PlayerScript PlayerScript)
 	{
 		/*
 		PickupItem item = this.GetComponent<PickupItem>();
 		if (item != null)
 		{
-			logicPlayer.UpdateStats(item.collectHealth, item.collectFaith, item.collectMoney);
+			PlayerScript.UpdateStats(item.collectHealth, item.collectFaith, item.collectMoney);
 			if(GetComponent<SaveCheckpoint>() != null) {
 				GetComponent<SaveCheckpoint>().Save(transform.position);
 			}
