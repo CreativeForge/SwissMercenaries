@@ -1,1 +1,0 @@
-{"playerId":"84408","sessionId":22,"name":"Heinzer15","prename":"","age":25,"lovedCasual":0,"lovedCore":0,"lovedGenre":"","comment":""}

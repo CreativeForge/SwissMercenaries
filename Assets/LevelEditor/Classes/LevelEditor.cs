@@ -896,12 +896,6 @@ public class LevelEditor : MonoBehaviour {
 					// elPrefab.prefabGameObject=
 					// create gameobject
 
-
-
-
-					// specials
-					// Debug.Log("TOOL: "+elPrefab.guiDescription);
-					// base only 
 				/*
 				 * if (elPrefab.type.Equals ("base")) {
 						elem.position = new Vector3();
@@ -3067,9 +3061,24 @@ public class LevelEditor : MonoBehaviour {
 
 								GameElement editorPrefabX = GetElementType (editorArea,editorSubArea);
 
-								// ...
+								if (editorPrefabX==null) {
+									Debug.Log("LevelEditor().Update() // Create object. Could not finde GameObjectType: "+editorArea+"/"+editorSubArea);
+									return;
+								}
 
+								// (paint-)tools
+								if (editorSubArea.IndexOf("+")!=-1) { 
+									if (editorPrefabX.guiDescription.Equals("")) return;
+									string[] words = 	editorPrefabX.guiDescription.Split(',');
+									int index = UnityEngine.Random.Range(0,words.Length);
+									string subtypeConf = words[index];
+									GameElement editorPrefabXX = GetElementType (editorArea,subtypeConf);
+									if (editorPrefabXX!=null) {
+										editorPrefabX = editorPrefabXX ;
+									}
+								}
 
+								// arg
 								GameElement arg = editorPrefabX.Copy();
 									AddElement(arg);
 									UpdateGameElementToPosition(arg, Input.mousePosition);

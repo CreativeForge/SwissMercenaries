@@ -40,7 +40,7 @@ public class GameLogic : MonoBehaviour {
 	Camera camGame = null;
 	Camera camEditor = null;
 	public void SetGameCamera( GameObject camObj ){
-		Debug.Log("SetGameCamera() "+camObj.name);
+		// Debug.Log("SetGameCamera() "+camObj.name);
 		camGame = camObj.GetComponent<Camera>();
 	//	camObj.SetActive(false);
 	}
@@ -150,7 +150,7 @@ public class GameLogic : MonoBehaviour {
 
 		//}
 			//catch {
-			Debug.LogWarning("can't load _LevelEditor");
+			// Debug.LogWarning("can't load _LevelEditor");
 			//}
 
 
