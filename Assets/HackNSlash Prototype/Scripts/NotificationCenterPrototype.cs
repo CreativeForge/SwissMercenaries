@@ -30,6 +30,19 @@ public class NotificationCenterPrototype : MonoBehaviour {
 			ShowCombatText("+"+inValue,inPos,CombatText.TextType.Heal);	
 	}
 
+	public void UpdateMoney(float inValue, Vector3 inPos){
+		if(inValue<0)
+			ShowCombatText(""+inValue,inPos,CombatText.TextType.Money);
+		else
+			ShowCombatText("+"+inValue,inPos,CombatText.TextType.Money);	
+	}
+
+	public void UpdateFaith(float inValue, Vector3 inPos){
+		if(inValue<0)
+			ShowCombatText(""+inValue,inPos,CombatText.TextType.Faith);
+		else
+			ShowCombatText("+"+inValue,inPos,CombatText.TextType.Faith);	
+	}
 	public void ShowCombatText(string value, Vector3 position, CombatText.TextType textType){
 		Vector3 screenPos = Camera.main.WorldToScreenPoint (position + new Vector3 (FloatingCombatTextPrefab.GetComponent<CombatText>().OffsetX,
 			FloatingCombatTextPrefab.GetComponent<CombatText>().OffsetY,

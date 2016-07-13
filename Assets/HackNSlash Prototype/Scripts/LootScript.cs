@@ -36,10 +36,8 @@ public class LootScript : MonoBehaviour {
 			rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed);
 		}
 		Quaternion rot = Quaternion.Euler( 0, transform.rotation.eulerAngles.y, 0 );
-		//rB.MoveRotation(rot);
 		transform.rotation = rot;
 		if(appGO)appGO.transform.localRotation = Quaternion.identity;
-		Debug.Log ("rot: "+transform.eulerAngles);
 	}
 
 	IEnumerator WaitNActivateTrigger(){
@@ -60,6 +58,7 @@ public class LootScript : MonoBehaviour {
 			Instantiate(particlePrefab, transform.position, particlePrefab.transform.rotation);
 			GameLogicControllerScript.i.playerS.Money += moneyBonus;
 			GameLogicControllerScript.i.playerS.dS.Health += healthBonus;
+			GameLogicControllerScript.i.playerS.Faith += faithBonus;
 		}
 	}
 

@@ -31,7 +31,8 @@ public class PlayerScript : MonoBehaviour {
 
 	bool isGrounded;
 
-	static uint money = 0;
+	uint money = 0;
+	float faith = 0;
 
 
 	Vector3 originalPosition;
@@ -83,6 +84,12 @@ public class PlayerScript : MonoBehaviour {
 			//GameLogicScript.i.girlS.ChangeColor(Color.white);
 		}
 
+		HandleFaithShrinking();
+
+	}
+
+	void HandleFaithShrinking(){
+		Faith -= Time.deltaTime;
 	}
 
 	void HandleIsGrounded(){
@@ -197,14 +204,37 @@ public class PlayerScript : MonoBehaviour {
 		}
 
 		set{
+			float diff = value-money;
+			if(diff==0)return;
+
 			if(value<0)
 				money = 0;
 			else
 				money = value;
 			GameLogicControllerScript.i.AdjustMoneyVisualisation();
+			GameLogicControllerScript.i.notificationC.UpdateMoney(diff,transform.position);
 		}
 	}
+
+	public float Faith{
+		get {
+			return faith;
+		}
+
+		set{			
+			float diff = value-faith;
+			if(diff==0)return;
+
+			Debug.Log("faith set: " + value);
+			faith = Mathf.Clamp(value,0,100);
+			GameLogicControllerScript.i.AdjustFaithVisualisation();
+			if(diff>Mathf.Abs(1))GameLogicControllerScript.i.notificationC.UpdateFaith(diff,transform.position);
+		}
+		
+	}
 }
+
+
 
 
 

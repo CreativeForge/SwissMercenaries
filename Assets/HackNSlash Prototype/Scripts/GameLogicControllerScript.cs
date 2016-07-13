@@ -12,6 +12,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 
 	public GameObject canvasGO;
 	public RectTransform healthT;
+	public RectTransform faithT;
 
 	// Game modes:
 	// 0	kill
@@ -99,7 +100,9 @@ public class GameLogicControllerScript : MonoBehaviour {
 		//Debug.Log("playerS.dS: "+playerS.dS);
 		healthT.localScale = new Vector3(playerS.dS.health/100f,1,1);
 	}
-
+	public void AdjustFaithVisualisation(){
+		faithT.localScale = new Vector3(playerS.Faith/100f,1,1);
+	}
 	public void AdjustMoneyVisualisation(){
 		//Debug.Log("healthT: "+healthT);
 		//Debug.Log("playerS: "+playerS);
@@ -110,6 +113,8 @@ public class GameLogicControllerScript : MonoBehaviour {
 	public void AdjustEnemyCountVisualisation(uint inCount){
 		enemyText.text = "Landsknechte getötet: "+inCount+"/"+allLootableEnemiesCount;
 	}
+
+
 	
 	// Update is called once per frame
 	void Update() {
@@ -153,6 +158,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 	public void EnemyDies(){
 		CheckEnemyDeathCount();
 		playerS.Money += 10;
+		playerS.Faith += 10;
 	}
 
 	void CheckEnemyDeathCount(){
