@@ -64,7 +64,7 @@ public class CombatText : MonoBehaviour {
         //displayedText = this.gameObject.GetComponent<GUIText> ();
 
         Color usedColor = Color.white;
-		Debug.Log("show text");
+		//Debug.Log("show text");
         int fontSize = 24;
 
 		displayedText.fontStyle = FontStyle.Bold;

@@ -12,10 +12,21 @@ public class LootScript : MonoBehaviour {
 	public float healthBonus = 0;
 	public float fightingSpiritBonus = 0;
 	public float faithBonus = 0;
+	GameObject appGO;
+
+	public GameObject[] AppereancePrefabs;
 
 	void Start(){
 		rB = GetComponent<Rigidbody>();
 		StartCoroutine(WaitNActivateTrigger());
+
+		if(AppereancePrefabs != null && AppereancePrefabs.Length>0){
+			GetComponent<MeshRenderer>().enabled = false;
+			int rand = Random.Range(0, AppereancePrefabs.Length);
+			GameObject randPrefab = AppereancePrefabs[rand];
+			appGO = Instantiate(randPrefab, transform.position, randPrefab.transform.rotation) as GameObject;
+			appGO.transform.parent = transform;
+		}
 	}
 
 	void FixedUpdate(){
@@ -24,6 +35,11 @@ public class LootScript : MonoBehaviour {
 			speed += Time.fixedDeltaTime*speed*10;
 			rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed);
 		}
+		Quaternion rot = Quaternion.Euler( 0, transform.rotation.eulerAngles.y, 0 );
+		//rB.MoveRotation(rot);
+		transform.rotation = rot;
+		if(appGO)appGO.transform.localRotation = Quaternion.identity;
+		Debug.Log ("rot: "+transform.eulerAngles);
 	}
 
 	IEnumerator WaitNActivateTrigger(){
