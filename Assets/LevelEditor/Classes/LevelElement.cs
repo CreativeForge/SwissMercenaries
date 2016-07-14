@@ -10,6 +10,8 @@ public class LevelElement {
 	public GameObject editorPrefab; // dummy object
 	public LevelElementOption[] prefabEditorDummyArguments;
 
+	public bool isGround = false;
+
 	public bool argumentNeeded = true;
 	public string argumentLabel = "arg";
 	public string argumentDescription = "";
@@ -18,6 +20,10 @@ public class LevelElement {
 	public string inputTypeSelect = ""; // x,y,z
 
 	public float editorDisplaySize = 1.0f;
+
+	public float editorTileSize = 0.0f;
+
+	public int editorIndex = 1;
 
 	public LevelElement (  ) {
 	

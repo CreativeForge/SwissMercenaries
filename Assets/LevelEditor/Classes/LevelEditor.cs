@@ -97,11 +97,33 @@ public class LevelEditor : MonoBehaviour {
 		}
 		*/
 
+		DefaultElements();
+
 	}
 
 	void ClearLevel() {
 		ClearElements ();
+
 	}
+
+		void DefaultElements() {
+			// prefabY
+			GameElement editorPrefabY;
+
+
+			// player
+			editorPrefabY = AddGameElementAtName ("player","player", new Vector3(0.0f,2.0f,0.0f), "PLAYER");
+
+			// gamelogiccontroller
+			editorPrefabY = AddGameElementAtName ("base","gamelogiccontroller", new Vector3(1.0f,2.0f,0.0f), "CONTROLLER");
+
+			// ground box!
+			editorPrefabY = AddGameElementAtName ("base","ground_box", new Vector3(0.0f,0.0f,0.0f), "GROUND" );
+
+			// directlight
+			editorPrefabY = AddGameElementAtName ("light","directlight", new Vector3(0.0f,3.0f,0.0f), "DIRECLIGHT");
+
+		}
 
 	void SetLevel( int iactualLevel ) {
 
@@ -163,6 +185,19 @@ public class LevelEditor : MonoBehaviour {
 		arrGameElementTypes.Add (gameElement);
 		return gameElement;
 	}
+
+	// add gameelement by type at (0,0,0)
+	public GameElement AddGameElementAtName( string type, string subtype, Vector3 pos, string name ) {
+		GameElement gaType = GetElementType ( type, subtype );
+		if (gaType != null) {
+			GameElement gex = gaType.Copy ();
+			gex.position = pos;
+			gex.name = name;
+			return AddElement(gex);
+		}
+
+		return null;
+	} 
 
 	public GameElement ElementObject( GameObject gameObj ) {
 
@@ -409,6 +444,21 @@ public class LevelEditor : MonoBehaviour {
 				 
 				// Debug.Log ("RegisterLevelElements( "+ prefix + " )");
 
+				// 1. sort: first sort for editorIndex
+				LevelElement a;
+				LevelElement b;
+				for (int i=0;i<ilevelElements.Length;i++) {
+					for (int ii=0;ii<ilevelElements.Length;ii++) {
+						a = ilevelElements[i];
+						b = ilevelElements[ii];
+						if (a.editorIndex<b.editorIndex) {
+							ilevelElements[i] = b;
+							ilevelElements[ii] = a;
+						}
+					}
+				}
+
+				// 2. add: by the order of the array
 				LevelElement el;
 				for (int i=0;i<ilevelElements.Length;i++) {
 					el = ilevelElements[i];
@@ -428,6 +478,11 @@ public class LevelEditor : MonoBehaviour {
 
 						geType.argumentInputType = el.inputType;
 						geType.argumentInputTypeSelect = el.inputTypeSelect;
+
+//						geType.editorIndex = el.editorIndex;
+
+						geType.editorTileSize = el.editorTileSize;
+						geType.editorIsGround = el.isGround;
 
 						geType.guiShowInMenu = visibleInEditor;
 
@@ -1096,10 +1151,27 @@ public class LevelEditor : MonoBehaviour {
 
 	// raster
 	int editorRaster=0;
-	float[] arrRasters = { 0.0f, 0.5f, 1.0f, 2.0f, 4.0f, 8.0f };
+	float[] arrRasters = { 0.0f, 0.25f, 0.5f, 0.75f, 1.0f, 2.0f, 4.0f, 8.0f };
 
 	void SetRasterIndex( int index ) { // Index!
 		editorRaster = index;
+	}
+
+	int GetRasterIndexFor( float rasterX ) {
+		for (int i=0;i<arrRasters.Length;i++) {
+			if (rasterX==arrRasters[i]) {
+				return i;
+			}
+			if (i<(arrRasters.Length-1)) {
+				if (rasterX>arrRasters[i]) {
+					if (rasterX<arrRasters[i+1]) {
+						return i;
+					}
+				}
+			}
+		}
+
+		return 0;
 	}
 
 	// not used anymore
@@ -2087,6 +2159,7 @@ public class LevelEditor : MonoBehaviour {
 						//stateSpecialEditor="";
 						ClearLevel ();  
 						// NewLevel();
+						DefaultElements();
 					}
 					if (i == 3) { 
 						//stateSpecialEditor="";
@@ -2505,7 +2578,12 @@ public class LevelEditor : MonoBehaviour {
 					bool buttonClicked = GUI.Button (new Rect (editorX + 10 + a * 90, editorY, 80, 20), text+strCount, guix);
 					if (buttonClicked) {
 						// do it ...
-						if (editorTool.Equals ("CREATE")) {  SetSubEditorArea (gelement.subtype); }
+						if (editorTool.Equals ("CREATE")) {  
+							SetSubEditorArea (gelement.subtype); 
+							if (gelement.editorTileSize!=0.0f) {
+								editorRaster = GetRasterIndexFor(gelement.editorTileSize);
+							}
+						}
 						if (editorTool.Equals ("EDIT")) {  editorSelected.type=gelement.type; editorSelected.subtype=gelement.subtype;  }
 
 					}

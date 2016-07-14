@@ -54,6 +54,10 @@ public class GameElement {
 
 	public float editorDisplaySize = 1.0f;
 
+	public float editorTileSize = 0.0f;
+	public bool editorIsGround = false;
+	// public int editorIndex = 1;
+
 	// add ons (only visual)
 	public bool guiBoolArgument = false;
 	public string guiLabel = "";
