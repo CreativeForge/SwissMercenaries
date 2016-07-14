@@ -42,6 +42,10 @@ public class PlayerScript : MonoBehaviour {
 	uint money = 0;
 	float faith = 0;
 
+	public GameObject swordGO;
+	bool isWithHalberd = false;
+	public GameObject halberdGO;
+	public GameObject halberdHitGO;
 
 	Vector3 originalPosition;
 
@@ -52,6 +56,8 @@ public class PlayerScript : MonoBehaviour {
 		hS = GetComponent<HitterScript>();
 		originalPosition = transform.position;
 		originalSpeed = speed;
+
+		halberdGO.SetActive(false);
 	}
 
 	public void SetCamT(Transform inT){
@@ -97,8 +103,33 @@ public class PlayerScript : MonoBehaviour {
 		HandleFaithShrinking();
 		HandleHolyRage();
 
+		if(Input.GetKeyDown(KeyCode.J)){
+			IsWithHalberd = !IsWithHalberd;
+		}
 	}
 
+	public bool IsWithHalberd{
+
+		get{
+			return isWithHalberd;
+		}
+		set{
+			isWithHalberd = value;
+			if(isWithHalberd){
+				anim.SetBool("IsWithHalberd", true);
+				halberdGO.SetActive(true);
+				halberdHitGO.SetActive(false);
+				swordGO.SetActive(false);
+			}else{
+				anim.SetBool("IsWithHalberd", false);
+				halberdGO.SetActive(false);
+				halberdHitGO.SetActive(false);
+				swordGO.SetActive(true);
+				
+			}
+		}
+	}
+		
 	void HandleHolyRage(){
 		if(holyRageStartTime+holyRageDuration<Time.time){
 			EndHolyRage();

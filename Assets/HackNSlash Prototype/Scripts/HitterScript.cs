@@ -10,6 +10,8 @@ public class HitterScript : MonoBehaviour {
 	public GameObject projectilePrefab;
 	public float hitForce = 10;
 	float originalHitForce;
+	public float hitStrongForce = 30;
+	float originalHitStrongForce;
 	bool isHittingFast = false;
 	bool isHittingSlow = false;
 	public GameObject hitBox1;
@@ -42,12 +44,16 @@ public class HitterScript : MonoBehaviour {
 
 		if(alwaysDangerous)
 			hitBox1.SetActive(true);
-
+		else if(hitBox1)
+			hitBox1.SetActive(false);
+			
 		StartCoroutine(WaitNSetWeaponTrail());
 
 		originalHitForce = hitForce;
 
 		rB = GetComponent<Rigidbody>();
+
+		if(hitBox2)hitBox2.SetActive(false);
 	}
 
 	IEnumerator WaitNSetWeaponTrail(){
@@ -63,10 +69,12 @@ public class HitterScript : MonoBehaviour {
 
 	public void ModHitForce(float inMod){
 		hitForce = originalHitForce * inMod;
+		hitStrongForce = originalHitStrongForce * inMod;
 	}
 
 	public void ResetHitForce(){
 		hitForce = originalHitForce;
+		hitStrongForce = originalHitStrongForce;
 	}
 
 	void Update(){
@@ -86,6 +94,7 @@ public class HitterScript : MonoBehaviour {
 
 		if(Input.GetButtonDown("BumperR")){
 			Debug.Log("BumperR or X");
+			BackJump();
 		}
 	}
 
@@ -130,7 +139,11 @@ public class HitterScript : MonoBehaviour {
 			if(pS){
 				// is player
 				if(Input.GetKeyDown(KeyCode.Mouse0) || Input.GetButtonDown("Jump")){
-					DoFastHit();
+					if(pS.IsWithHalberd){
+						DoSlowHalberdHit();
+					}else{
+						DoFastSwordHit();
+					}
 				}
 
 
@@ -138,7 +151,7 @@ public class HitterScript : MonoBehaviour {
 				// is enemy
 				if(lastHitTime+hitIntervalTime<Time.time){
 					//DoSlowHit();
-					DoFastHit();
+					DoFastSwordHit();
 				}
 			}
 
@@ -149,8 +162,14 @@ public class HitterScript : MonoBehaviour {
 				if(pS && !pS.isInHolyRoge) weaponTrailCurrentGO.SetActive(false);
 			}
 
-			/*
-			if(isHittingSlow){
+
+			if(isHittingSlow && lastHitTime+hitSlowDuration<Time.time){
+				if(hitBox2)hitBox2.SetActive(false);
+				isHittingSlow = false;
+
+				if(pS && !pS.isInHolyRoge) weaponTrailCurrentGO.SetActive(false);
+
+				/*
 				if(lastHitTime+hitSlowDuration<Time.time){
 					hitBox2.transform.parent.Rotate(180*Time.deltaTime,0,0);
 					if(lastHitTime+1f<Time.time){
@@ -159,7 +178,8 @@ public class HitterScript : MonoBehaviour {
 						hitBox2.transform.parent.localRotation = originalRotHitBox2;
 					}
 				}
-			}*/
+				*/
+			}
 		}
 	}
 
@@ -179,7 +199,7 @@ public class HitterScript : MonoBehaviour {
 
 	}
 
-	void DoFastHit(){
+	void DoFastSwordHit(){
 		if(pS){
 			// For Player
 
@@ -209,16 +229,8 @@ public class HitterScript : MonoBehaviour {
 				isHittingFast = true;
 				
 			}
-
-			/*
-			hitBox1.SetActive(true);
-			lastHitTime = Time.time;
-			isHittingFast = true;
-			*/
-
 		}
 	}
-
 	public void FromAnimationTriggerDoHitBox(){
 		// called in AnimationEvent from the attack-animation "Attack01RunTrigger" or "Attack01Trigger"
 
@@ -227,20 +239,51 @@ public class HitterScript : MonoBehaviour {
 		if(hitBox1)hitBox1.SetActive(true);
 		lastHitTime = Time.time;
 		isHittingFast = true;
+	}
+
+	void DoSlowHalberdHit(){
+		if(pS){
+			// For Player
+
+			//hitBox1.SetActive(true); // is called from animationTrigger in FromAnimationTriggerDoHitBox()
+
+			// enable if player should hit in camera direction
+			//pS.LookInCamDir();
+
+			weaponTrailCurrentGO.SetActive(true);
+
+			if(pS.GetVelocity()<0.1f) {
+				anim.SetTrigger("AttackHalberd01Trigger");
+			}else{
+				anim.SetTrigger("AttackHalberd01RunTrigger");
+			}
+		}
 
 	}
 
+	public void FromAnimationTriggerDoHitHalberdBox(){
+		// called in AnimationEvent from the attack-animation "Attack01RunTrigger" or "Attack01Trigger"
+
+		if((eS && eS.dS && eS.dS.IsDead) || (pS && pS.dS && pS.dS.IsDead ))return;
+
+		if(hitBox2)hitBox2.SetActive(true);
+		lastHitTime = Time.time;
+		isHittingSlow = true;
+	}
 	/*
-	void DoSlowHit(){ // not yet in use
+	void DoSlowHalberdHit(){ // not yet in use
 		isHittingSlow = true;
 		hitBox2.SetActive(true);
 		lastHitTime = Time.time;
-		if(pS)pS.LookInCamDir();
-	}
-	*/
+		//if(pS)pS.LookInCamDir();
+	}*/
 	
 	public bool HitsDestructible (DestructibleScript inDS) { // is called in HitBoxScript
 		if(pS){ // player hits something
+
+			float tHitForce = hitForce;
+			if(pS.IsWithHalberd)
+				tHitForce = hitStrongForce;
 			inDS.IsHitted(hitForce);
 			return true;
 		}else{ // enemy hits something

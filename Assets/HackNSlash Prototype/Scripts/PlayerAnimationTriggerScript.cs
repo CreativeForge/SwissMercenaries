@@ -18,6 +18,15 @@ public class PlayerAnimationTriggerScript : MonoBehaviour {
 		if(hitterS)
 			hitterS.FromAnimationTriggerDoHitBox();
 		else
-			Debug.LogWarning("no hitterscript found: "+name);
+			Debug.LogError("no hitterscript found: "+name);
 	}
+	public void FromAnimationTriggerDoHitHalberdBox(){
+		HitterScript hitterS = GetComponentInParent<HitterScript>();
+		if(hitterS)
+			hitterS.FromAnimationTriggerDoHitHalberdBox();
+		else
+			Debug.LogError("no hitterscript found: "+name);
+	}
+
+
 }
