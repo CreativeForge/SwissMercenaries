@@ -42,10 +42,10 @@ public class PlayerScript : MonoBehaviour {
 	uint money = 0;
 	float faith = 0;
 
+	public bool hasPickedUpHalberd = false;
 	public GameObject swordGO;
 	bool isWithHalberd = false;
 	public GameObject halberdGO;
-	public GameObject halberdHitGO;
 
 	Vector3 originalPosition;
 
@@ -114,16 +114,18 @@ public class PlayerScript : MonoBehaviour {
 			return isWithHalberd;
 		}
 		set{
+			if(!HasPickedUpHalberd){
+				Debug.LogError("you have to pickup halberd");
+				return;
+			}
 			isWithHalberd = value;
 			if(isWithHalberd){
 				anim.SetBool("IsWithHalberd", true);
 				halberdGO.SetActive(true);
-				halberdHitGO.SetActive(false);
 				swordGO.SetActive(false);
 			}else{
 				anim.SetBool("IsWithHalberd", false);
 				halberdGO.SetActive(false);
-				halberdHitGO.SetActive(false);
 				swordGO.SetActive(true);
 				
 			}
@@ -284,7 +286,7 @@ public class PlayerScript : MonoBehaviour {
 	}
 
 
-	void StartHolyRage(){
+	public void StartHolyRage(){
 		isInHolyRoge = true;
 		holyHaloGO.SetActive(true);
 		holyShineGO.SetActive(true);
@@ -299,7 +301,7 @@ public class PlayerScript : MonoBehaviour {
 	}
 
 
-	void EndHolyRage(){
+	public void EndHolyRage(){
 		isInHolyRoge = false;
 		dS.Invincible = false;
 		holyHaloGO.SetActive(false);
@@ -308,6 +310,18 @@ public class PlayerScript : MonoBehaviour {
 		hS.ResetHitForce();
 		hS.weaponTrailCurrentGO = hS.weaponTrailNormalGO;
 		if(hS.weaponTrailHolyGO)hS.weaponTrailHolyGO.SetActive(false);
+	}
+
+
+	public bool HasPickedUpHalberd{
+		get{
+			return hasPickedUpHalberd;
+		}
+		set{
+			hasPickedUpHalberd = value;
+			IsWithHalberd = true;
+
+		}
 	}
 
 	public void Die(){

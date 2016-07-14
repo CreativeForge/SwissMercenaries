@@ -33,6 +33,7 @@ public class HitterScript : MonoBehaviour {
 
 	public GameObject weaponTrailCurrentGO;
 	public GameObject weaponTrailNormalGO;
+	public GameObject weaponTrailHalberdGO;
 	public GameObject weaponTrailHolyGO;
 
 	Rigidbody rB;
@@ -62,9 +63,11 @@ public class HitterScript : MonoBehaviour {
 		yield return 0;
 		if(pS) {
 			weaponTrailNormalGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail");
-			weaponTrailHolyGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail (1)");
+			weaponTrailHolyGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail Holy");
+			weaponTrailHalberdGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail 2");
 			weaponTrailNormalGO.SetActive(false);
 			weaponTrailHolyGO.SetActive(false);
+			if(weaponTrailHalberdGO)weaponTrailHalberdGO.SetActive(false);
 			weaponTrailCurrentGO = weaponTrailNormalGO;
 		}
 	}
@@ -193,7 +196,6 @@ public class HitterScript : MonoBehaviour {
 		}
 		set{
 			isBlocking = value;
-			if(canBlock) Debug.Log("isblocking: "+isBlocking);
 			if(anim) anim.SetBool("IsBlockingBool", isBlocking);
 		}
 	}
@@ -231,7 +233,6 @@ public class HitterScript : MonoBehaviour {
 			// For Enemy
 
 			lastHitTime = Time.time;
-			if(canBlock) Debug.Log("fast hit time: "+lastHitTime);
 				
 			if(anim)
 				anim.SetTrigger("Attack01RunTrigger");
