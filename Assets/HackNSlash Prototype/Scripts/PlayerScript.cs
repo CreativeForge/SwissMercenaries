@@ -96,6 +96,7 @@ public class PlayerScript : MonoBehaviour {
 
 		HandleFaithShrinking();
 		HandleHolyRage();
+
 	}
 
 	void HandleHolyRage(){

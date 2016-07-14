@@ -24,9 +24,14 @@ public class HitterScript : MonoBehaviour {
 	public float hitSlowDuration = 0.5f;
 	public Animator anim;
 
+	bool isBackJumping;
+	float startBackJumpTime = 0;
+
 	public GameObject weaponTrailCurrentGO;
 	public GameObject weaponTrailNormalGO;
 	public GameObject weaponTrailHolyGO;
+
+	Rigidbody rB;
 
 	// Use this for initialization
 	void Start () {
@@ -41,6 +46,8 @@ public class HitterScript : MonoBehaviour {
 		StartCoroutine(WaitNSetWeaponTrail());
 
 		originalHitForce = hitForce;
+
+		rB = GetComponent<Rigidbody>();
 	}
 
 	IEnumerator WaitNSetWeaponTrail(){
@@ -68,7 +75,42 @@ public class HitterScript : MonoBehaviour {
 		if((eS && eS.dS && eS.dS.IsDead) || (pS && pS.dS && pS.dS.IsDead ))return;
 
 		HandleHitting();
+
+
+		if(!pS) return;
+
+		if(Input.GetButtonDown("BumperL")){
+			Debug.Log("BumperL or Y");
+			BackJump();
+		}
+
+		if(Input.GetButtonDown("BumperR")){
+			Debug.Log("BumperR or X");
+		}
 	}
+
+	void FixedUpdate(){
+		HandleBackJumping();
+	}
+
+
+	void HandleBackJumping(){
+		if(isBackJumping){
+			rB.MovePosition(rB.position + transform.forward * -20 * Time.fixedDeltaTime);
+			if(startBackJumpTime+0.5f<Time.time)
+				isBackJumping = false;
+		}
+
+	}
+
+
+	void BackJump(){
+		isBackJumping = true;
+		anim.SetTrigger("StepBackTrigger");
+		startBackJumpTime = Time.time;
+
+	}
+
 
 	public void StartShooting(){
 		if(isShooter)
@@ -90,6 +132,8 @@ public class HitterScript : MonoBehaviour {
 				if(Input.GetKeyDown(KeyCode.Mouse0) || Input.GetButtonDown("Jump")){
 					DoFastHit();
 				}
+
+
 			}else{
 				// is enemy
 				if(lastHitTime+hitIntervalTime<Time.time){
@@ -118,6 +162,10 @@ public class HitterScript : MonoBehaviour {
 			}*/
 		}
 	}
+
+
+
+
 
 	void DoShoot(){
 		Vector3 centerP = InGameController.i.playerS.GetComponent<Collider>().bounds.center;

@@ -73,20 +73,45 @@ namespace UnityStandardAssets.Cameras
         }
 
 
-        private void HandleRotationMovement()
+		float getXAxis(){
+			// Read the user input
+			#if UNITY_STANDALONE_OSX
+			var x = CrossPlatformInputManager.GetAxis("Horizontal JoystickR Mac");
+			//y=-0.3f;
+			#else
+			var x = CrossPlatformInputManager.GetAxis("Horizontal JoystickR");
+			#endif
+
+			return x;
+		}
+
+		float getYAxis(){
+			// Read the user input
+			#if UNITY_STANDALONE_OSX
+			var y = CrossPlatformInputManager.GetAxis("Vertical JoystickR Mac");
+			//y=-0.3f;
+			#else
+			var y = CrossPlatformInputManager.GetAxis("Vertical JoystickR");
+			#endif
+
+			return y;
+		}
+		/*
+		float getXAxis(){
+			return CrossPlatformInputManager.GetAxis("Horizontal JoystickR Mac");
+		}
+
+		float getYAxis(){
+			return CrossPlatformInputManager.GetAxis("Vertical JoystickR Mac");
+		}*/
+
+		private void HandleRotationMovement()
         {
 			if(Time.timeScale < float.Epsilon)
 				return;
 
-            // Read the user input
-			#if UNITY_STANDALONE_OSX
-			var x = CrossPlatformInputManager.GetAxis("Horizontal JoystickR Mac");
-			var y = CrossPlatformInputManager.GetAxis("Vertical JoystickR Mac");
-			//y=-0.3f;
-			#else
-			var x = CrossPlatformInputManager.GetAxis("Horizontal JoystickR");
-			var y = CrossPlatformInputManager.GetAxis("Vertical JoystickR");
-			#endif
+			float x = getXAxis();
+			float y = getYAxis();
 
 			if(freezeCam){
 				x=0;
