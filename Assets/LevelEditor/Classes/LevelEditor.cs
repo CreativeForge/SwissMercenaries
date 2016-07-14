@@ -115,13 +115,13 @@ public class LevelEditor : MonoBehaviour {
 			editorPrefabY = AddGameElementAtName ("player","player", new Vector3(0.0f,2.0f,0.0f), "PLAYER");
 
 			// gamelogiccontroller
-			editorPrefabY = AddGameElementAtName ("base","gamelogiccontroller", new Vector3(1.0f,2.0f,0.0f), "CONTROLLER");
+			editorPrefabY = AddGameElementAtName ("base","ingamecontroller", new Vector3(1.0f,2.0f,0.0f), "INGAMECONTROLLER");
 
 			// ground box!
 			editorPrefabY = AddGameElementAtName ("base","ground_box", new Vector3(0.0f,0.0f,0.0f), "GROUND" );
 
 			// directlight
-			editorPrefabY = AddGameElementAtName ("light","directlight", new Vector3(0.0f,3.0f,0.0f), "DIRECLIGHT");
+			editorPrefabY = AddGameElementAtName ("light","directlight", new Vector3(0.0f,3.0f,0.0f), "DIRECTLIGHT");
 
 		}
 
@@ -953,7 +953,7 @@ public class LevelEditor : MonoBehaviour {
 				}
 
 				GameElement elPrefab = GetElementType (elem.type,elem.subtype);
-				if (elPrefab==null) { Debug.Log("Error: Could not find Type("+elem.type+"/"+elem.subtype+")");  } 
+			if (elPrefab==null) { Debug.Log("Error: Could not find Type("+elem.type+"/"+elem.subtype+")"); return; } 
 				if (elPrefab!=null) { 
 					// Debug.LogError("Could find Type("+elem.type+"/"+elem.subtype+")");
 					// elPrefab.prefabGameObject=
@@ -1151,7 +1151,7 @@ public class LevelEditor : MonoBehaviour {
 
 	// raster
 	int editorRaster=0;
-	float[] arrRasters = { 0.0f, 0.25f, 0.5f, 0.75f, 1.0f, 2.0f, 4.0f, 8.0f };
+	float[] arrRasters = { 0.0f, 0.5f, 1.0f, 2.0f, 4.0f, 8.0f };
 
 	void SetRasterIndex( int index ) { // Index!
 		editorRaster = index;
@@ -1771,7 +1771,7 @@ public class LevelEditor : MonoBehaviour {
 			}
 
 			// default?
-			if (!CountElementsTypeIndexOf("gamelogiccontroller")) { 
+			if (!CountElementsTypeIndexOf("ingamecontroller")) { 
 				GUI.Label (new Rect (10, Screen.height*0.5f+24, 500, 20), "3. NO GAMELOGIC CONTROLLER > ADD ONE > /BASE/GAME... ", guixt);
 			}
 
@@ -2810,6 +2810,10 @@ public class LevelEditor : MonoBehaviour {
 						RemoveElement(editorSelected);
 						editorSelected = null;
 					}
+					if (GUI.Button (new Rect(editorDetailX+42+165+42+36,editorDetailY,40,20),"SAME",editorButtonStyle)) {
+						filterType = editorSelected.type;
+						filterTypeSub = editorSelected.subtype;
+					}
 
 					editorDetailY=editorDetailY+22;
 					if (editorSelected!=null) {	
@@ -3161,6 +3165,7 @@ public class LevelEditor : MonoBehaviour {
 								}
 
 								// (paint-)tools
+								bool flagTool = false;
 								if (editorSubArea.IndexOf("+")!=-1) { 
 									if (editorPrefabX.guiDescription.Equals("")) return;
 									string[] words = 	editorPrefabX.guiDescription.Split(',');
@@ -3172,6 +3177,7 @@ public class LevelEditor : MonoBehaviour {
 									GameElement editorPrefabXX = GetElementType (editorArea,subtypeConf);
 									if (editorPrefabXX!=null) {
 										editorPrefabX = editorPrefabXX ;
+										flagTool = true;
 									} else {
 										Debug.LogWarning("LevelEditor.Update() //  Searching for Painting Tool. Config Array: Unity3dLevelEditor: "+editorArea+"/"+subtypeConf);
 										AddEditorMessage("[Tool "+editorArea+"/"+subtypeConf+"]: Could not find part: "+subtypeConf);
@@ -3199,6 +3205,16 @@ public class LevelEditor : MonoBehaviour {
 											UpdateElementVisual(arg);
 										}
 									}
+
+									// tool: add randomness
+									if (flagTool) {
+										float factorSize = UnityEngine.Random.Range(5,15)/10.0f;
+										float factorRotation = UnityEngine.Random.Range(0,360);
+										arg.size = arg.size * factorSize;		
+										arg.rotation = arg.rotation + factorRotation;
+										UpdateElementVisual(arg);
+									}
+
 
 								// }
 							}
