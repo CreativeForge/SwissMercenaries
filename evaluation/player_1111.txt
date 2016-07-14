@@ -1,1 +1,1 @@
-{"playerId":"1111","sessionId":3,"name":"anonymous","prename":"","age":25,"lovedCasual":0,"lovedCore":0,"lovedGenre":"","comment":""}
+{"playerId":"1111","sessionId":12,"name":"anonymous","prename":"","age":25,"lovedCasual":0,"lovedCore":0,"lovedGenre":"","comment":""}
