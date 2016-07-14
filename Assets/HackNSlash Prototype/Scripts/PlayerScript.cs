@@ -103,7 +103,7 @@ public class PlayerScript : MonoBehaviour {
 		HandleFaithShrinking();
 		HandleHolyRage();
 
-		if(Input.GetKeyDown(KeyCode.J)){
+		if(Input.GetButtonDown("Fire1")){
 			IsWithHalberd = !IsWithHalberd;
 		}
 	}

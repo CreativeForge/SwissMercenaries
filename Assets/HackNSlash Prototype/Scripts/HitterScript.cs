@@ -88,12 +88,10 @@ public class HitterScript : MonoBehaviour {
 		if(!pS) return;
 
 		if(Input.GetButtonDown("BumperL")){
-			Debug.Log("BumperL or Y");
 			BackJump();
 		}
 
 		if(Input.GetButtonDown("BumperR")){
-			Debug.Log("BumperR or X");
 			BackJump();
 		}
 	}
