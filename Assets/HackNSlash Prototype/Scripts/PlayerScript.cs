@@ -227,8 +227,8 @@ public class PlayerScript : MonoBehaviour {
 				money = 0;
 			else
 				money = value;
-			GameLogicControllerScript.i.AdjustMoneyVisualisation();
-			GameLogicControllerScript.i.notificationC.UpdateMoney(diff,transform.position);
+			InGameController.i.AdjustMoneyVisualisation();
+			InGameController.i.notificationC.UpdateMoney(diff,transform.position);
 		}
 	}
 
@@ -245,8 +245,8 @@ public class PlayerScript : MonoBehaviour {
 			if(faith>99){
 				StartHolyRage();
 			}
-			GameLogicControllerScript.i.AdjustFaithVisualisation();
-			if(diff>Mathf.Abs(1))GameLogicControllerScript.i.notificationC.UpdateFaith(diff,transform.position);
+			InGameController.i.AdjustFaithVisualisation();
+			if(diff>Mathf.Abs(1))InGameController.i.notificationC.UpdateFaith(diff,transform.position);
 		}
 		
 	}
@@ -280,7 +280,7 @@ public class PlayerScript : MonoBehaviour {
 
 	public void Die(){
 		EndHolyRage();
-		GameLogicControllerScript.i.PlayerDies();
+		InGameController.i.PlayerDies();
 	}
 }
 

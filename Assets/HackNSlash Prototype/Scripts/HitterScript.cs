@@ -120,7 +120,7 @@ public class HitterScript : MonoBehaviour {
 	}
 
 	void DoShoot(){
-		Vector3 centerP = GameLogicControllerScript.i.playerS.GetComponent<Collider>().bounds.center;
+		Vector3 centerP = InGameController.i.playerS.GetComponent<Collider>().bounds.center;
 		float tDist = Vector3.Distance(transform.position, centerP);
 		lastHitTime = Time.time;
 
@@ -196,9 +196,9 @@ public class HitterScript : MonoBehaviour {
 			inDS.IsHitted(hitForce);
 			return true;
 		}else{ // enemy hits something
-			if(inDS == GameLogicControllerScript.i.playerS.dS){ // enemy hits player
+			if(inDS == InGameController.i.playerS.dS){ // enemy hits player
 				inDS.IsHitted(hitForce);
-				if(alwaysDangerous) GameLogicControllerScript.i.playerS.Push((GameLogicControllerScript.i.playerS.transform.position-transform.position)*300);
+				if(alwaysDangerous) InGameController.i.playerS.Push((InGameController.i.playerS.transform.position-transform.position)*300);
 				return true;
 			}else if(!hitsOnlyPlayer){ // enemy hits not-player
 				inDS.IsHitted(hitForce);

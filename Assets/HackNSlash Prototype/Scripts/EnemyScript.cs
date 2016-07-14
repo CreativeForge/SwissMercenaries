@@ -23,7 +23,7 @@ public class EnemyScript : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		if(dS && dS.IsDead)return;
-		Vector3 tPlayerPos = GameLogicControllerScript.i.playerS.transform.position;
+		Vector3 tPlayerPos = InGameController.i.playerS.transform.position;
 		if(smoothLookAtPlayer){
 			Vector3 targetPos = new Vector3(tPlayerPos.x, transform.position.y, tPlayerPos.z);
 			Vector3 relativePos = targetPos - transform.position;

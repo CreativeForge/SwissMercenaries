@@ -31,7 +31,7 @@ public class LootScript : MonoBehaviour {
 
 	void FixedUpdate(){
 		if(isMoving){
-			transform.LookAt(GameLogicControllerScript.i.playerS.transform);
+			transform.LookAt(InGameController.i.playerS.transform);
 			speed += Time.fixedDeltaTime*speed*10;
 			rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed);
 		}
@@ -56,9 +56,9 @@ public class LootScript : MonoBehaviour {
 			// When player picks loot up
 			Destroy(this.gameObject);
 			Instantiate(particlePrefab, transform.position, particlePrefab.transform.rotation);
-			GameLogicControllerScript.i.playerS.Money += moneyBonus;
-			GameLogicControllerScript.i.playerS.dS.Health += healthBonus;
-			GameLogicControllerScript.i.playerS.Faith += faithBonus;
+			InGameController.i.playerS.Money += moneyBonus;
+			InGameController.i.playerS.dS.Health += healthBonus;
+			InGameController.i.playerS.Faith += faithBonus;
 		}
 	}
 

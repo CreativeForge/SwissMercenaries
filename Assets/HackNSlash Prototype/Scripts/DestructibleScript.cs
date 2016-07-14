@@ -59,7 +59,7 @@ public class DestructibleScript : MonoBehaviour {
 		if(isDead) {
 
 			// Plunder mode?
-			if((GameLogicControllerScript.i.GameMode == 1) && hasLoot) {
+			if((InGameController.i.GameMode == 1) && hasLoot) {
 
 				hasLoot = false;
 
@@ -68,7 +68,7 @@ public class DestructibleScript : MonoBehaviour {
 				// Create loot
 				for(int i = 0;i < Random.Range(3, 8);i++) {
 					GameObject clone;
-					clone = Instantiate(lootObject, transform.position+Vector3.up*0.3f, Random.rotation) as GameObject;
+					clone = Instantiate(lootObject, transform.position+Vector3.up*0.2f*i, Random.rotation) as GameObject;
 					clone.GetComponent<Rigidbody>().AddExplosionForce(30, transform.position, 1);
 
 				}
@@ -108,7 +108,7 @@ public class DestructibleScript : MonoBehaviour {
 			pS.Die();
 		}else if(HasLoot) {
 			// Enemy dies
-			GameLogicControllerScript.i.EnemyDies();
+			InGameController.i.EnemyDies();
 		}
 
 		if(!appearanceDead && !anim){
@@ -168,10 +168,10 @@ public class DestructibleScript : MonoBehaviour {
 
 			health = Mathf.Clamp(value,0,100);
 			if(pS){
-				GameLogicControllerScript.i.AdjustHealthVisualisation();
-				GameLogicControllerScript.i.notificationC.UpdateHealthPlayer(diff, transform.position);
+				InGameController.i.AdjustHealthVisualisation();
+				InGameController.i.notificationC.UpdateHealthPlayer(diff, transform.position);
 			}else
-				GameLogicControllerScript.i.notificationC.UpdateHealthEnemy(diff, transform.position);
+				InGameController.i.notificationC.UpdateHealthEnemy(diff, transform.position);
 			if(health <= 0){
 				Die();
 			}

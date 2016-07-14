@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameLogicControllerScript : MonoBehaviour {
+public class InGameController : MonoBehaviour {
 
-	public static GameLogicControllerScript i;
+	public static InGameController i;
 	public PlayerScript playerS;
 
 	public GameObject canvasGO;
@@ -236,7 +236,7 @@ public class GameLogicControllerScript : MonoBehaviour {
 				// plunder
 				case 1:
 					playerS.SetToOriginalPosition();
-					gameModeCounter = 20;
+					gameModeCounter = allLootableEnemiesCount*3;
 					counterTextGO.SetActive(true);
 					plunderText.gameObject.SetActive(true);
 					tutorialText.gameObject.SetActive(false);

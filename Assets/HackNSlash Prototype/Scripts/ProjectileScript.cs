@@ -12,7 +12,7 @@ public class ProjectileScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		targetPos = GameLogicControllerScript.i.playerS.transform.position;
+		targetPos = InGameController.i.playerS.transform.position;
 		rotCenterT.parent = null;
 		rotCenterT.position = GetCenterPoint();
 		rotCenterT.LookAt(new Vector3(targetPos.x,rotCenterT.position.y,targetPos.z) );
