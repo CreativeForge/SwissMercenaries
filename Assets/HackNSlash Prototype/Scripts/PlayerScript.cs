@@ -35,7 +35,7 @@ public class PlayerScript : MonoBehaviour {
 
 	public Animator anim;
 	public DestructibleScript dS;
-	HitterScript hS;
+	public HitterScript hS;
 
 	bool isGrounded;
 

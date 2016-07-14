@@ -6,18 +6,21 @@ public class EnemyScript : MonoBehaviour {
 	public float speed = 1;
 	public Rigidbody rB;
 	public DestructibleScript dS;
+	public HitterScript hS;
 
 	public bool lookAtPlayer = false;
 	public bool smoothLookAtPlayer = false;
 	public bool stopNearPlayer = false;
 	public bool startAttackingWhenPlayerEntersTrigger = false;
 	bool isWalking = false;
+	public bool isStandingStill = false;
 	bool playerHasEnteredTrigger = false;
 
 	public Animator anim;
 
 	// Use this for initialization
 	void Start () {
+		hS = GetComponent<HitterScript>();
 	}
 	
 	// Update is called once per frame
@@ -34,6 +37,7 @@ public class EnemyScript : MonoBehaviour {
 		}
 		if(isWalking){
 			if(Vector3.Distance(rB.position, tPlayerPos)>2 || !stopNearPlayer){
+				isStandingStill = false;
 				if(anim){
 					rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed * speed * speed);
 					anim.SetFloat("Velocity",0.5f * speed );
@@ -41,8 +45,10 @@ public class EnemyScript : MonoBehaviour {
 					rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed);
 
 				}
-			}else
+			}else{
+				isStandingStill = true;
 				if(anim)anim.SetFloat("Velocity",0);
+			}
 		}
 	}
 

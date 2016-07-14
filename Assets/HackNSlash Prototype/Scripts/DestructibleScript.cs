@@ -24,6 +24,7 @@ public class DestructibleScript : MonoBehaviour {
 	public bool hasLoot = true;
 
 	PlayerScript pS;
+	EnemyScript eS;
 
 	public Animator anim;
 	public bool useAnimOnDeath = false;
@@ -37,6 +38,7 @@ public class DestructibleScript : MonoBehaviour {
 		bloodParticlesGO.transform.parent = transform;
 		bloodParticlesGO.SetActive(false);
 		pS = GetComponent<PlayerScript>();
+		eS = GetComponent<EnemyScript>();
 	}
 
 	// Update is called once per frame
@@ -55,6 +57,10 @@ public class DestructibleScript : MonoBehaviour {
 
 		if(Invincible) return;
 
+		if(eS && eS.hS && eS.hS.IsBlocking){
+			eS.rB.AddForce(transform.forward * -100);
+			return;
+		}
 
 		if(isDead) {
 

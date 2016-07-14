@@ -7,6 +7,8 @@ public class HitterScript : MonoBehaviour {
 	public bool hitsOnlyPlayer = true;
 	public bool isShooter = false;
 	bool shooting = false;
+	public bool canBlock = false;
+	bool isBlocking = false;
 	public GameObject projectilePrefab;
 	public float hitForce = 10;
 	float originalHitForce;
@@ -82,7 +84,7 @@ public class HitterScript : MonoBehaviour {
 		// if is enemy and is dead, or is player and is dead
 		if((eS && eS.dS && eS.dS.IsDead) || (pS && pS.dS && pS.dS.IsDead ))return;
 
-		HandleHitting();
+		HandleFighting();
 
 
 		if(!pS) return;
@@ -126,7 +128,7 @@ public class HitterScript : MonoBehaviour {
 			Debug.LogWarning("is not a shooter");
 	}
 
-	void HandleHitting(){
+	void HandleFighting(){
 
 		if (alwaysDangerous) return;
 
@@ -148,8 +150,11 @@ public class HitterScript : MonoBehaviour {
 			}else{
 				// is enemy
 				if(lastHitTime+hitIntervalTime<Time.time){
+					if(IsBlocking) IsBlocking = false;
 					//DoSlowHit();
 					DoFastSwordHit();
+				}else if(canBlock && !isHittingFast && !isHittingSlow && !IsBlocking && eS.isStandingStill){
+					IsBlocking = true;
 				}
 			}
 
@@ -182,7 +187,16 @@ public class HitterScript : MonoBehaviour {
 	}
 
 
-
+	public bool IsBlocking{
+		get{
+			return isBlocking;
+		}
+		set{
+			isBlocking = value;
+			if(canBlock) Debug.Log("isblocking: "+isBlocking);
+			if(anim) anim.SetBool("IsBlockingBool", isBlocking);
+		}
+	}
 
 
 	void DoShoot(){
@@ -217,7 +231,8 @@ public class HitterScript : MonoBehaviour {
 			// For Enemy
 
 			lastHitTime = Time.time;
-
+			if(canBlock) Debug.Log("fast hit time: "+lastHitTime);
+				
 			if(anim)
 				anim.SetTrigger("Attack01RunTrigger");
 			else{
