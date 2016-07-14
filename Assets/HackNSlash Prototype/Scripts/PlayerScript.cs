@@ -26,6 +26,7 @@ public class PlayerScript : MonoBehaviour {
 
 	public bool isInHolyRoge = false;
 	public GameObject holyHaloGO;
+	public GameObject holyShineGO;
 	float holyRageDuration = 10;
 	float holyRageStartTime = 0;
 
@@ -254,6 +255,7 @@ public class PlayerScript : MonoBehaviour {
 	void StartHolyRage(){
 		isInHolyRoge = true;
 		holyHaloGO.SetActive(true);
+		holyShineGO.SetActive(true);
 		holyRageStartTime = Time.time;
 		dS.Invincible = true;
 		Faith = 10;
@@ -269,6 +271,7 @@ public class PlayerScript : MonoBehaviour {
 		isInHolyRoge = false;
 		dS.Invincible = false;
 		holyHaloGO.SetActive(false);
+		holyShineGO.SetActive(false);
 		speed = originalSpeed;
 		hS.ResetHitForce();
 		hS.weaponTrailCurrentGO = hS.weaponTrailNormalGO;

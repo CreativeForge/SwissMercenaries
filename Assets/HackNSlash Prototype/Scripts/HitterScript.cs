@@ -55,7 +55,7 @@ public class HitterScript : MonoBehaviour {
 	}
 
 	public void ModHitForce(float inMod){
-		hitForce *= inMod;
+		hitForce = originalHitForce * inMod;
 	}
 
 	public void ResetHitForce(){
