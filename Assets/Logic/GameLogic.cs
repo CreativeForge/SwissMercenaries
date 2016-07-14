@@ -93,21 +93,21 @@ public class GameLogic : MonoBehaviour {
 
 
 	void ActivateStateIngame() {
-		Debug.Log("GameLogic.ActivateStateIngame();");
+		// Debug.Log("GameLogic.ActivateStateIngame();");
 		DeactivateBoth();
 		camGame.enabled = true ;
 
 	}
 
 	void ActivateStateEditor() {
-		Debug.Log("GameLogic.ActivateStateIngame();");
+		// Debug.Log("GameLogic.ActivateStateIngame();");
 		DeactivateBoth();
 		camEditor.enabled = true ;
 
 	}
 
 		void DeactivateBoth() {
-			Debug.Log("GameLogic.DeactivateBoth();");
+			// Debug.Log("GameLogic.DeactivateBoth();");
 			camGame.enabled = false ;
 			camEditor.enabled = false ;
 		}
