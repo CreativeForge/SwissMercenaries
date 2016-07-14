@@ -236,7 +236,7 @@ public class InGameController : MonoBehaviour {
 				// plunder
 				case 1:
 					playerS.SetToOriginalPosition();
-					gameModeCounter = allLootableEnemiesCount*3;
+					gameModeCounter = allLootableEnemiesCount*5;
 					counterTextGO.SetActive(true);
 					plunderText.gameObject.SetActive(true);
 					tutorialText.gameObject.SetActive(false);

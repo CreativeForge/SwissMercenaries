@@ -63,13 +63,13 @@ public class DestructibleScript : MonoBehaviour {
 
 				hasLoot = false;
 
-				ragdollCenter.GetComponent<Rigidbody>().AddForce(Vector3.up*1000);
+				ragdollCenter.GetComponent<Rigidbody>().AddForce(Vector3.up*1500);
 
 				// Create loot
 				for(int i = 0;i < Random.Range(3, 8);i++) {
 					GameObject clone;
 					clone = Instantiate(lootObject, transform.position+Vector3.up*0.2f*i, Random.rotation) as GameObject;
-					clone.GetComponent<Rigidbody>().AddExplosionForce(30, transform.position, 1);
+					clone.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-1,2), 1f, Random.Range(-1,2))*20);
 
 				}
 				SetColor(Color.black);

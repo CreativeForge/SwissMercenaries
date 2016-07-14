@@ -13,6 +13,9 @@ public class LootScript : MonoBehaviour {
 	public float fightingSpiritBonus = 0;
 	public float faithBonus = 0;
 	GameObject appGO;
+	public bool canBeEvil = false;
+	public float chanceToBeEvil = 0.3f;
+	public GameObject evilPrefab;
 
 	public GameObject[] AppereancePrefabs;
 
@@ -27,6 +30,7 @@ public class LootScript : MonoBehaviour {
 			appGO = Instantiate(randPrefab, transform.position, randPrefab.transform.rotation) as GameObject;
 			appGO.transform.parent = transform;
 		}
+
 	}
 
 	void FixedUpdate(){
@@ -42,7 +46,13 @@ public class LootScript : MonoBehaviour {
 
 	IEnumerator WaitNActivateTrigger(){
 		yield return new WaitForSeconds(0.7f);
-		triggerGO.SetActive(true);
+		if(canBeEvil && Random.value < chanceToBeEvil){
+			Instantiate(evilPrefab, transform.position, Quaternion.identity);
+			Destroy(gameObject);
+
+		}else{
+			triggerGO.SetActive(true);
+		}
 	}
 
 
