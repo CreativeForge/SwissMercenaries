@@ -53,6 +53,7 @@ public class HitterScript : MonoBehaviour {
 		StartCoroutine(WaitNSetWeaponTrail());
 
 		originalHitForce = hitForce;
+		originalHitStrongForce = hitStrongForce;
 
 		rB = GetComponent<Rigidbody>();
 
@@ -298,7 +299,7 @@ public class HitterScript : MonoBehaviour {
 			float tHitForce = hitForce;
 			if(pS.IsWithHalberd)
 				tHitForce = hitStrongForce;
-			inDS.IsHitted(hitForce);
+			inDS.IsHitted(tHitForce);
 			return true;
 		}else{ // enemy hits something
 			if(inDS == InGameController.i.playerS.dS){ // enemy hits player
