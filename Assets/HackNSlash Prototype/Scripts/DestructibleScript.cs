@@ -108,6 +108,7 @@ public class DestructibleScript : MonoBehaviour {
 		isDead = true;
 
 		SetColor(new Color(0.4f,0,0));
+		bloodParticlesGO.SetActive(false);
 
 		// If im not a player
 		if(pS){
