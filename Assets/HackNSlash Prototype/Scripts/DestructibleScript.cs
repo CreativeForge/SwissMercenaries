@@ -184,10 +184,9 @@ public class DestructibleScript : MonoBehaviour {
 
 			health = Mathf.Clamp(value,0,100);
 			if(pS){
-				InGameController.i.AdjustHealthVisualisation();
-				InGameController.i.notificationC.UpdateHealthPlayer(diff, transform.position);
+				InGameController.i.AdjustHealthVisualisation(diff);
 			}else
-				InGameController.i.notificationC.UpdateHealthEnemy(diff, transform.position);
+				InGameController.i.UpdateHealthEnemy(diff, transform.position);
 			if(health <= 0){
 				Die();
 			}

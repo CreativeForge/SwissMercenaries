@@ -7,7 +7,7 @@ public class PlayerAnimationTriggerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if(!hitterS) Debug.LogError("no hitterscript: "+name+" id: "+GetInstanceID()+" parent: "+transform.parent.name);
+		if(!hitterS) Debug.Log("no hitterscript: "+name+" id: "+GetInstanceID()+" parent: "+transform.parent.name);
 
 	}
 	

@@ -267,8 +267,7 @@ public class PlayerScript : MonoBehaviour {
 				money = 0;
 			else
 				money = value;
-			InGameController.i.AdjustMoneyVisualisation();
-			InGameController.i.notificationC.UpdateMoney(diff,transform.position);
+			InGameController.i.AdjustMoneyVisualisation(diff, transform.position);
 		}
 	}
 
@@ -285,8 +284,7 @@ public class PlayerScript : MonoBehaviour {
 			if(faith>99){
 				StartHolyRage();
 			}
-			InGameController.i.AdjustFaithVisualisation();
-			if(diff>Mathf.Abs(1))InGameController.i.notificationC.UpdateFaith(diff,transform.position);
+			InGameController.i.AdjustFaithVisualisation(diff, transform.position);
 		}
 		
 	}

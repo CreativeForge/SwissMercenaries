@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 using System.Collections;
@@ -10,47 +9,27 @@ public class InGameController : MonoBehaviour {
 	public static InGameController i;
 	public PlayerScript playerS;
 
-	public GameObject canvasGO;
-	public RectTransform healthT;
-	public RectTransform faithT;
-	public RectTransform holyRageT;
+	private int gameMode = 0; // GameModes: 0 Kill, 1 Plunder
+	public float gameModeCounter = 20;
 
-	// Game modes:
-	// 0	kill
-	// 1	plunder
-	// ...
-	private int gameMode = 0;
-	private float gameModeCounter = 20;
-	private GameObject panelModeChangeGO;
-	private GameObject counterTextGO;
-	private Text counterText;
-	public Text plunderText;
-	public Text tutorialText;
-	public Text moneyText;
-	public Text enemyText;
 	public Material normalSkyBoxMat;
 	public Material plunderSkyBoxMat;
 
 	public GameObject CameraPrefab;
 
 	List<DestructibleScript> allLootableEnemies = new List<DestructibleScript>();
-	uint countDeadEnemies = 0;
+	int countDeadEnemies = 0;
 
 	public GameObject camGO;
 	public Camera cam;
 
 	public bool inEditorUsed = true;
 
-	public NotificationCenterPrototype notificationC;
+	NotificationCenterPrototype notificationC;
 
 	// Use this for initialization
 	void Awake () {
 		i = this;
-		canvasGO.SetActive(true);
-		counterTextGO = canvasGO.transform.FindChild("Counter").gameObject;
-		counterText = counterTextGO.GetComponent<Text>();
-
-		panelModeChangeGO = canvasGO.transform.FindChild("WhitePanel").gameObject;
 
 		if(!normalSkyBoxMat)normalSkyBoxMat=RenderSettings.skybox;
 
@@ -95,29 +74,6 @@ public class InGameController : MonoBehaviour {
 		}
 	}
 
-	public void AdjustHealthVisualisation(){
-		//Debug.Log("healthT: "+healthT);
-		//Debug.Log("playerS: "+playerS);
-		//Debug.Log("playerS.dS: "+playerS.dS);
-		healthT.localScale = new Vector3(playerS.dS.health/100f,1,1);
-	}
-	public void AdjustFaithVisualisation(){
-		faithT.localScale = new Vector3(playerS.Faith/100f,1,1);
-	}
-	public void AdjustMoneyVisualisation(){
-		//Debug.Log("healthT: "+healthT);
-		//Debug.Log("playerS: "+playerS);
-		//Debug.Log("playerS.dS: "+playerS.dS);
-		moneyText.text = "Gold gesammelt: "+playerS.Money;
-	}
-
-	public void AdjustEnemyCountVisualisation(){
-		enemyText.text = "Landsknechte getötet: "+countDeadEnemies+"/"+allLootableEnemies.Count;
-	}
-
-	public void AdjustHolyRageVisualisation(){
-		holyRageT.localScale = new Vector3(playerS.holyRageEnergy/100f,1,1);
-	}
 	
 	// Update is called once per frame
 	void Update() {
@@ -149,11 +105,6 @@ public class InGameController : MonoBehaviour {
 	void HandleHolyRageGUIVisualisation(){
 		if(playerS.isInHolyRage){
 			AdjustHolyRageVisualisation();
-			if(Mathf.Round(playerS.holyRageEnergy/2) % 2 == 0)
-				holyRageT.gameObject.SetActive(true);
-			else
-				holyRageT.gameObject.SetActive(false);
-				
 		}
 	}
 
@@ -226,14 +177,7 @@ public class InGameController : MonoBehaviour {
 			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		}
 	}
-
-	// On GUI drawing
-	void OnGUI() {
-
-		counterText.text = gameModeCounter.ToString();
-
-	}
-
+		
 	// GameMode property
 	public int GameMode {
 
@@ -264,10 +208,7 @@ public class InGameController : MonoBehaviour {
 					playerS.SetToOriginalPosition();
 					ReloadCamera();
 					gameModeCounter = allLootableEnemies.Count*4;
-					counterTextGO.SetActive(true);
-					plunderText.gameObject.SetActive(true);
-					tutorialText.gameObject.SetActive(false);
-				moneyText.gameObject.SetActive(true);
+					notificationC.StartPlunderModeUI();
 					RenderSettings.skybox = plunderSkyBoxMat;
 					break;
 
@@ -276,28 +217,44 @@ public class InGameController : MonoBehaviour {
 					break;
 
 			}
-
-			// GUI Flash
-			StartCoroutine(FlashGUI(0.4f));
-
 		}
+	}
 
+	public void UpdateHealthEnemy(float inValue, Vector3 inPos){
+		notificationC.UpdateHealthEnemy(inValue, inPos);
+	}
+
+	public void AdjustHealthVisualisation(float inDiff){
+		notificationC.AdjustHealthVisualisation(playerS.dS.health);
+		notificationC.UpdateHealthPlayer(inDiff, playerS.transform.position);
+	}
+	public void AdjustFaithVisualisation(){
+		notificationC.AdjustFaithVisualisation(playerS.Faith);
+	}
+	public void AdjustFaithVisualisation(float inDiff, Vector3 inPos){
+		AdjustFaithVisualisation();
+		if(inDiff>Mathf.Abs(1))InGameController.i.notificationC.UpdateFaith(inDiff, inPos);
+	}
+
+	public void AdjustMoneyVisualisation(){
+		notificationC.AdjustMoneyVisualisation(playerS.Money);
 	}
 		
-	// Timeout method
-	IEnumerator FlashGUI(float timeOut) {
+	public void AdjustMoneyVisualisation(float inDiff, Vector3 inPos){
+		AdjustMoneyVisualisation();
+		notificationC.UpdateMoney(inDiff, inPos);
+	}
 
-		float flashTime = timeOut / 2f;
+	public void AdjustEnemyCountVisualisation(){
+		notificationC.AdjustEnemyCountVisualisation(countDeadEnemies, allLootableEnemies.Count);
+	}
 
-		panelModeChangeGO.gameObject.SetActive(true);
-		panelModeChangeGO.GetComponent<CanvasRenderer>().SetAlpha(0.0f);
-		panelModeChangeGO.GetComponent<Image>().CrossFadeAlpha(1.0f, flashTime, false);
-		yield return new WaitForSeconds(flashTime);
-		panelModeChangeGO.GetComponent<Image>().CrossFadeAlpha(0.0f, flashTime, false);
-		yield return new WaitForSeconds(flashTime);
-		panelModeChangeGO.SetActive(false);
-		yield return null;
+	public void AdjustHolyRageVisualisation(){
+		notificationC.AdjustHolyRageVisualisation(playerS.holyRageEnergy);
+	}
 
+	public void ShowInGameMessage(string inMessage, bool inCentered){
+		notificationC.ShowInGameMessage(inMessage, inCentered);
 	}
 
 }

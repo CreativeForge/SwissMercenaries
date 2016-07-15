@@ -23,6 +23,8 @@ public class HalberdToPickupTriggerScript : MonoBehaviour {
 			InGameController.i.playerS.HasPickedUpHalberd = true;
 			InGameController.i.playerS.StartHolyRage();
 			GetComponent<Collider>().enabled = false;
+			//InGameController.i.ShowInGameMessage("HALBERD GAINED!!!\nNow you have a Halberd. Its a very powerfull weapon!" +
+			//	"\nBut its slower than de sword. To change weapons press J on the keyboard oder B on the Controller.");
 		}
 	}
 }

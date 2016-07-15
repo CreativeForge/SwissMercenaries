@@ -1,18 +1,81 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class NotificationCenterPrototype : MonoBehaviour {
 
+	public GameObject canvasGO;
+	public RectTransform healthT;
+	public RectTransform faithT;
+	public RectTransform holyRageT;
+
+	public GameObject panelModeChangeGO;
+	public GameObject counterTextGO;
+	public Text counterText;
+	public Text plunderText;
+	public Text tutorialText;
+	public Text moneyText;
+	public Text enemyText;
+	public Text inGameMessageTopText;
+	public GameObject inGameMessageTopBGGO;
+	public Text inGameMessageCenterText;
+	public GameObject inGameMessageCenterBGGO;
+
 	public GameObject FloatingCombatTextPrefab;
 
+	bool messageIsShowed;
+
 	// Use this for initialization
-	void Start () {
-	
+	void Awake () {		
+		canvasGO.SetActive(true);
+		
+		HideAllInGameMessages();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	// On GUI drawing
+	void OnGUI() {
+		if(counterTextGO.activeSelf)
+			counterText.text = InGameController.i.gameModeCounter.ToString();
+
+	}
+
+
+	public void StartPlunderModeUI(){
+		counterTextGO.SetActive(true);
+		plunderText.gameObject.SetActive(true);
+		tutorialText.gameObject.SetActive(false);
+		moneyText.gameObject.SetActive(true);
+
+		// GUI Flash
+		StartCoroutine(FlashGUI(0.4f));
+	}
+
+
+	public void AdjustHealthVisualisation(float inHealth){
+		healthT.localScale = new Vector3(inHealth/100f,1,1);
+	}
+	public void AdjustFaithVisualisation(float inFaith){
+		faithT.localScale = new Vector3(inFaith/100f,1,1);
+	}
+	public void AdjustMoneyVisualisation(uint inMoney){
+		moneyText.text = "Gold gesammelt: "+inMoney;
+	}
+
+	public void AdjustEnemyCountVisualisation(int inCount, int inAllCount){
+		enemyText.text = "Landsknechte getötet: "+inCount+"/"+inAllCount;
+	}
+
+	public void AdjustHolyRageVisualisation(float inEnergy){
+		holyRageT.localScale = new Vector3(inEnergy/100f,1,1);
+		if(Mathf.Round(inEnergy/2) % 2 == 0)
+			holyRageT.gameObject.SetActive(true);
+		else
+			holyRageT.gameObject.SetActive(false);
 	}
 		
 	public void UpdateHealthEnemy(float inValue, Vector3 inPos){
@@ -67,5 +130,44 @@ public class NotificationCenterPrototype : MonoBehaviour {
 		temp = Instantiate (FloatingCombatTextPrefab, screenPos, Quaternion.identity) as GameObject;
 		combatText = temp.gameObject.GetComponent<CombatText> ();
 		combatText.ShowText (textType,value);
+	}
+
+	public void ShowInGameMessage(string inMessage, bool inCentered){
+		messageIsShowed = true;
+		if(inCentered){
+			inGameMessageCenterText.gameObject.SetActive(true);
+			inGameMessageCenterText.text = inMessage;
+			inGameMessageCenterBGGO.SetActive(true);
+		}else{
+			inGameMessageTopText.gameObject.SetActive(true);
+			inGameMessageTopText.text = inMessage;
+			inGameMessageTopBGGO.SetActive(true);
+		}
+	}
+
+	public void HideAllInGameMessages(){
+		messageIsShowed = false;
+		inGameMessageTopText.gameObject.SetActive(false);
+		inGameMessageTopBGGO.SetActive(false);
+		inGameMessageCenterText.gameObject.SetActive(false);
+		inGameMessageCenterBGGO.SetActive(false);
+		
+	}
+
+
+	// Timeout method
+	IEnumerator FlashGUI(float timeOut) {
+
+		float flashTime = timeOut / 2f;
+
+		panelModeChangeGO.gameObject.SetActive(true);
+		panelModeChangeGO.GetComponent<CanvasRenderer>().SetAlpha(0.0f);
+		panelModeChangeGO.GetComponent<Image>().CrossFadeAlpha(1.0f, flashTime, false);
+		yield return new WaitForSeconds(flashTime);
+		panelModeChangeGO.GetComponent<Image>().CrossFadeAlpha(0.0f, flashTime, false);
+		yield return new WaitForSeconds(flashTime);
+		panelModeChangeGO.SetActive(false);
+		yield return null;
+
 	}
 }
