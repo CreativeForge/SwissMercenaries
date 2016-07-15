@@ -49,6 +49,7 @@ public class PlayerScript : MonoBehaviour {
 	public GameObject halberdGO;
 
 	Vector3 originalPosition;
+	Quaternion originalRotation;
 
 
 	void Awake(){
@@ -56,6 +57,7 @@ public class PlayerScript : MonoBehaviour {
 		dS = GetComponent<DestructibleScript>();
 		hS = GetComponent<HitterScript>();
 		originalPosition = transform.position;
+		originalRotation = transform.rotation;
 		originalSpeed = speed;
 
 		halberdGO.SetActive(false);
@@ -249,6 +251,7 @@ public class PlayerScript : MonoBehaviour {
 
 	public void SetToOriginalPosition(){
 		transform.position = originalPosition;
+		transform.rotation = originalRotation;
 	}
 
 	public uint Money{
@@ -315,6 +318,7 @@ public class PlayerScript : MonoBehaviour {
 		hS.ResetHitForce();
 		hS.weaponTrailCurrentGO = hS.weaponTrailNormalGO;
 		if(hS.weaponTrailHolyGO)hS.weaponTrailHolyGO.SetActive(false);
+		InGameController.i.AdjustHolyRageVisualisation();
 	}
 
 

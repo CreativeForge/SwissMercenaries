@@ -92,8 +92,7 @@ public class InGameController : MonoBehaviour {
 		}
 		AdjustEnemyCountVisualisation(0);
 		AdjustMoneyVisualisation();
-		holyRageT.localScale = new Vector3(playerS.holyRageEnergy/100f,1,1);
-			
+		AdjustHolyRageVisualisation();			
 	}
 
 	public void AdjustHealthVisualisation(){
@@ -116,7 +115,9 @@ public class InGameController : MonoBehaviour {
 		enemyText.text = "Landsknechte getötet: "+inCount+"/"+allLootableEnemiesCount;
 	}
 
-
+	public void AdjustHolyRageVisualisation(){
+		holyRageT.localScale = new Vector3(playerS.holyRageEnergy/100f,1,1);
+	}
 	
 	// Update is called once per frame
 	void Update() {
@@ -147,7 +148,7 @@ public class InGameController : MonoBehaviour {
 		
 	void HandleHolyRageGUIVisualisation(){
 		if(playerS.isInHolyRage){
-			holyRageT.localScale = new Vector3(playerS.holyRageEnergy/100f,1,1);
+			AdjustHolyRageVisualisation();
 			if(Mathf.Round(playerS.holyRageEnergy/2) % 2 == 0)
 				holyRageT.gameObject.SetActive(true);
 			else
@@ -261,6 +262,7 @@ public class InGameController : MonoBehaviour {
 				// plunder
 				case 1:
 					playerS.SetToOriginalPosition();
+					ReloadCamera();
 					gameModeCounter = allLootableEnemiesCount*5;
 					counterTextGO.SetActive(true);
 					plunderText.gameObject.SetActive(true);
@@ -281,7 +283,7 @@ public class InGameController : MonoBehaviour {
 		}
 
 	}
-
+		
 	// Timeout method
 	IEnumerator FlashGUI(float timeOut) {
 
