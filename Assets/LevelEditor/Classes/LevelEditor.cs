@@ -85,19 +85,33 @@ public class LevelEditor : MonoBehaviour {
 	void AddToEditorHistory( string msg ) {
 
 		// in undo mode? 
-		if (historyIndexMinus<0) {
-			ArrayList arr = GetActualEditorHistory();
-			for (int i=(arr.Count+historyIndexMinus-1);i>=0;i--) {
-				LevelHistory lvx = (LevelHistory) arr[i];
-				arrLevel.Remove(lvx);
+		// remove the over the limit
+		ArrayList arr = GetActualEditorHistory();
+		if (historyIndexMinus>0) {
+
+			// version 2.0
+			if (arr.Count>0) {
+				// Debug.Log("LevelEditor.AddToEditorHistory() // historyIndexMinus = "+historyIndexMinus);
+				for (int i=0;i<historyIndexMinus;i++) {
+					// Debug.Log("LevelEditor.AddToEditorHistory() // "+i+"---"+(arr.Count-1-i)+"--"+arr[arr.Count-1-i].GetType().Name);
+					LevelHistory lvx = (LevelHistory)  arr[arr.Count-1-i];
+					if (lvx!=null) {
+					// Debug.Log("LevelEditor.AddToEditorHistory() Remove // "+i+"---"+(arr.Count-1-i));
+					arrEditorHistory.Remove(lvx);
+					}
+				}
 			}
 			historyIndexMinus = 0;
+
+
 		}
 
+		// add now
 		LevelHistory lv = new LevelHistory();
 		lv.level = actualLevel;
 		lv.message = msg;
 
+		// copy level ... 
 		GameElement ge;
 		for (int i=0;i<arrLevel.Count;i++) {
 			ge = (GameElement) arrLevel[i];
@@ -127,17 +141,37 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	// 0 ... 
-	int historyIndexMinus = 1;
+	int historyIndexMinus = 0;
 
 	void Undo( ) {
-		historyIndexMinus--;
+		historyIndexMinus++;
 		ArrayList arr = GetActualEditorHistory();
-		if ((arr.Count+historyIndexMinus)<0) {
-			historyIndexMinus = 0;
+		int concreteIndex = arr.Count -1 - historyIndexMinus; // 12 - 1  -5 
+		if (historyIndexMinus>(arr.Count -1)) {
+			historyIndexMinus = arr.Count -1;
+			concreteIndex = 0;
 			AddEditorMessage("Sorry no more UNDOs");
 		}
-		LevelHistory lvHist = (LevelHistory) arr[arr.Count+historyIndexMinus];
+		LevelHistory lvHist = (LevelHistory) arr[concreteIndex];
 		UndoTo(lvHist);
+	}
+
+	// Militär Putsch in der Turkei
+
+
+	void Redo( ) {
+		historyIndexMinus--;
+		ArrayList arr = GetActualEditorHistory();
+		int concreteIndex = arr.Count -1 - historyIndexMinus;
+		if (historyIndexMinus<0) {
+			historyIndexMinus = 0;
+			concreteIndex = arr.Count -1;
+			AddEditorMessage("Actual!");
+			
+		}
+		LevelHistory lvHist = (LevelHistory) arr[concreteIndex];
+		UndoTo(lvHist);
+
 	}
 
 	void UndoTo( LevelHistory lv ) {
@@ -156,19 +190,6 @@ public class LevelEditor : MonoBehaviour {
 		UpdateShowEvaluationData ();
 
 		SaveLevel( actualLevel );
-
-	}
-
-	void Redo( ) {
-		historyIndexMinus++;
-		ArrayList arr = GetActualEditorHistory();
-		if (historyIndexMinus>0) {
-			historyIndexMinus = 0;
-			AddEditorMessage("Actual!");
-
-		}
-		LevelHistory lvHist = (LevelHistory) arr[arr.Count+historyIndexMinus];
-		UndoTo(lvHist);
 
 	}
 
@@ -2953,6 +2974,9 @@ public class LevelEditor : MonoBehaviour {
 						// mouse up
 						if (Input.GetMouseButtonUp(0)) {
 
+							if (editorSelected!=null) {
+							
+							Debug.Log("LevelEditor.OnGUI() // MouseButtonUp(0)");
 
 							float raster=GetRaster();
 							// Debug.Log ("raster: "+raster);
@@ -2982,6 +3006,8 @@ public class LevelEditor : MonoBehaviour {
 							// move
 							editorSelected=null;
 							editorToolMove="";
+							
+							}
 						}
 						
 					}
@@ -3125,7 +3151,7 @@ public class LevelEditor : MonoBehaviour {
 				selectionDialogeVisual.width = 140;
 
 
-				// ADD IMPORTANT THINGS ...
+				// ADD IMPORTANT =NAMED THINGS ...
 
 
 				// show [EDIT][SELECTION]
@@ -3135,6 +3161,9 @@ public class LevelEditor : MonoBehaviour {
 				for (int i=0; i<arrNames.Count; i++) {
 					GameElement gae = (GameElement)arrNames [i];
 					string text = "" + gae.name;
+					if (gae.name.Equals("")) {
+						text = text + "("+gae.subtype+")";
+					}
 					GUIStyle guix = editorButtonStyleNotActive;
 					if (editorSelected==gae) guix = editorButtonActiveStyle;
 					bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 140, 20), ""+text+"", guix);
@@ -3151,11 +3180,10 @@ public class LevelEditor : MonoBehaviour {
 				// is there a selected one?
 				if (editorSelected!=null) {
 					// check
-					GUI.Button (new Rect ( selectionX, selectionY, 140, 20), "NEAR BY ", editorButtonActiveStyle);
-					selectionY = selectionY + 20;
 
 					GameElement xby;
 					ArrayList arrxx = new ArrayList();
+					int county = 0;
 					for (int i=0;i<arrLevel.Count;i++) {
 						xby = (GameElement)arrLevel[i];
 						float sizewidth = 0.5f;
@@ -3164,6 +3192,7 @@ public class LevelEditor : MonoBehaviour {
 						if ((middlex>(xby.position.x-sizewidth)) && (middlex<(xby.position.x+sizewidth))) {
 							if ((middlez>(xby.position.z-sizewidth)) && (middlez<(xby.position.z+sizewidth))) {
 								arrxx.Add(xby);
+								county++;
 							}
 						}
 					}
@@ -3171,10 +3200,16 @@ public class LevelEditor : MonoBehaviour {
 					// sort?
 
 					// show
+					if (county>1) {
+					GUI.Button (new Rect ( selectionX, selectionY, 140, 20), "NEAR BY ", editorButtonActiveStyle);
+					selectionY = selectionY + 20;
 					int counterx = 0;
 					for (int i=0;i<arrxx.Count; i++) {
 						GameElement gae = (GameElement)arrxx [i];
 						string text = "" + gae.name;
+						if (gae.name.Equals("")) {
+							text = text + "("+gae.subtype+")";
+						}
 						GUIStyle guix = editorButtonStyleNotActive;
 						// if (editorSelected==gae) guix = editorButtonActiveStyle;
 						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 240, 20), ""+text+"", guix);
@@ -3185,9 +3220,11 @@ public class LevelEditor : MonoBehaviour {
 						counterx++;
 						if (counterx>5) break;
 					}
+					}
 				}
 
 				// arrEditorHistory
+				if (false) {
 				ArrayList arr = GetActualEditorHistory();
 				selectionX = 0;
 				// GUI.Button (new Rect ( selectionX+100, selectionY, 240, 20), ""+arr.Count);
@@ -3207,6 +3244,7 @@ public class LevelEditor : MonoBehaviour {
 					selectionY = selectionY + 20;
 					counter++;
 					if (counter>5) break;
+				}
 				}
 
 				selectionDialogeVisual.height = selectionY - selectionDialogeVisual.y;
@@ -3610,7 +3648,7 @@ public class LevelEditor : MonoBehaviour {
 									int max = words.Length-1;
 									if (max<0) max=0;
 									int index = UnityEngine.Random.Range(0,max);
-									Debug.Log("LevelEditor.Update() //  ["+index+"]<"+words.Length+" ");
+									// Debug.Log("LevelEditor.Update() //  ["+index+"]<"+words.Length+" ");
 									string subtypeConf = words[index];
 									GameElement editorPrefabXX = GetElementType (editorArea,subtypeConf);
 									if (editorPrefabXX!=null) {
