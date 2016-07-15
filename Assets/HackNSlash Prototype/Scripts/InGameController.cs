@@ -33,8 +33,8 @@ public class InGameController : MonoBehaviour {
 
 	public GameObject CameraPrefab;
 
-	uint allLootableEnemiesCount;
-	DestructibleScript[] allDestructibleScripts;
+	List<DestructibleScript> allLootableEnemies = new List<DestructibleScript>();
+	uint countDeadEnemies = 0;
 
 	public GameObject camGO;
 	public Camera cam;
@@ -83,16 +83,16 @@ public class InGameController : MonoBehaviour {
 	}
 
 	void Start(){
-
-		allDestructibleScripts = FindObjectsOfType<DestructibleScript>();
-		allLootableEnemiesCount = 0;
-		foreach(DestructibleScript tDS in allDestructibleScripts){
-			if(tDS.HasLoot)
-				allLootableEnemiesCount++;
-		}
-		AdjustEnemyCountVisualisation(0);
+		AdjustEnemyCountVisualisation();
 		AdjustMoneyVisualisation();
 		AdjustHolyRageVisualisation();			
+	}
+
+	public void RegistrateLootableEnemy(DestructibleScript inDS){
+		if(inDS.HasLoot) {
+			allLootableEnemies.Add(inDS);
+			AdjustEnemyCountVisualisation();
+		}
 	}
 
 	public void AdjustHealthVisualisation(){
@@ -111,8 +111,8 @@ public class InGameController : MonoBehaviour {
 		moneyText.text = "Gold gesammelt: "+playerS.Money;
 	}
 
-	public void AdjustEnemyCountVisualisation(uint inCount){
-		enemyText.text = "Landsknechte getötet: "+inCount+"/"+allLootableEnemiesCount;
+	public void AdjustEnemyCountVisualisation(){
+		enemyText.text = "Landsknechte getötet: "+countDeadEnemies+"/"+allLootableEnemies.Count;
 	}
 
 	public void AdjustHolyRageVisualisation(){
@@ -178,8 +178,8 @@ public class InGameController : MonoBehaviour {
 	}
 
 	void KillAllLootableEnemies(){
-		foreach(DestructibleScript ds in allDestructibleScripts){
-			if(!ds.IsDead && ds.HasLoot)
+		foreach(DestructibleScript ds in allLootableEnemies){
+			if(!ds.IsDead)
 				ds.Die();
 		}
 	}
@@ -192,21 +192,21 @@ public class InGameController : MonoBehaviour {
 
 	void CheckEnemyDeathCount(){
 
-		uint countDeadEnemies = 0;
+		countDeadEnemies = 0;
 
-		foreach(DestructibleScript ds in allDestructibleScripts){
-			if(ds.IsDead && ds.HasLoot)
+		foreach(DestructibleScript ds in allLootableEnemies){
+			if(ds.IsDead)
 				countDeadEnemies++;
 		}
 
 		// Are all enemies dead?
-		if(allLootableEnemiesCount == countDeadEnemies) {
+		if(allLootableEnemies.Count == countDeadEnemies) {
 
 			// Change to plunder game mode
 			GameMode = 1;
 		}
 
-		AdjustEnemyCountVisualisation(countDeadEnemies);
+		AdjustEnemyCountVisualisation();
 
 	}
 
@@ -263,7 +263,7 @@ public class InGameController : MonoBehaviour {
 				case 1:
 					playerS.SetToOriginalPosition();
 					ReloadCamera();
-					gameModeCounter = allLootableEnemiesCount*5;
+					gameModeCounter = allLootableEnemies.Count*4;
 					counterTextGO.SetActive(true);
 					plunderText.gameObject.SetActive(true);
 					tutorialText.gameObject.SetActive(false);

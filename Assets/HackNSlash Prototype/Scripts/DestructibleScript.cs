@@ -25,12 +25,13 @@ public class DestructibleScript : MonoBehaviour {
 
 	PlayerScript pS;
 	EnemyScript eS;
+	HitterScript hS;
 
 	public Animator anim;
 	public bool useAnimOnDeath = false;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		originalColor = appearanceAlive.GetComponent<Renderer>().material.color;
 		if(appearanceDead)appearanceDead.SetActive(false);
 		if(colliderDead)colliderDead.SetActive(false);
@@ -39,6 +40,11 @@ public class DestructibleScript : MonoBehaviour {
 		bloodParticlesGO.SetActive(false);
 		pS = GetComponent<PlayerScript>();
 		eS = GetComponent<EnemyScript>();
+		hS = GetComponent<HitterScript>();
+	}
+
+	void Start(){
+		InGameController.i.RegistrateLootableEnemy(this);
 	}
 
 	// Update is called once per frame
@@ -122,11 +128,13 @@ public class DestructibleScript : MonoBehaviour {
 		if(!appearanceDead && !anim){
 			Destroy(gameObject);
 		}else{
-			
-			GameObject tHitBox1 = GetComponent<HitterScript>().hitBox1;
-			if(tHitBox1) Destroy(tHitBox1);
-			GameObject tHitBox2 = GetComponent<HitterScript>().hitBox2;
-			if(tHitBox2) Destroy(tHitBox2);
+
+			if(hS){
+				GameObject tHitBox1 = hS.hitBox1;
+				if(tHitBox1) Destroy(tHitBox1);
+				GameObject tHitBox2 = hS.hitBox2;
+				if(tHitBox2) Destroy(tHitBox2);
+			}
 
 			if(useAnimOnDeath){
 				anim.SetTrigger("DieTrigger");

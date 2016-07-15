@@ -14,7 +14,7 @@ public class EnemyScript : MonoBehaviour {
 	public bool startAttackingWhenPlayerEntersTrigger = false;
 	bool isWalking = false;
 	public bool isStandingStill = false;
-	bool playerHasEnteredTrigger = false;
+	public bool playerHasEnteredTrigger = false;
 
 	public Animator anim;
 
