@@ -78,17 +78,26 @@ public class LevelEditor : MonoBehaviour {
 	// history for undo / redo ...
 	ArrayList arrEditorHistory = new ArrayList();
 
-	void AddToEditorHistory( ) {
+	void AddToEditorHistory(  ) {
+		AddToEditorHistory( "NoSpecificInputMessage" );
+	}
+
+	void AddToEditorHistory( string msg ) {
 		LevelHistory lv = new LevelHistory();
 		lv.level = actualLevel;
+		lv.message = msg;
 
 		GameElement ge;
 		for (int i=0;i<arrLevel.Count;i++) {
 			ge = (GameElement) arrLevel[i];
-			lv.arrLevel.Add(ge);
+			GameElement gen = ge.Copy();
+			lv.arrLevel.Add(gen);
 		}
 
 		arrEditorHistory.Add(lv);
+
+		// store 
+		SaveLevel( actualLevel );
 	}
 
 
@@ -126,6 +135,8 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		UpdateShowEvaluationData ();
+
+		SaveLevel( actualLevel );
 
 	}
 
@@ -1347,7 +1358,7 @@ public class LevelEditor : MonoBehaviour {
 
 	public void SetEditorPreviewToPrefab( GameObject prefab , float scaling) {
 
-		Debug.Log("SetEditorPreviewToPrefab()");
+		// Debug.Log("SetEditorPreviewToPrefab()");
 
 		// find preview
 		GameObject preview = GameObject.Find("editorpreview");
@@ -1359,7 +1370,7 @@ public class LevelEditor : MonoBehaviour {
 				break;
 			}
 
-			Debug.Log("SetEditorPreviewToPrefab(){ preFabFound = "+prefab+" }");
+			// Debug.Log("SetEditorPreviewToPrefab(){ preFabFound = "+prefab+" }");
 
 			// create one an add it 
 			if (prefab!=null) {
@@ -1497,6 +1508,10 @@ public class LevelEditor : MonoBehaviour {
 
 			// update 
 			UpdateShowEvaluationData ();
+
+			if (gameLogic.modal == GameLogic.GameLogicModal.Editor) {
+				AddToEditorHistory("LoadLevel");
+			}
 	}
 
 	void LoadEvaluationLevels( ) {
@@ -2247,12 +2262,12 @@ public class LevelEditor : MonoBehaviour {
 						//stateSpecialEditor="";
 						ClearLevel ();
 						LoadLevel (actualLevel);
+						// AddToEditorHistory("LoadLevel");
 					}
 
 					// save
 					if (i == 1) {
 						//stateSpecialEditor="";
-						SaveLevel (actualLevel);
 					}
 
 					if (i == 2) { 
@@ -2260,10 +2275,14 @@ public class LevelEditor : MonoBehaviour {
 						ClearLevel ();  
 						// NewLevel();
 						DefaultElements();
+						SaveLevel (actualLevel);
+
 					}
 					if (i == 3) { 
 						//stateSpecialEditor="";
 						NewLevel();
+						SaveLevel (actualLevel);
+
 					}
 				}
 				
@@ -2407,7 +2426,7 @@ public class LevelEditor : MonoBehaviour {
 				string selectedEditorArea=""+editorArea;
 
 				// categories
-				if (true) {
+				if (!showElementsSubTypeOnly) {
 					ArrayList arrTypesUnique = GetElementTypesUnique ();
 					int editorXTemp = editorX;
 					for (int i=0; i<arrTypesUnique.Count; i++) {
@@ -2512,21 +2531,25 @@ public class LevelEditor : MonoBehaviour {
 					if (GUI.Button (new Rect (editorX, editorY, 64, 20), "TOP:", editorButtonStyle )) {
 						editorSelected.rotation =0.0f;
 						UpdateElementVisual( editorSelected );
+						AddToEditorHistory("[GUI][OBJECT][Y]Reset");
 					}
 					editorX=editorX+66;
 					if (GUI.Button (new Rect (editorX, editorY, 18, 20), "-", editorButtonStyle )) {
 						editorSelected.position.y =editorSelected.position.y - 0.1f;
 						UpdateElementVisual( editorSelected );
+						AddToEditorHistory("[GUI][OBJECT][Y]-");
 					}
 					editorX=editorX+20;
 					if (GUI.Button (new Rect (editorX, editorY, 38, 20), ""+editorSelected.position.y, editorButtonStyle )) {
 						//editorSelected.rotation =editorSelected.rotation - 10.0f;
 						//UpdateElementVisual( editorSelected );
+
 					}
 					editorX=editorX+40;
 					if (GUI.Button (new Rect (editorX, editorY, 20, 20), "+", editorButtonStyle )) {
 						editorSelected.position.y =editorSelected.position.y + 0.1f;
 						UpdateElementVisual( editorSelected );
+						AddToEditorHistory("[GUI][OBJECT][Y]+");
 					}
 					editorX = editorX +42;
 
@@ -2535,11 +2558,13 @@ public class LevelEditor : MonoBehaviour {
 					if (GUI.Button (new Rect (editorX, editorY, 38, 20), "ROT:", editorButtonStyle )) {
 						editorSelected.rotation =0.0f;
 						UpdateElementVisual( editorSelected );
+						AddToEditorHistory("[GUI][OBJECT][RX]0");
 					}
 					editorX=editorX+40;
 					if (GUI.Button (new Rect (editorX, editorY, 8, 20), "<", editorButtonStyle )) {
 						editorSelected.rotation =editorSelected.rotation + 10.0f;
 						UpdateElementVisual( editorSelected );
+						AddToEditorHistory("[GUI][OBJECT][RX]<");
 					}
 					editorX=editorX+10;
 					if (GUI.Button (new Rect (editorX, editorY, 28, 20), ""+editorSelected.rotation, editorButtonStyle )) {
@@ -2550,11 +2575,13 @@ public class LevelEditor : MonoBehaviour {
 					if (GUI.Button (new Rect (editorX, editorY, 8, 20), ">", editorButtonStyle )) {
 						editorSelected.rotation =editorSelected.rotation - 10.0f;
 						UpdateElementVisual( editorSelected );
+						AddToEditorHistory("[GUI][OBJECT][RX]>");
 					}
 					editorX = editorX +10;
 					if (GUI.Button (new Rect (editorX, editorY, 10, 20), "~", editorButtonStyle )) {
 						editorSelected.rotation = UnityEngine.Random.Range(0.0f,360.0f);
 						UpdateElementVisual( editorSelected );
+						AddToEditorHistory("[GUI][OBJECT][RX]RND");
 					}
 					editorX = editorX +12;
 
@@ -2574,6 +2601,7 @@ public class LevelEditor : MonoBehaviour {
 						if (buttonClicked) {
 							editorSelected.size =size;
 							UpdateElementVisual( editorSelected );
+							AddToEditorHistory("[GUI][OBJECT][SIZE]"+size);
 						}
 					}
 
@@ -2878,8 +2906,12 @@ public class LevelEditor : MonoBehaviour {
 									editorSelected.position.z=(Mathf.Floor((editorSelected.position.z+offsetY)/raster))*raster;
 
 									UpdateElementVisual(editorSelected);
+
+									
 								}
 							}
+
+							AddToEditorHistory("[GUI][OBJECT][MOVE]");
 
 							// move
 							editorSelected=null;
@@ -2895,7 +2927,9 @@ public class LevelEditor : MonoBehaviour {
 							RemoveElement (gaelement);
 							
 							// add to editor history
-							AddToEditorHistory();
+							AddToEditorHistory("[GUI][OBJECT][DELETE]");
+
+
 
 						}
 					}
@@ -2944,7 +2978,7 @@ public class LevelEditor : MonoBehaviour {
 						UpdateElementVisual(editorSelected);
 					}
 					editorSelected.name=editDetailName + "";
-					if (GUI.Button (new Rect(editorDetailX+42+165,editorDetailY,40,20),"COPY",editorButtonStyle)) {
+					if (GUI.Button (new Rect(editorDetailX+42+165,editorDetailY,40,20),"DUPL",editorButtonStyle)) {
 						// copy here ... 
 						GameElement copyThis = editorSelected.Copy ();
 						copyThis.position.x=copyThis.position.x+UnityEngine.Random.Range ( 0.3f, 0.9f );
@@ -2952,14 +2986,15 @@ public class LevelEditor : MonoBehaviour {
 						AddElement(copyThis);
 
 						// add to editor history
-						AddToEditorHistory();
+						AddToEditorHistory("[GUI][OBJECT][DUPLICATE]");
+
 
 					}
 					if (GUI.Button (new Rect(editorDetailX+42+165+42,editorDetailY,30,20),"DEL",editorButtonStyle)) {
 						RemoveElement(editorSelected);
 						editorSelected = null;
 						// add to editor history
-						AddToEditorHistory();
+						AddToEditorHistory("[GUI][OBJECT][DELETE]");
 
 					}
 					if (GUI.Button (new Rect(editorDetailX+42+165+42+36,editorDetailY,40,20),"SAME",editorButtonStyle)) {
@@ -3029,14 +3064,17 @@ public class LevelEditor : MonoBehaviour {
 
 				// show [EDIT][SELECTION]
 				ArrayList arrNames = GetGameElementsByNotCleanName();
+				GUI.Button (new Rect ( selectionX, selectionY, 140, 20), "OBJECTS: "+arrNames.Count+"/"+arrLevel.Count, editorButtonActiveStyle);
+				selectionY = selectionY + 24;
 				for (int i=0; i<arrNames.Count; i++) {
 					GameElement gae = (GameElement)arrNames [i];
 					string text = "" + gae.name;
 					GUIStyle guix = editorButtonStyleNotActive;
 					if (editorSelected==gae) guix = editorButtonActiveStyle;
-					bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 140, 20), ""+text+"", guix);
+					bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 140, 20), "/"+text+"/", guix);
 					if (buttonClicked) {
 						SetSelectedElement(gae);
+						SetTool("EDIT");
 					}
 					selectionY = selectionY + 20;
 					if (i>30) break;
@@ -3045,22 +3083,26 @@ public class LevelEditor : MonoBehaviour {
 				// arrEditorHistory
 				ArrayList arr = arrEditorHistory;
 				selectionX = 0;
+				GUI.Button (new Rect ( selectionX+100, selectionY, 240, 20), ""+arr.Count);
+				if (arr.Count>0)
 				selectionY = (int)(Screen.width*0.3f);
-				for (int i=0; i<arr.Count; i++) {
+				int counter = 0;
+				for (int i=(arr.Count-1);i>=0; i--) {
 					LevelHistory gae = (LevelHistory)arr [i];
-					string text = "" + gae.level+" " + gae.arrLevel.Count;
+					string text = "[" + gae.level+"] ("+gae.message+") " + gae.arrLevel.Count;
 					GUIStyle guix = editorButtonStyleNotActive;
 					// if (editorSelected==gae) guix = editorButtonActiveStyle;
-					bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 140, 20), ""+text+"", guix);
+					bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 240, 20), ""+text+"", guix);
 					if (buttonClicked) {
 						// SetSelectedElement(gae);
 						UndoTo(gae);
 					}
 					selectionY = selectionY + 20;
-					if (i>30) break;
+					counter++;
+					if (counter>5) break;
 				}
 
-				selectionDialogeVisual.height = selectionY - selectionYStart;
+				selectionDialogeVisual.height = selectionY - selectionDialogeVisual.y;
 				  
 			}
 
@@ -3229,6 +3271,43 @@ public class LevelEditor : MonoBehaviour {
 				// Debug.Log ("GetMouseButtonUp()");
 			}
 
+			// special move objects
+			if ((Input.GetKey ("left shift"))||(Input.GetKey ("right shift"))) {
+
+				if (editorSelected!=null) {
+
+					if ((Input.GetKeyUp ("a"))||(Input.GetKeyUp ("left"))) {
+						AddToEditorHistory("[GUI][OBJECT][X]--");
+					}
+					if ((Input.GetKeyUp ("d"))||(Input.GetKeyUp ("right"))) {
+						AddToEditorHistory("[GUI][OBJECT][X]++");
+					}
+					if ((Input.GetKeyUp ("w"))||(Input.GetKeyUp ("up"))) {
+						AddToEditorHistory("[GUI][OBJECT][Z]++");
+					}
+					if ((Input.GetKeyUp ("s"))||(Input.GetKeyUp ("down"))) {
+						AddToEditorHistory("[GUI][OBJECT][Z]--");
+					}
+
+					if ((Input.GetKeyUp ("r"))) {
+						AddToEditorHistory("[GUI][OBJECT][Y]++");
+					}
+					if ((Input.GetKeyUp ("f"))) {
+						AddToEditorHistory("[GUI][OBJECT][Y]--");
+					}
+
+					// up & down 
+					if ((Input.GetKeyUp ("q"))) {
+						AddToEditorHistory("[GUI][OBJECT][RX]--");
+					}
+					if ((Input.GetKeyUp ("e"))) {
+						AddToEditorHistory("[GUI][OBJECT][RX]++");
+					}
+				}
+
+				// rot
+			}
+
 			GameObject preview = GameObject.Find("editorpreview");
 			preview.transform.Rotate(0.0f, 1.0f, 0.0f);
 
@@ -3328,15 +3407,20 @@ public class LevelEditor : MonoBehaviour {
 					if (editorTool.Equals ("SPLIT")) {
 						if (editorToolSub.Equals ("right")) {
 							InsertVerticalLine();
+							AddToEditorHistory("[GUI][SPLIT]RIGHT");
+
 						}
 						if (editorToolSub.Equals ("up")) {
 							RemoveHorizontalLine();
+							AddToEditorHistory("[GUI][SPLIT]UP");
 						}
 						if (editorToolSub.Equals ("left")) {
 							RemoveVerticalLine();
+							AddToEditorHistory("[GUI][SPLIT]LEFT");
 						}
 						if (editorToolSub.Equals ("down")) {
 							InsertHorizontalLine();
+							AddToEditorHistory("[GUI][SPLIT]DOWN");
 						}
 						
 					}
@@ -3348,19 +3432,19 @@ public class LevelEditor : MonoBehaviour {
 				if (true) {
 					
 					// create something here!!!
-					if (!CheckMouseInEditor())
+					// if (!CheckMouseInEditor())
 					if (editorTool.Equals ("CREATE")) {
 					 if (Input.GetButtonDown("Fire1")) {
 					//	if (true) {
 
-							// Debug.Log ("CREATE NOW");
+							Debug.Log ("CREATE NOW");
 
 							// sorry nothing found
 							if (editorPrefab==null) {
 
 								Debug.Log ("Sorry no correct prefab!");
 								editorLogText = "[Create] select!";
-
+								AddEditorMessage(editorLogText);
 							}
 
 							if (editorPrefab!=null) {
@@ -3371,7 +3455,8 @@ public class LevelEditor : MonoBehaviour {
 								GameElement editorPrefabX = GetElementType (editorArea,editorSubArea);
 
 								if (editorPrefabX==null) {
-									Debug.Log("LevelEditor().Update() // Create object. Could not finde GameObjectType: "+editorArea+"/"+editorSubArea);
+									Debug.Log("LevelEditor().Update() // Create object. Could not find GameObjectType: "+editorArea+"/"+editorSubArea);
+									AddEditorMessage("Could not find GameObjectType: "+editorArea+"/"+editorSubArea);
 									return;
 								}
 
@@ -3426,8 +3511,9 @@ public class LevelEditor : MonoBehaviour {
 										UpdateElementVisual(arg);
 									}
 
-								// add to editor history
-								AddToEditorHistory();
+									// add to editor history
+									AddToEditorHistory("[INGAME][CREATE]");
+
 
 								// }
 							}
@@ -3615,6 +3701,7 @@ public class LevelEditor : MonoBehaviour {
 						//						DoEditorScroll( -speed.x, 0.0f, 0.0f );
 
 						container.transform.Translate ( new Vector3(-xspeed, 0.0f, 0.0f));
+
 					}
 					if ((Input.GetKey ("d"))||(Input.GetKey ("right"))) {
 						// scroll = scroll + 0.3f;
