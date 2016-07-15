@@ -68,10 +68,10 @@ public class LevelEditor : MonoBehaviour {
 		ClearLevel ();
 		LoadLevel (actualLevel);
 
-		// if (flagEvaluation) {
-		// in running mode!
-		NewSession (evaluationPlayer);
-		//}
+		if (flagEvaluation) {
+			// in running mode!
+			NewSession (evaluationPlayer);
+		}
 
 	}
 
@@ -83,6 +83,17 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	void AddToEditorHistory( string msg ) {
+
+		// in undo mode? 
+		if (historyIndexMinus<0) {
+			ArrayList arr = GetActualEditorHistory();
+			for (int i=(arr.Count+historyIndexMinus-1);i>=0;i--) {
+				LevelHistory lvx = (LevelHistory) arr[i];
+				arrLevel.Remove(lvx);
+			}
+			historyIndexMinus = 0;
+		}
+
 		LevelHistory lv = new LevelHistory();
 		lv.level = actualLevel;
 		lv.message = msg;
@@ -101,7 +112,7 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 
-	ArrayList GetAllEditorHistories( ) {
+	ArrayList GetActualEditorHistory( ) {
 		ArrayList arr = new ArrayList();
 
 		LevelHistory lv;
@@ -115,10 +126,18 @@ public class LevelEditor : MonoBehaviour {
 		return arr;
 	}
 
-	int historyIndex = 0;
+	// 0 ... 
+	int historyIndexMinus = 1;
 
 	void Undo( ) {
-		
+		historyIndexMinus--;
+		ArrayList arr = GetActualEditorHistory();
+		if ((arr.Count+historyIndexMinus)<0) {
+			historyIndexMinus = 0;
+			AddEditorMessage("Sorry no more UNDOs");
+		}
+		LevelHistory lvHist = (LevelHistory) arr[arr.Count+historyIndexMinus];
+		UndoTo(lvHist);
 	}
 
 	void UndoTo( LevelHistory lv ) {
@@ -141,7 +160,16 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	void Redo( ) {
-		
+		historyIndexMinus++;
+		ArrayList arr = GetActualEditorHistory();
+		if (historyIndexMinus>0) {
+			historyIndexMinus = 0;
+			AddEditorMessage("Actual!");
+
+		}
+		LevelHistory lvHist = (LevelHistory) arr[arr.Count+historyIndexMinus];
+		UndoTo(lvHist);
+
 	}
 
 	// actual level
@@ -465,6 +493,10 @@ public class LevelEditor : MonoBehaviour {
 	Rect filterTypeVisual = new Rect(0,0,0,0);
 	Rect filterTypeSubVisual = new Rect(0,0,0,0);
 
+	// undo
+	Rect undoVisual = new Rect(0,0,0,0);
+
+
 	// selectiondialoge
 	bool selectionDialoge = true;
 	string selectFilter = ""; // names etc.  #name types ...  !abc.* !
@@ -575,7 +607,7 @@ public class LevelEditor : MonoBehaviour {
 
 	// Evaluation INGAME
 	bool flagEvaluationAvailable = false; // is this availabe at all?
-		bool showEvaluationDialog = true;
+		bool showEvaluationDialog = false;
 
 	bool flagEvaluation = false;  // ingame will be evaluated!
 
@@ -1223,7 +1255,9 @@ public class LevelEditor : MonoBehaviour {
 		for (int i=0; i<arrLevel.Count; i++) {
 			GameElement gx=(GameElement) arrLevel[i];
 			if (!gx.name.Equals ("")) {
-				arr.Add (gx);
+				if (!gx.name.Equals (" ")) {
+					arr.Add (gx);
+				}
 			}
 		}
 
@@ -1295,6 +1329,7 @@ public class LevelEditor : MonoBehaviour {
 	void SetSelectedElement( GameElement ga ) {
 		// Debug.Log ("SetSelectedElement()");
 		editorSelected = ga;
+		editorArea = ga.type;
 		SetSelectedElementToGUI ();
 	}
 		// update to 
@@ -1505,6 +1540,8 @@ public class LevelEditor : MonoBehaviour {
 	void LoadLevel( int level  ) {
 
 			LoadLevel(level, "", "" ); // load a level raw
+
+			historyIndexMinus = 0;
 
 			// update 
 			UpdateShowEvaluationData ();
@@ -1820,6 +1857,13 @@ public class LevelEditor : MonoBehaviour {
 			(mouseY>selectionDialogeVisual.y)&&(mouseY<(selectionDialogeVisual.y+selectionDialogeVisual.height))) {
 			return true;
 		}
+
+		if ((mouseX>undoVisual.x)&&(mouseX<(undoVisual.x+undoVisual.width))
+			&&
+			(mouseY>undoVisual.y)&&(mouseY<(undoVisual.y+undoVisual.height))) {
+			return true;
+		}
+
 
 		// Debug.Log ("CheckMouseInEditor() > FALSE; ");
 		return false;
@@ -2236,6 +2280,28 @@ public class LevelEditor : MonoBehaviour {
 					gameLogic.SetGameLevel(i);
 				}
 			}
+
+			// UNDO/REDO
+			// undoVisual
+			editorX= editorX + widthWorking + 82 + 8* 22;
+			if (GUI.Button (new Rect (editorX, editorY, 40, 20), "UNDO", editorButtonActiveStyle)) {
+				Undo();
+			}  
+
+			widthWorking = 42;
+			editorX= editorX + widthWorking;
+			ArrayList arrx = GetActualEditorHistory();
+			if (GUI.Button (new Rect (editorX, editorY, 40, 20), "" + historyIndexMinus + "/" + arrx.Count, editorButtonActiveStyle)) {
+				Redo();
+			}
+
+			widthWorking = 42;
+			editorX= editorX + widthWorking;
+			if (GUI.Button (new Rect (editorX, editorY, 40, 20), "REDO", editorButtonActiveStyle)) {
+				Redo();
+			}
+
+			editorX = 10;
 			editorY = editorY + 22;
 
 			// load & save
@@ -3071,7 +3137,7 @@ public class LevelEditor : MonoBehaviour {
 					string text = "" + gae.name;
 					GUIStyle guix = editorButtonStyleNotActive;
 					if (editorSelected==gae) guix = editorButtonActiveStyle;
-					bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 140, 20), "/"+text+"/", guix);
+					bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 140, 20), ""+text+"", guix);
 					if (buttonClicked) {
 						SetSelectedElement(gae);
 						SetTool("EDIT");
@@ -3081,9 +3147,9 @@ public class LevelEditor : MonoBehaviour {
 				} 
 
 				// arrEditorHistory
-				ArrayList arr = arrEditorHistory;
+				ArrayList arr = GetActualEditorHistory();
 				selectionX = 0;
-				GUI.Button (new Rect ( selectionX+100, selectionY, 240, 20), ""+arr.Count);
+				// GUI.Button (new Rect ( selectionX+100, selectionY, 240, 20), ""+arr.Count);
 				if (arr.Count>0)
 				selectionY = (int)(Screen.width*0.3f);
 				int counter = 0;
@@ -3259,20 +3325,28 @@ public class LevelEditor : MonoBehaviour {
 
 	void Update() {
 
-
+		// Debug.Log("LeveleEditor.Update() // "+editorTool);
 
 		// editor
 		if (gameLogic !=null &&  gameLogic.modal==GameLogic.GameLogicModal.Editor) {
 
+			// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR ");
+
+
+			/*
 			if (Input.GetMouseButtonDown(0)) {
 
 			}
 			if (Input.GetMouseButtonUp(0)) {
 				// Debug.Log ("GetMouseButtonUp()");
 			}
+			*/
 
 			// special move objects
 			if ((Input.GetKey ("left shift"))||(Input.GetKey ("right shift"))) {
+
+				// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // SHIFT EDITOR ");
+
 
 				if (editorSelected!=null) {
 
@@ -3341,6 +3415,7 @@ public class LevelEditor : MonoBehaviour {
 
 			// vertical slides
 			// delete & return
+			/*
 			if (Input.GetKeyDown ("return")) {
 				Debug.Log ("RETURN");
 				// InsertVerticalLine();
@@ -3350,6 +3425,18 @@ public class LevelEditor : MonoBehaviour {
 				// Debug.Log ("DELETE");
 				// RemoveVerticalLine();
 			}
+			*/
+
+			if (Input.GetKeyDown ("backspace")) {
+				// Debug.Log ("DELETE");
+				// RemoveVerticalLine();
+				if (editorSelected!=null) {
+				RemoveElement(editorSelected);
+				editorSelected = null;
+				// add to editor history
+				AddToEditorHistory("[GUI][OBJECT][DELETE]");
+				}
+			}
 
 
 			// generate new objects
@@ -3358,6 +3445,8 @@ public class LevelEditor : MonoBehaviour {
 
 			// hot edges
 			if ((mouseX<20)||(mouseX>(Screen.width-20))||(mouseY<20)||(mouseY>(Screen.height-20))) {
+
+				// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // HOT EDGES");
 
 				GameObject xcontainer=GameObject.Find ("editorCameraContainer");
 				GameObject xeditorcamera=GameObject.Find ("editorcamera");
@@ -3398,11 +3487,16 @@ public class LevelEditor : MonoBehaviour {
 
 			}
 			
-			// ... 
-			if (mouseY>90) {
+			// IN SCENE
+			if (!CheckMouseInEditor()) {
+
+				// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // INSCENE ");
+
 				
-				// over something?
+				// SPLIT!
 				if (Input.GetMouseButtonDown(0)) {
+
+
 					// Debug.Log ("GetMouseButtonDown()");
 					if (editorTool.Equals ("SPLIT")) {
 						if (editorToolSub.Equals ("right")) {
@@ -3430,20 +3524,27 @@ public class LevelEditor : MonoBehaviour {
 				
 				// not? create
 				if (true) {
-					
+
+
+
 					// create something here!!!
-					// if (!CheckMouseInEditor())
+					// if (!CheckMouseInEditor()) < coming from above
 					if (editorTool.Equals ("CREATE")) {
-					 if (Input.GetButtonDown("Fire1")) {
+						if (Input.GetMouseButtonDown(0)) {
 					//	if (true) {
 
-							Debug.Log ("CREATE NOW");
+							// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // CREATE ");
+
+
+							// Debug.Log("LevelEditor.Update() // "+editorTool);
+
+							// Debug.Log ("CREATE NOW");
 
 							// sorry nothing found
 							if (editorPrefab==null) {
 
 								Debug.Log ("Sorry no correct prefab!");
-								editorLogText = "[Create] select!";
+								editorLogText = "Nothing yet selected to create!";
 								AddEditorMessage(editorLogText);
 							}
 
@@ -3475,7 +3576,7 @@ public class LevelEditor : MonoBehaviour {
 										editorPrefabX = editorPrefabXX ;
 										flagTool = true;
 									} else {
-										Debug.LogWarning("LevelEditor.Update() //  Searching for Painting Tool. Config Array: Unity3dLevelEditor: "+editorArea+"/"+subtypeConf);
+										// Debug.LogWarning("LevelEditor.Update() //  Searching for Painting Tool. Config Array: Unity3dLevelEditor: "+editorArea+"/"+subtypeConf);
 										AddEditorMessage("[Tool "+editorArea+"/"+subtypeConf+"]: Could not find part: "+subtypeConf);
 										return; 
 									}
@@ -3525,8 +3626,8 @@ public class LevelEditor : MonoBehaviour {
 				
 			}
 
-			// /editor
-		}
+
+		} // /editor
 	}
 
 
