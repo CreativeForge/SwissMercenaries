@@ -20,21 +20,27 @@ public class NotificationCenterPrototype : MonoBehaviour {
 	public GameObject inGameMessageTopBGGO;
 	public Text inGameMessageCenterText;
 	public GameObject inGameMessageCenterBGGO;
+	float startMessageTime = 0;
 
 	public GameObject FloatingCombatTextPrefab;
 
 	bool messageIsShowed;
+	float messageDuration = 5;
 
 	// Use this for initialization
 	void Awake () {		
 		canvasGO.SetActive(true);
-		
+	}
+
+	void Start(){
 		HideAllInGameMessages();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		//if(messageIsShowed && startMessageTime+messageDuration<Time.time){
+		//	HideAllInGameMessages();
+		//}
 	}
 
 	// On GUI drawing
@@ -133,6 +139,7 @@ public class NotificationCenterPrototype : MonoBehaviour {
 	}
 
 	public void ShowInGameMessage(string inMessage, bool inCentered){
+		startMessageTime = Time.time;
 		messageIsShowed = true;
 		if(inCentered){
 			inGameMessageCenterText.gameObject.SetActive(true);
@@ -143,15 +150,23 @@ public class NotificationCenterPrototype : MonoBehaviour {
 			inGameMessageTopText.text = inMessage;
 			inGameMessageTopBGGO.SetActive(true);
 		}
+
+		StartCoroutine(WaitNHideAllMessages());
 	}
 
+	IEnumerator WaitNHideAllMessages() {
+		yield return StartCoroutine(CoroutineUtil.WaitForRealSeconds(5));
+		HideAllInGameMessages();
+	}
+		
 	public void HideAllInGameMessages(){
 		messageIsShowed = false;
 		inGameMessageTopText.gameObject.SetActive(false);
 		inGameMessageTopBGGO.SetActive(false);
 		inGameMessageCenterText.gameObject.SetActive(false);
 		inGameMessageCenterBGGO.SetActive(false);
-		
+
+		InGameController.i.IsPaused=false;
 	}
 
 

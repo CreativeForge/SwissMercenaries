@@ -142,7 +142,8 @@ public class HitterScript : MonoBehaviour {
 
 			if(pS){
 				// is player
-				if(Input.GetKeyDown(KeyCode.Mouse0) || Input.GetButtonDown("Jump")){
+				if(Input.GetKeyDown(KeyCode.Mouse0) || Input.GetButtonDown("Jump")){ // keyboard Space, controller B
+					InGameController.i.HitButtonPressed();
 					if(pS.IsWithHalberd){
 						DoSlowHalberdHit();
 					}else{

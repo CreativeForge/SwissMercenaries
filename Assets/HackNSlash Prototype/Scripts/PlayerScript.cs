@@ -106,7 +106,7 @@ public class PlayerScript : MonoBehaviour {
 		HandleFaithShrinking();
 		HandleHolyRage();
 
-		if(Input.GetButtonDown("Fire1")){
+		if(Input.GetButtonDown("Fire1")){ // keyboard E, controller B
 			IsWithHalberd = !IsWithHalberd;
 		}
 	}

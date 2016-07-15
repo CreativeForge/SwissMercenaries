@@ -12,6 +12,8 @@ public class InGameController : MonoBehaviour {
 	private int gameMode = 0; // GameModes: 0 Kill, 1 Plunder
 	public float gameModeCounter = 20;
 
+	public bool isPaused;
+
 	public Material normalSkyBoxMat;
 	public Material plunderSkyBoxMat;
 
@@ -74,6 +76,9 @@ public class InGameController : MonoBehaviour {
 		}
 	}
 
+	public void HitButtonPressed(){ // called from player.hitterscript
+		notificationC.HideAllInGameMessages();
+	}
 	
 	// Update is called once per frame
 	void Update() {
@@ -94,6 +99,7 @@ public class InGameController : MonoBehaviour {
 
 
 		if(Input.GetKeyDown(KeyCode.Escape)){
+			Debug.Log("Escape Key");
 			Application.Quit();
 		}
 
@@ -220,6 +226,18 @@ public class InGameController : MonoBehaviour {
 		}
 	}
 
+	public bool IsPaused{
+		get{return isPaused;}
+
+		set{
+			isPaused = value;
+			if(isPaused)
+				Time.timeScale = 0;
+			else
+				Time.timeScale = 1;
+		}
+	}
+
 	public void UpdateHealthEnemy(float inValue, Vector3 inPos){
 		notificationC.UpdateHealthEnemy(inValue, inPos);
 	}
@@ -254,6 +272,7 @@ public class InGameController : MonoBehaviour {
 	}
 
 	public void ShowInGameMessage(string inMessage, bool inCentered){
+		if(inCentered)IsPaused=true;
 		notificationC.ShowInGameMessage(inMessage, inCentered);
 	}
 
