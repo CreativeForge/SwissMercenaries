@@ -96,6 +96,7 @@ public class DestructibleScript : MonoBehaviour {
 		//Debug.Log("is hitted with force: "+inForce+"; health left: "+health);
 		bloodParticlesGO.SetActive(false);
 		bloodParticlesGO.SetActive(true);
+
 	}
 
 	void SetColor(Color inColor){
