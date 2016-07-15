@@ -3,9 +3,12 @@ using System.Collections;
 
 public class PlayerAnimationTriggerScript : MonoBehaviour {
 
+	public HitterScript hitterS;
+
 	// Use this for initialization
 	void Start () {
-	
+		if(!hitterS) Debug.LogError("no hitterscript: "+name+" id: "+GetInstanceID()+" parent: "+transform.parent.name);
+
 	}
 	
 	// Update is called once per frame
@@ -14,18 +17,10 @@ public class PlayerAnimationTriggerScript : MonoBehaviour {
 	}
 
 	public void FromAnimationTriggerDoHitBox(){
-		HitterScript hitterS = GetComponentInParent<HitterScript>();
-		if(hitterS)
-			hitterS.FromAnimationTriggerDoHitBox();
-		else
-			Debug.LogError("no hitterscript found in parent: "+name+" id: "+GetInstanceID());
+		hitterS.FromAnimationTriggerDoHitBox();
 	}
 	public void FromAnimationTriggerDoHitHalberdBox(){
-		HitterScript hitterS = GetComponentInParent<HitterScript>();
-		if(hitterS)
-			hitterS.FromAnimationTriggerDoHitHalberdBox();
-		else
-			Debug.LogError("no hitterscript found in parent: "+name+" id: "+GetInstanceID());
+		hitterS.FromAnimationTriggerDoHitHalberdBox();
 	}
 
 

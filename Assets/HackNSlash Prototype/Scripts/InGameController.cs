@@ -151,11 +151,21 @@ public class InGameController : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.F)){
 			playerS.Faith = 100;
 		}
+		if(Input.GetKeyDown(KeyCode.K)){
+			KillAllLootableEnemies();
+		}
 
 		/* // is done in myFreeLookCamScript
 		if(Input.GetKeyDown(KeyCode.F)){
 			camGO.GetComponent<
 		}*/
+	}
+
+	void KillAllLootableEnemies(){
+		foreach(DestructibleScript ds in allDestructibleScripts){
+			if(!ds.IsDead && ds.HasLoot)
+				ds.Die();
+		}
 	}
 
 	public void EnemyDies(){

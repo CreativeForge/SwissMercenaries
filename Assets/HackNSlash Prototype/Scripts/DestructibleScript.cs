@@ -103,7 +103,7 @@ public class DestructibleScript : MonoBehaviour {
 		appearanceDead.GetComponent<Renderer>().material.color = inColor;
 	}
 
-	void Die(){
+	public void Die(){
 		if(isDead) return;
 		isDead = true;
 
