@@ -165,7 +165,7 @@ public class HitterScript : MonoBehaviour {
 				if(hitBox1)hitBox1.SetActive(false);
 				isHittingFast = false;
 
-				if(pS && !pS.isInHolyRoge) weaponTrailCurrentGO.SetActive(false);
+				if(pS && !pS.isInHolyRage) weaponTrailCurrentGO.SetActive(false);
 			}
 
 
@@ -173,7 +173,7 @@ public class HitterScript : MonoBehaviour {
 				if(hitBox2)hitBox2.SetActive(false);
 				isHittingSlow = false;
 
-				if(pS && !pS.isInHolyRoge) weaponTrailCurrentGO.SetActive(false);
+				if(pS && !pS.isInHolyRage) weaponTrailCurrentGO.SetActive(false);
 
 				/*
 				if(lastHitTime+hitSlowDuration<Time.time){

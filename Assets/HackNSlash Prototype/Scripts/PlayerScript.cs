@@ -24,10 +24,10 @@ public class PlayerScript : MonoBehaviour {
 	bool doPush = false;
 	bool isRecovering = false;
 
-	public bool isInHolyRoge = false;
+	public bool isInHolyRage = false;
 	public GameObject holyHaloGO;
 	public GameObject holyShineGO;
-	float holyRageDuration = 10;
+	public float holyRageDuration = 10;
 	float holyRageStartTime = 0;
 
 	private Vector3 curNormal  = Vector3.up; // smoothed terrain normal 
@@ -41,6 +41,7 @@ public class PlayerScript : MonoBehaviour {
 
 	uint money = 0;
 	float faith = 0;
+	public float holyRageEnergy = 0;
 
 	public bool hasPickedUpHalberd = false;
 	public GameObject swordGO;
@@ -140,6 +141,8 @@ public class PlayerScript : MonoBehaviour {
 
 	void HandleFaithShrinking(){
 		Faith -= Time.deltaTime;
+		if(isInHolyRage)
+			holyRageEnergy -= Time.deltaTime*100/holyRageDuration;
 	}
 
 	void HandleIsGrounded(){
@@ -287,12 +290,13 @@ public class PlayerScript : MonoBehaviour {
 
 
 	public void StartHolyRage(){
-		isInHolyRoge = true;
+		isInHolyRage = true;
 		holyHaloGO.SetActive(true);
 		holyShineGO.SetActive(true);
 		holyRageStartTime = Time.time;
 		dS.Invincible = true;
-		Faith = 10;
+		Faith = 0;
+		holyRageEnergy = 100;
 		dS.Health = 100;
 		speed = originalSpeed*2;
 		hS.ModHitForce(2);
@@ -302,7 +306,8 @@ public class PlayerScript : MonoBehaviour {
 
 
 	public void EndHolyRage(){
-		isInHolyRoge = false;
+		holyRageEnergy = 0;
+		isInHolyRage = false;
 		dS.Invincible = false;
 		holyHaloGO.SetActive(false);
 		holyShineGO.SetActive(false);

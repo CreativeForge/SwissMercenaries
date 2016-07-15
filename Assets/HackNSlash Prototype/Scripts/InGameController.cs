@@ -13,6 +13,7 @@ public class InGameController : MonoBehaviour {
 	public GameObject canvasGO;
 	public RectTransform healthT;
 	public RectTransform faithT;
+	public RectTransform holyRageT;
 
 	// Game modes:
 	// 0	kill
@@ -91,6 +92,7 @@ public class InGameController : MonoBehaviour {
 		}
 		AdjustEnemyCountVisualisation(0);
 		AdjustMoneyVisualisation();
+		holyRageT.localScale = new Vector3(playerS.holyRageEnergy/100f,1,1);
 			
 	}
 
@@ -139,6 +141,19 @@ public class InGameController : MonoBehaviour {
 		}
 
 		HandleCheatInput();
+
+		HandleHolyRageGUIVisualisation();
+	}
+		
+	void HandleHolyRageGUIVisualisation(){
+		if(playerS.isInHolyRage){
+			holyRageT.localScale = new Vector3(playerS.holyRageEnergy/100f,1,1);
+			if(Mathf.Round(playerS.holyRageEnergy/2) % 2 == 0)
+				holyRageT.gameObject.SetActive(true);
+			else
+				holyRageT.gameObject.SetActive(false);
+				
+		}
 	}
 
 	void HandleCheatInput(){
