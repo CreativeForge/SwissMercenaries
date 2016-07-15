@@ -148,7 +148,7 @@ public class NotificationCenterPrototype : MonoBehaviour {
 		combatText.ShowText (textType,value);
 	}
 
-	public void ShowInGameMessage(string inMessage, bool inCentered){
+	public void ShowInGameMessage(string inMessage, bool inCentered, float inDuration){
 		startMessageTime = Time.time;
 		messageIsShowed = true;
 		if(inCentered){
@@ -161,11 +161,12 @@ public class NotificationCenterPrototype : MonoBehaviour {
 			inGameMessageTopBGGO.SetActive(true);
 		}
 
-		StartCoroutine(WaitNHideAllMessages());
+		if(inDuration>0)
+			StartCoroutine(WaitNHideAllMessages(inDuration));
 	}
 
-	IEnumerator WaitNHideAllMessages() {
-		yield return StartCoroutine(CoroutineUtil.WaitForRealSeconds(5));
+	IEnumerator WaitNHideAllMessages(float inDuration) {
+		yield return StartCoroutine(CoroutineUtil.WaitForRealSeconds(inDuration));
 		HideAllInGameMessages();
 	}
 		

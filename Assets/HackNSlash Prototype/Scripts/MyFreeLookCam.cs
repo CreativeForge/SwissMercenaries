@@ -69,7 +69,9 @@ namespace UnityStandardAssets.Cameras
         {
             if (m_Target == null) return;
             // Move the rig towards target position.
-            transform.position = Vector3.Lerp(transform.position, m_Target.position, deltaTime*m_MoveSpeed);
+			float tBulletMod = 1;
+			if(InGameController.i.isBulletTime)tBulletMod = 5;
+			transform.position = Vector3.Lerp(transform.position, m_Target.position, deltaTime*m_MoveSpeed*tBulletMod);
         }
 
 

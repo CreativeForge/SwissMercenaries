@@ -59,6 +59,7 @@ public class PlayerScript : MonoBehaviour {
 		originalPosition = transform.position;
 		originalRotation = transform.rotation;
 		originalSpeed = speed;
+		anim.SetFloat("VelocityMod",1);
 
 		halberdGO.SetActive(false);
 	}
@@ -194,7 +195,10 @@ public class PlayerScript : MonoBehaviour {
 		NormalizeCurrentSpeedMod();
 
 		m_Move = m_Move*speed*currentSpeedMod;
-		myR.MovePosition(myR.position+m_Move);
+		if(InGameController.i.isBulletTime)
+			myR.MovePosition(myR.position+m_Move*5);
+		else
+			myR.MovePosition(myR.position+m_Move);
 
 		if(m_Jump){
 			myR.AddForce(0,jumpForce,0);

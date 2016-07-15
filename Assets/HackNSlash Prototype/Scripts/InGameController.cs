@@ -13,6 +13,7 @@ public class InGameController : MonoBehaviour {
 	public float gameModeCounter = 20;
 
 	public bool isPaused;
+	public bool isBulletTime;
 
 	public Material normalSkyBoxMat;
 	public Material plunderSkyBoxMat;
@@ -103,6 +104,13 @@ public class InGameController : MonoBehaviour {
 			IsPaused = !IsPaused;
 			notificationC.ShowPauseMenu(IsPaused); 
 		}
+		/*
+		if(Input.GetKeyDown(KeyCode.B)){
+			Debug.Log("B");
+			isBulletTime = true;
+			Time.timeScale = 0.2f;
+			playerS.anim.SetFloat("VelocityMod",5);
+		}*/
 
 		HandleCheatInput();
 
@@ -279,9 +287,9 @@ public class InGameController : MonoBehaviour {
 		notificationC.AdjustHolyRageVisualisation(playerS.holyRageEnergy);
 	}
 
-	public void ShowInGameMessage(string inMessage, bool inCentered){
+	public void ShowInGameMessage(string inMessage, bool inCentered, float inDuration){
 		if(inCentered)IsPaused=true;
-		notificationC.ShowInGameMessage(inMessage, inCentered);
+		notificationC.ShowInGameMessage(inMessage, inCentered, inDuration);
 	}
 
 }
