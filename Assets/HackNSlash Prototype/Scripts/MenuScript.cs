@@ -16,17 +16,25 @@ public class MenuScript : MonoBehaviour {
 
 	}
 
+	void DebugX() {
+		Debug.Log("DEBUGGING GUI");
+	}
+
 	// Search for GameLogic
 	void Start() {
 		
 		mainLogic = FindObjectOfType<GameLogic>();
-
+		/*
 		if(!mainLogic) {
-			
+
+
 			Debug.LogWarning("[MenuScript] Could not find an active GameLogic in scene!");
 			gameObject.SetActive(false);
 
-		} else {
+		} else */
+		
+			if (true)
+		{
 
 			// Reference object for new button instances
 			GameObject clone;
@@ -44,6 +52,7 @@ public class MenuScript : MonoBehaviour {
 			levelButton.transform.FindChild("Text").GetComponent<Text>().text = "Level 1";
 			levelButton.GetComponent<Button>().onClick.AddListener(delegate { LoadLevel(1); });
 
+			if (false)
 			for(int i = 2;i <= levelCount;i++) {
 
 				clone = Instantiate(levelButton, levelButton.transform.position, Quaternion.identity) as GameObject;	// Create button

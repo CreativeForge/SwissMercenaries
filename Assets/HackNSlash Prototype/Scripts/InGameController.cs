@@ -61,7 +61,11 @@ public class InGameController : MonoBehaviour {
 
 		camGO = Instantiate(CameraPrefab) as GameObject;
 		cam = Camera.main;
-		playerS.SetCamT(camGO.transform);
+		if ((camGO!=null) && (cam!=null)) {
+			if (playerS!=null) {
+				playerS.SetCamT(camGO.transform);
+			}
+		}
 	}
 
 	void Start(){

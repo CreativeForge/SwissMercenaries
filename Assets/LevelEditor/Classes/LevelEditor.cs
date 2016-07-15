@@ -3130,7 +3130,7 @@ public class LevelEditor : MonoBehaviour {
 
 				// show [EDIT][SELECTION]
 				ArrayList arrNames = GetGameElementsByNotCleanName();
-				GUI.Button (new Rect ( selectionX, selectionY, 140, 20), "OBJECTS: "+arrNames.Count+"/"+arrLevel.Count, editorButtonActiveStyle);
+				GUI.Button (new Rect ( selectionX, selectionY, 140, 20), "NAMES: "+arrNames.Count+"/"+arrLevel.Count, editorButtonActiveStyle);
 				selectionY = selectionY + 24;
 				for (int i=0; i<arrNames.Count; i++) {
 					GameElement gae = (GameElement)arrNames [i];
@@ -3145,6 +3145,47 @@ public class LevelEditor : MonoBehaviour {
 					selectionY = selectionY + 20;
 					if (i>30) break;
 				} 
+				selectionY = selectionY + 20;
+
+				// check for nearby ..
+				// is there a selected one?
+				if (editorSelected!=null) {
+					// check
+					GUI.Button (new Rect ( selectionX, selectionY, 140, 20), "NEAR BY ", editorButtonActiveStyle);
+					selectionY = selectionY + 20;
+
+					GameElement xby;
+					ArrayList arrxx = new ArrayList();
+					for (int i=0;i<arrLevel.Count;i++) {
+						xby = (GameElement)arrLevel[i];
+						float sizewidth = 0.5f;
+						float middlex = editorSelected.position.x;
+						float middlez = editorSelected.position.z;
+						if ((middlex>(xby.position.x-sizewidth)) && (middlex<(xby.position.x+sizewidth))) {
+							if ((middlez>(xby.position.z-sizewidth)) && (middlez<(xby.position.z+sizewidth))) {
+								arrxx.Add(xby);
+							}
+						}
+					}
+
+					// sort?
+
+					// show
+					int counterx = 0;
+					for (int i=0;i<arrxx.Count; i++) {
+						GameElement gae = (GameElement)arrxx [i];
+						string text = "" + gae.name;
+						GUIStyle guix = editorButtonStyleNotActive;
+						// if (editorSelected==gae) guix = editorButtonActiveStyle;
+						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 240, 20), ""+text+"", guix);
+						if (buttonClicked) {
+							SetSelectedElement(gae);
+						}
+						selectionY = selectionY + 20;
+						counterx++;
+						if (counterx>5) break;
+					}
+				}
 
 				// arrEditorHistory
 				ArrayList arr = GetActualEditorHistory();
