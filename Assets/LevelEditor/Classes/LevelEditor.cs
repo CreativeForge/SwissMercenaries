@@ -2186,7 +2186,7 @@ public class LevelEditor : MonoBehaviour {
 
 			// working on level
 			// maxLevel
-			GUI.Label (new Rect (editorX, editorY, 120, 20), "WORKING LEVEL: ", editorButtonActiveStyle);
+			GUI.Label (new Rect (editorX, editorY, 120, 20), "LEVEL: ", editorButtonActiveStyle);
 			// levels
 			for (int i=1; i<maxLevel; i++) {
 				string text = "" + i;
@@ -2208,7 +2208,7 @@ public class LevelEditor : MonoBehaviour {
 			}
 			int widthWorking = 280;
 			// COPYTO
-			GUI.Label (new Rect (editorX + widthWorking, editorY, 80, 20), "COPYTO: ", editorButtonActiveStyle);
+			GUI.Label (new Rect (editorX + widthWorking, editorY, 80, 20), "SAVE AS: ", editorButtonActiveStyle);
 			// levels
 			for (int i=1; i<maxLevel; i++) {
 				string text = "" + i;
@@ -2218,6 +2218,7 @@ public class LevelEditor : MonoBehaviour {
 				bool buttonClicked = GUI.Button (new Rect (editorX + widthWorking + 82 + (i - 1) * 22, editorY, 20, 20), text, gui);
 				if (buttonClicked) {
 					SaveLevel (i);
+					gameLogic.SetGameLevel(i);
 				}
 			}
 			editorY = editorY + 22;
