@@ -100,14 +100,19 @@ public class InGameController : MonoBehaviour {
 
 		if(Input.GetKeyDown(KeyCode.Escape)){
 			Debug.Log("Escape Key");
-			Application.Quit();
+			IsPaused = !IsPaused;
+			notificationC.ShowPauseMenu(IsPaused); 
 		}
 
 		HandleCheatInput();
 
 		HandleHolyRageGUIVisualisation();
 	}
-		
+
+	public void QuitGame(){
+		Application.Quit();
+	}
+
 	void HandleHolyRageGUIVisualisation(){
 		if(playerS.isInHolyRage){
 			AdjustHolyRageVisualisation();
@@ -176,7 +181,9 @@ public class InGameController : MonoBehaviour {
 		ReloadLevel();
 	}
 
-	void ReloadLevel(){
+	public void ReloadLevel(){
+		IsPaused = false;
+
 		if(inEditorUsed){
 			//TODO:  next Level!
 		}else{
@@ -231,10 +238,11 @@ public class InGameController : MonoBehaviour {
 
 		set{
 			isPaused = value;
-			if(isPaused)
+			if(isPaused){
 				Time.timeScale = 0;
-			else
+			}else{
 				Time.timeScale = 1;
+			}
 		}
 	}
 

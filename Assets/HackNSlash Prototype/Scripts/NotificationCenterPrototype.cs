@@ -20,6 +20,9 @@ public class NotificationCenterPrototype : MonoBehaviour {
 	public GameObject inGameMessageTopBGGO;
 	public Text inGameMessageCenterText;
 	public GameObject inGameMessageCenterBGGO;
+	public Text inGameMessagePauseText;
+	public GameObject pauseButtonQuit;
+	public GameObject pauseButtonReload;
 	float startMessageTime = 0;
 
 	public GameObject FloatingCombatTextPrefab;
@@ -33,7 +36,7 @@ public class NotificationCenterPrototype : MonoBehaviour {
 	}
 
 	void Start(){
-		HideAllInGameMessages();
+		HideAlleInGameMessageObjects();
 	}
 	
 	// Update is called once per frame
@@ -48,6 +51,13 @@ public class NotificationCenterPrototype : MonoBehaviour {
 		if(counterTextGO.activeSelf)
 			counterText.text = InGameController.i.gameModeCounter.ToString();
 
+	}
+
+	public void ShowPauseMenu(bool inShow){
+		inGameMessagePauseText.gameObject.SetActive(inShow);
+		inGameMessageCenterBGGO.SetActive(inShow);
+		pauseButtonQuit.SetActive(inShow);
+		pauseButtonReload.SetActive(inShow);
 	}
 
 
@@ -160,13 +170,21 @@ public class NotificationCenterPrototype : MonoBehaviour {
 	}
 		
 	public void HideAllInGameMessages(){
+		if(!messageIsShowed)return;
+
 		messageIsShowed = false;
+		HideAlleInGameMessageObjects();
+		InGameController.i.IsPaused=false;
+	}
+
+	void HideAlleInGameMessageObjects(){
 		inGameMessageTopText.gameObject.SetActive(false);
 		inGameMessageTopBGGO.SetActive(false);
 		inGameMessageCenterText.gameObject.SetActive(false);
 		inGameMessageCenterBGGO.SetActive(false);
-
-		InGameController.i.IsPaused=false;
+		pauseButtonQuit.SetActive(false);
+		pauseButtonReload.SetActive(false);
+		inGameMessagePauseText.gameObject.SetActive(false);
 	}
 
 

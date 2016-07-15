@@ -118,7 +118,7 @@ public class PlayerScript : MonoBehaviour {
 		}
 		set{
 			if(!HasPickedUpHalberd){
-				Debug.LogError("you have to pickup halberd");
+				Debug.Log("you have to pickup halberd");
 				return;
 			}
 			isWithHalberd = value;
