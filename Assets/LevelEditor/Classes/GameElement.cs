@@ -10,6 +10,7 @@ public class GameElement {
 
 	// default objects
 	public string name="";
+	public string genericName = "";
 	
 	public string type="";
 	public string subtype="";
@@ -87,6 +88,7 @@ public class GameElement {
 	public GameElement Copy() {
 		GameElement copyX = new GameElement ();
 		copyX.name = name;
+		copyX.genericName = genericName;
 		copyX.type = type;
 		copyX.subtype = subtype;
 		copyX.position = new Vector3(position.x,position.y,position.z);

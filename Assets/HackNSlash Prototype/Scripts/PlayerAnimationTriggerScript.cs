@@ -17,9 +17,11 @@ public class PlayerAnimationTriggerScript : MonoBehaviour {
 	}
 
 	public void FromAnimationTriggerDoHitBox(){
+		if (hitterS!=null)
 		hitterS.FromAnimationTriggerDoHitBox();
 	}
 	public void FromAnimationTriggerDoHitHalberdBox(){
+		if (hitterS!=null)
 		hitterS.FromAnimationTriggerDoHitHalberdBox();
 	}
 

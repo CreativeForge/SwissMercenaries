@@ -10,6 +10,8 @@ public class LevelElement {
 	public GameObject editorPrefab; // dummy object
 	public LevelElementOption[] prefabEditorDummyArguments;
 
+	public string genericName = "objekt";
+
 	public bool isGround = false;
 
 	public bool argumentNeeded = true;
