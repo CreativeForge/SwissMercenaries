@@ -123,9 +123,9 @@ public class TriggerBase : MonoBehaviour {
 	 * AddNotification
 	 * 
 	 * */
-	public void AddNotification( string key, Vector3 point, NotificationPriority np ) {
+/*	public void AddNotification( string key, Vector3 point, NotificationPriority np ) {
 		
-		AddNotification( key, "", point, np );
+		// AddNotification( key, "", point, np );
 		
 	}
 	public void AddNotification( string key, string notificationArgument, Vector3 point, NotificationPriority np ) {
@@ -133,5 +133,6 @@ public class TriggerBase : MonoBehaviour {
 		// gameLogic.AddNotification( key, notificationArgument, point, np );
 		
 	}
+*/
 
 }

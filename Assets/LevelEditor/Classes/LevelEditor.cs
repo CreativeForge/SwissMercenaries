@@ -414,7 +414,9 @@ public class LevelEditor : MonoBehaviour {
 			GameElement gelement = (GameElement)arrGameElementTypes [a];
 			if (gelement.type.Equals (elementArea)) {
 				if (gelement.subtype.Equals (elementSubArea)) {
-					return gelement;
+					GameElement gaex = gelement.Copy();
+					return gaex;
+					// return gelement;
 				}
 			}
 		}
@@ -2262,7 +2264,7 @@ public class LevelEditor : MonoBehaviour {
 			int editorX=editorPrefX;
 			int editorY=editorPrefY;
 
-			GUI.Label (new Rect (editorX, editorY, editorWidth, editorHeight), "", editorBackground);
+//			GUI.Label (new Rect (editorX, editorY, editorWidth, editorHeight), "", editorBackground);
 
 			// working on level
 			// maxLevel
@@ -3136,6 +3138,13 @@ public class LevelEditor : MonoBehaviour {
 
 			// 	selectiondialoge
 			if (selectionDialoge) {
+
+				// FILTER
+				// background
+				GUI.Label ( new Rect(filterTypeVisual.x,filterTypeVisual.y-5,filterTypeVisual.width+5,filterTypeVisual.height+10), "", editorBackground);
+				GUI.Label ( new Rect(filterTypeVisual.x,filterTypeSubVisual.y-5,filterTypeSubVisual.width+5,filterTypeSubVisual.height+10), "", editorBackground);
+				GUI.Label ( new Rect(selectionDialogeVisual.x,selectionDialogeVisual.y-5,selectionDialogeVisual.width+5,selectionDialogeVisual.height+10), "", editorBackground);
+
 /*
 			bool selectionDialoge = true;
 			string selectFilter = ""; // names etc.  #name types ...  !abc.* !
@@ -3211,7 +3220,7 @@ public class LevelEditor : MonoBehaviour {
 							text = text + "("+gae.subtype+")";
 						}
 						GUIStyle guix = editorButtonStyleNotActive;
-						// if (editorSelected==gae) guix = editorButtonActiveStyle;
+						if (editorSelected==gae) guix = editorButtonActiveStyle;
 						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 240, 20), ""+text+"", guix);
 						if (buttonClicked) {
 							SetSelectedElement(gae);
@@ -3272,11 +3281,6 @@ public class LevelEditor : MonoBehaviour {
 
 
 
-			// FILTER
-			// background
-			GUI.Label ( new Rect(filterTypeVisual.x,filterTypeVisual.y-5,filterTypeVisual.width+5,filterTypeVisual.height+10), "", editorBackground);
-			GUI.Label ( new Rect(filterTypeVisual.x,filterTypeSubVisual.y-5,filterTypeSubVisual.width+5,filterTypeSubVisual.height+10), "", editorBackground);
-			GUI.Label ( new Rect(selectionDialogeVisual.x,selectionDialogeVisual.y-5,selectionDialogeVisual.width+5,selectionDialogeVisual.height+10), "", editorBackground);
 //			GUI.Label (filterTypeSubVisual, "", editorBackground);
 
 			// filterDev
@@ -3651,12 +3655,12 @@ public class LevelEditor : MonoBehaviour {
 									// Debug.Log("LevelEditor.Update() //  ["+index+"]<"+words.Length+" ");
 									string subtypeConf = words[index];
 									GameElement editorPrefabXX = GetElementType (editorArea,subtypeConf);
-									if (editorPrefabXX!=null) {
+									if (editorPrefabXX!=null) { 
 										editorPrefabX = editorPrefabXX ;
 										flagTool = true;
 									} else {
 										// Debug.LogWarning("LevelEditor.Update() //  Searching for Painting Tool. Config Array: Unity3dLevelEditor: "+editorArea+"/"+subtypeConf);
-										AddEditorMessage("[Tool "+editorArea+"/"+subtypeConf+"]: Could not find part: "+subtypeConf);
+										AddEditorMessage("[Tool "+editorArea+"/"+subtypeConf+"]: Could not find part: "+editorArea+"/"+subtypeConf);
 										return; 
 									}
 								}

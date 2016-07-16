@@ -19,7 +19,7 @@ public class TriggerEnterNotification : TriggerBase {
 		// AddNotification ("[player.death]", PlayerScript.gameObject.transform.position, NotificationPriority.ThrowAwayAfterProcessing);
 		if (triggerType == TriggerType.OnEnter) {
 			CheckIfPickupItem(PlayerScript);
-			AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ), NotificationPriority.ThrowAwayAfterProcessing);
+			// AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ), NotificationPriority.ThrowAwayAfterProcessing);
 		}
 	}
 
@@ -27,19 +27,19 @@ public class TriggerEnterNotification : TriggerBase {
 			// AddNotification ("[player.death]", PlayerScript.gameObject.transform.position, NotificationPriority.ThrowAwayAfterProcessing);
 			if (triggerType == TriggerType.OnFirstEnter)
 			{
-				AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ), NotificationPriority.ThrowAwayAfterProcessing);
+				// AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ), NotificationPriority.ThrowAwayAfterProcessing);
 			}
 		}
 	
 	public override void OnPlayerExit(  PlayerScript PlayerScript, Collider col ) {
 		if (triggerType == TriggerType.OnExit) {
-			AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ), NotificationPriority.ThrowAwayAfterProcessing);
+			// AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ), NotificationPriority.ThrowAwayAfterProcessing);
 		}
 	}
 
 	public override void OnPlayerFirstExit(  PlayerScript PlayerScript, Collider col ) {
 		if (triggerType == TriggerType.OnFirstExit) {
-			AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ) , NotificationPriority.ThrowAwayAfterProcessing);
+			// AddNotification (NotificationName, NotificationArgument, GetReleasePosition ( PlayerScript ) , NotificationPriority.ThrowAwayAfterProcessing);
 		}
 	}
 
