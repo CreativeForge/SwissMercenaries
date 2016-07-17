@@ -2633,6 +2633,7 @@ public class LevelEditor : MonoBehaviour {
 								editorSelected.type=unique.type; 
 								editorSelected.subtype=unique.subtype; 
 								UpdateElementVisual(editorSelected); 
+								AddToEditorHistory();
 							}
 						}
 						// delete objects
