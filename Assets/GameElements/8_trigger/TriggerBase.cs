@@ -63,7 +63,7 @@ public class TriggerBase : MonoBehaviour {
 	//
 	// use this one!!! if you want to add something on self position
    // "abc.def"
-   void AddNotification( string typesubtype, string targetName, float timed, string argument ) {
+   public void AddNotification( string typesubtype, string targetName, float timed, string argument ) {
 
 		string[] arrType = typesubtype.Split('.') ;
 		string type = arrType[0];
@@ -75,7 +75,7 @@ public class TriggerBase : MonoBehaviour {
    }
  
 	// "abc","def" > self		
-	void AddNotification( string type, string subtype, string targetName, float timed, string argument, Vector3 pos ) {
+	public void AddNotification( string type, string subtype, string targetName, float timed, string argument, Vector3 pos ) {
 		if (pos!=null) targetName = "vector";
 		gameLogic.levelEditor.notificationCenter.AddNotification(  type, subtype,  targetName,  timed,  argument, pos );
 	}
