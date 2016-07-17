@@ -137,7 +137,7 @@ public class PlayerScript : MonoBehaviour {
 	}
 		
 	void HandleHolyRage(){
-		if(holyRageStartTime+holyRageDuration<Time.time){
+		if(isInHolyRage && holyRageStartTime+holyRageDuration<Time.time){
 			EndHolyRage();
 		}
 	}
@@ -305,8 +305,9 @@ public class PlayerScript : MonoBehaviour {
 		dS.Health = 100;
 		speed = originalSpeed*2;
 		hS.ModHitForce(2);
-		hS.weaponTrailCurrentGO = hS.weaponTrailHolyGO;
-		hS.weaponTrailCurrentGO.SetActive(true);
+		hS.ActivateTrail(true);
+		//hS.weaponTrailCurrentGO = hS.weaponTrailHolyGO;
+		//hS.weaponTrailCurrentGO.SetActive(true);
 	}
 
 
@@ -318,8 +319,9 @@ public class PlayerScript : MonoBehaviour {
 		holyShineGO.SetActive(false);
 		speed = originalSpeed;
 		hS.ResetHitForce();
-		hS.weaponTrailCurrentGO = hS.weaponTrailNormalGO;
-		if(hS.weaponTrailHolyGO)hS.weaponTrailHolyGO.SetActive(false);
+		//hS.weaponTrailCurrentGO = hS.weaponTrailNormalGO;
+		//if(hS.weaponTrailHolyGO)hS.weaponTrailHolyGO.SetActive(false);
+		hS.ActivateTrail(false);
 		InGameController.i.AdjustHolyRageVisualisation();
 	}
 

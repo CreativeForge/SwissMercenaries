@@ -31,10 +31,12 @@ public class HitterScript : MonoBehaviour {
 	bool isBackJumping;
 	float startBackJumpTime = 0;
 
-	public GameObject weaponTrailCurrentGO;
+	/*public GameObject weaponTrailCurrentGO;
 	public GameObject weaponTrailNormalGO;
 	public GameObject weaponTrailHalberdGO;
 	public GameObject weaponTrailHolyGO;
+	public GameObject weaponTrailHolyGO;*/
+
 
 	Rigidbody rB;
 
@@ -50,6 +52,8 @@ public class HitterScript : MonoBehaviour {
 		else if(hitBox1)
 			hitBox1.SetActive(false);
 			
+
+		//Debug.Log("deactivate trail1");
 		StartCoroutine(WaitNSetWeaponTrail());
 
 		originalHitForce = hitForce;
@@ -61,15 +65,19 @@ public class HitterScript : MonoBehaviour {
 	}
 
 	IEnumerator WaitNSetWeaponTrail(){
+
+		//Debug.Log("deactivate trail2");
 		yield return 0;
 		if(pS) {
-			weaponTrailNormalGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail");
-			weaponTrailHolyGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail Holy");
-			weaponTrailHalberdGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail 2");
-			weaponTrailNormalGO.SetActive(false);
-			weaponTrailHolyGO.SetActive(false);
-			if(weaponTrailHalberdGO)weaponTrailHalberdGO.SetActive(false);
-			weaponTrailCurrentGO = weaponTrailNormalGO;
+			ActivateTrail(false);
+			//Debug.Log("deactivate trail3");
+			//weaponTrailNormalGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail");
+			//weaponTrailHolyGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail Holy");
+			//weaponTrailHalberdGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail 2");
+			//weaponTrailNormalGO.SetActive(false);
+			//weaponTrailHolyGO.SetActive(false);
+			//if(weaponTrailHalberdGO)weaponTrailHalberdGO.SetActive(false);
+			//weaponTrailCurrentGO = weaponTrailNormalGO;
 		}
 	}
 
@@ -167,7 +175,7 @@ public class HitterScript : MonoBehaviour {
 				if(hitBox1)hitBox1.SetActive(false);
 				isHittingFast = false;
 
-				if(pS && !pS.isInHolyRage) weaponTrailCurrentGO.SetActive(false);
+				if(pS && !pS.isInHolyRage) ActivateTrail(false); // weaponTrailCurrentGO.SetActive(false);
 			}
 
 
@@ -175,7 +183,7 @@ public class HitterScript : MonoBehaviour {
 				if(hitBox2)hitBox2.SetActive(false);
 				isHittingSlow = false;
 
-				if(pS && !pS.isInHolyRage) weaponTrailCurrentGO.SetActive(false);
+				if(pS && !pS.isInHolyRage) ActivateTrail(false); // weaponTrailCurrentGO.SetActive(false);
 
 				/*
 				if(lastHitTime+hitSlowDuration<Time.time){
@@ -224,7 +232,7 @@ public class HitterScript : MonoBehaviour {
 			// enable if player should hit in camera direction
 			//pS.LookInCamDir();
 
-			weaponTrailCurrentGO.SetActive(true);
+			ActivateTrail(true);//weaponTrailCurrentGO.SetActive(true);
 
 			if(pS.GetVelocity()<0.1f) {
 				anim.SetTrigger("Attack01Trigger");
@@ -266,7 +274,7 @@ public class HitterScript : MonoBehaviour {
 			// enable if player should hit in camera direction
 			//pS.LookInCamDir();
 
-			weaponTrailCurrentGO.SetActive(true);
+			ActivateTrail(true); //weaponTrailCurrentGO.SetActive(true);
 
 			if(pS.GetVelocity()<0.1f) {
 				anim.SetTrigger("AttackHalberd01Trigger");
@@ -313,5 +321,13 @@ public class HitterScript : MonoBehaviour {
 			}
 		}
 		return false;
+	}
+		
+	public void ActivateTrail(bool inActive){
+		//Debug.Log("trail: "+inActive+" "+Time.time);
+		GameObject wTrail = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail Sword");
+		if(wTrail)wTrail.GetComponent<MeshRenderer>().enabled = inActive;// SetActive(inActive);
+		GameObject wTrail2 = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail Halberd");
+		if(wTrail2)wTrail2.GetComponent<MeshRenderer>().enabled = inActive;// 
 	}
 }
