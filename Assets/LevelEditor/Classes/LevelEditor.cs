@@ -548,7 +548,7 @@ public class LevelEditor : MonoBehaviour {
 	GameElement[] selectionAffectedElements = {};
 
 	// notifcations
-	bool notificationDialog = true;
+	bool notificationDialog = false;
 	string notificationArea = "";
 	string notificationAreaSub = "";
 	int notificationDialogX = 300;
@@ -1410,6 +1410,11 @@ public class LevelEditor : MonoBehaviour {
 			editorArea = ga.type;
 			SetSelectedElementToGUI ();
 		}
+
+		// also update preview for recognition
+		editorArea = ga.type;
+		editorSubArea = ga.subtype;
+		SetSubEditorArea( editorSubArea );
 	}
 		// update to 
 		void SetSelectedElementToGUI() {
@@ -2333,7 +2338,7 @@ public class LevelEditor : MonoBehaviour {
 
 			// working on level
 			// maxLevel
-			GUI.Label (new Rect (editorX, editorY, 120, 20), "LEVEL: ", editorButtonActiveStyle);
+			GUI.Label (new Rect (editorX, editorY, 60, 20), "LEVEL: ", editorButtonActiveStyle);
 			// levels
 			for (int i=1; i<maxLevel; i++) {
 				string text = "" + i;
@@ -2344,7 +2349,7 @@ public class LevelEditor : MonoBehaviour {
 					text = ">" + text + "";
 				}
 
-				bool buttonClicked = GUI.Button (new Rect (editorX + 122 + (i - 1) * 22, editorY, 20, 20), text, gui);
+				bool buttonClicked = GUI.Button (new Rect (editorX + 62 + (i - 1) * 22, editorY, 20, 20), text, gui);
 				if (buttonClicked) {
 					// scroll=0.0f;
 					// EditorUpdateCameraToScroll(scroll);
@@ -2353,6 +2358,17 @@ public class LevelEditor : MonoBehaviour {
 					gameLogic.SetGameLevel( i );
 				}
 			}
+
+
+			// clear
+			if (GUI.Button (new Rect (editorX + 214, editorY, 58, 20), "CLEAR", editorButtonActiveStyle)) {
+				ClearLevel ();  
+				// NewLevel();
+				DefaultElements();
+				SaveLevel (actualLevel);
+			}
+
+
 			int widthWorking = 280;
 			// COPYTO
 			GUI.Label (new Rect (editorX + widthWorking, editorY, 80, 20), "SAVE AS: ", editorButtonActiveStyle);
@@ -2392,6 +2408,7 @@ public class LevelEditor : MonoBehaviour {
 			editorX = 10;
 			editorY = editorY + 22;
 
+			/*
 			// load & save
 			for (int i=0; i<4; i++) {
 				string text = "";
@@ -2432,6 +2449,7 @@ public class LevelEditor : MonoBehaviour {
 						SaveLevel (actualLevel);
 
 					}
+
 					if (i == 3) { 
 						//stateSpecialEditor="";
 						NewLevel();
@@ -2441,9 +2459,13 @@ public class LevelEditor : MonoBehaviour {
 				}
 				
 			}
+			*/
+
+			/*
 			// error log
 			// editorLogText="";
 			GUI.Label (new Rect (editorX + 250, editorY, 150, 20), "" + editorLogText);
+			*/
 			// camera
 			widthWorking=widthWorking+80;
 			// OVERLAY
@@ -2460,6 +2482,7 @@ public class LevelEditor : MonoBehaviour {
 				DeleteAllRelationVisuals ();
 				ToggleShowEvaluationData();
 			}
+/*
 			widthWorking=widthWorking+44;
 			if (GUI.Button (new Rect (editorX + widthWorking, editorY, 38, 20), "CAM ", editorButtonActiveStyle)) {
 				// SetCameraZoom(0);
@@ -2488,7 +2511,7 @@ public class LevelEditor : MonoBehaviour {
 			widthWorking=widthWorking+20;
 			GUI.Label (new Rect (editorX + widthWorking, editorY, 18, 20), "__", editorButtonActiveStyle);
 			widthWorking=widthWorking+20;
-
+*/
 
 			// INFO
 
@@ -3377,6 +3400,12 @@ public class LevelEditor : MonoBehaviour {
 			if (GUI.Button (new Rect(0,filterY,60,20),"VIEW *.* " ,editorComment)) {
 				filterType = "*";
 			}
+
+			if (GUI.Button (new Rect(0,filterY-24,60,20),"NOTYS" ,editorComment)) {
+				notificationDialog = !notificationDialog;
+			}
+
+
 			filterX = filterX +70;
 			// type: *
 			// if (filterType.Equals("*")) {
