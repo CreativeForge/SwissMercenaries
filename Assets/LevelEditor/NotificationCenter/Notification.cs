@@ -22,9 +22,11 @@ namespace GameLab.NotficationCenter {
 		public float timed = 0.0f; // absolute  
 		public float timeStop = 0.0f;
 
+		// prefab
+		public GameObject prefabGameObject = null;
 
 		// attached gameobject
-		GameObject gameObject = null;
+		public GameObject gameObject = null;
 
 		// target
 		public GameObject targetObj = null; // starting
@@ -46,6 +48,7 @@ namespace GameLab.NotficationCenter {
 
 			copyX.timed = timed;
 
+			copyX.prefabGameObject = prefabGameObject;
 			copyX.gameObject = gameObject;
 
 			copyX.targetName = targetName;

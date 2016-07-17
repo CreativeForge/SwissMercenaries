@@ -9,7 +9,7 @@ public class NotificationType {
 	public string subtype = "";
 	public string argument = ""; // for example the audioclip
 
-	public GameObject ingameObject = null;
+	public GameObject prefabGameObject = null;
 	public int editorIndex = 1; // editor index
 
 }

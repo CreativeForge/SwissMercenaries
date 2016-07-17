@@ -7,25 +7,16 @@ public class TriggerNotification : TriggerBase {
 
 
 	public override void  OnInitTrigger() {
-		Debug.Log("TriggerNotifcation.OnInitTrigger() // "+gameElement.name+"/"+gameElement.strevent);
+		// Debug.Log("TriggerNotifcation.OnInitTrigger() // "+gameElement.name+"/"+gameElement.strevent);
 	}
 
-	public override void OnPlayerEnter( PlayerScript PlayerScript, Collider col ) {
-		
+
+	public override void OnActivateTrigger( PlayerScript PlayerScript, Collider col ) {
+
+		Debug.Log("TriggerNotification().OnActivateTrigger() // TriggerType: "+triggerType);
+
+		// if (gameElement.)
 	}
 
-	public override void OnPlayerFirstEnter( PlayerScript PlayerScript, Collider col ) {
-		
-	}
-
-	public override void OnPlayerExit(  PlayerScript PlayerScript, Collider col ) {
-
-
-	}
-
-	public override void OnPlayerFirstExit(  PlayerScript PlayerScript, Collider col ) {
-	
-
-	}
 
 }

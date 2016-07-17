@@ -18,7 +18,7 @@ public enum TriggerNotificationPoint {
 
 public class TriggerBase : MonoBehaviour {
 
-	string triggerType = "enter";
+	public string triggerType = "enter";
 
 	bool enterFirstTime = false;
 	bool exitFirstTime = false;
@@ -60,23 +60,32 @@ public class TriggerBase : MonoBehaviour {
    * 
    * */
 
+	//
+	// use this one!!! if you want to add something on self position
    // "abc.def"
    void AddNotification( string typesubtype, string targetName, float timed, string argument ) {
-		gameLogic.levelEditor.notificationCenter.AddNotification(  typesubtype,  targetName,  timed,  argument );
+
+		string[] arrType = typesubtype.Split('.') ;
+		string type = arrType[0];
+		string subtype = "???";
+		if (arrType.Length>1)  subtype = arrType[1];
+
+		Vector3 pos = new Vector3(transform.position.x,transform.position.y,transform.position.z);
+		gameLogic.levelEditor.notificationCenter.AddNotification(  type, subtype ,  targetName,  timed,  argument, pos );
    }
  
 	// "abc","def" > self		
 	void AddNotification( string type, string subtype, string targetName, float timed, string argument, Vector3 pos ) {
+		if (pos!=null) targetName = "vector";
 		gameLogic.levelEditor.notificationCenter.AddNotification(  type, subtype,  targetName,  timed,  argument, pos );
 	}
-
 
 
   /*
 	 * Triggers 
 	 * */
 
-  bool debugTriggerEvents = true;
+  bool debugTriggerEvents = false;
 
   void OnTriggerEnter(Collider other) {
 

@@ -34,12 +34,12 @@ namespace GameLab.NotficationCenter
 		// types
 		ArrayList arrNotifcationTypes = new ArrayList();
 
-		public NotificationType[] Sound2D = { };
-		public NotificationType[] Visual2D = { };
-		public NotificationType[] Sound3D = { };
-		public NotificationType[] Visual3D= { };
+		public NotificationType[] Sound = { };
+		public NotificationType[] Visual= { };
 		public NotificationType[] ObjectManipulation = { };
 		public NotificationType[] PlayerTypes = { };
+		public NotificationType[] SoundGUI = { };
+		public NotificationType[] VisualGUI = { };
 
 		// pipeline .. 
 		public ArrayList arrNotificationPipline = new ArrayList();
@@ -47,12 +47,12 @@ namespace GameLab.NotficationCenter
 
 		void Start() {
 
-			RegisterNotificationTypes( "sound2d", Sound2D );
-			RegisterNotificationTypes( "visual2d", Visual2D );
-			RegisterNotificationTypes( "sound3d", Sound3D );
-			RegisterNotificationTypes( "visual3d", Visual3D );
+			RegisterNotificationTypes( "sound", Sound );
+			RegisterNotificationTypes( "visual", Visual );
 			RegisterNotificationTypes( "object", ObjectManipulation );
 			RegisterNotificationTypes( "player", PlayerTypes );
+			RegisterNotificationTypes( "soundgui", SoundGUI );
+			RegisterNotificationTypes( "visualgui", VisualGUI );
 
 			// get gamelogic
 			gameLogic = GetGameLogic();
@@ -128,21 +128,50 @@ namespace GameLab.NotficationCenter
 
 		// ProcessNotification
 		void ProcessNotification( Notification nt ) {
-			if (nt.type.Equals("visual3d")) ProcessVisual3d( nt );
-			if (nt.type.Equals("object")) ProcessObject( nt );
+
+			CreateInstantiatePrefab(nt, new Vector3());
+
+			bool parsed = false;
+			//if (nt.type.Equals("visual")) { ProcessVisual( nt ); parsed = true;}
+			//if (nt.type.Equals("object")) { ProcessObject( nt ); parsed = true; }
+
+			if (!parsed) {
+				// default parsing
+				// CreateInstantiatePrefab( nt );
+			}
 
 			nt.state = "done";
 		}
 
 		// Process it!
-		void ProcessVisual3d( Notification nt ) {
+		void CreateInstantiatePrefab( Notification nt, Vector3 position ) {
+			// check for .. 
+			Debug.Log("NotificationCenter.CreateInstantiatePrefab() // "+nt.type+"/"+nt.subtype );
+			if (nt.prefabGameObject!=null) {
+				Debug.Log("NotificationCenter.CreateInstantiatePrefab() // Prefab existing");
+				GameObject go=Instantiate(nt.prefabGameObject, position, new Quaternion()) as GameObject;
+
+			}
+
+		}
+
+		// Process visual
+		void ProcessVisual( Notification nt ) {
 			// gameLogics
 			// print(""+nt.targetName);
+			if (nt.targetName.Equals("")) {
+				// do it on yourself
+			}
 			ArrayList arr = GetGameElementsByTargetName( nt.targetName );
 			for (int a=0;a<arr.Count;a++) {
 				GameElement ge = (GameElement) arr[a];
-				Debug.LogFormat("NotificationCenter.ProcessVisual3d() a. // "+ge.name)	;			
+				Debug.LogFormat("NotificationCenter.ProcessVisual3d() a. // "+ge.name)	;	
+				// Do it there 
+
+				// CreateInstantiatePrefab()
 			}
+
+
 		}
 
 		// Process Object
@@ -230,7 +259,8 @@ namespace GameLab.NotficationCenter
 						// if ( nt.gameObject != null ) {
 						Notification geType = new Notification ();
 						geType.type = prefix; 
-						geType.subtype = nt.subtype; 
+						geType.subtype = nt.subtype+""; 
+						geType.prefabGameObject = nt.prefabGameObject;
 						arrNotifcationTypes.Add(geType);
 
 					}
