@@ -59,6 +59,7 @@ public class GameLogic : MonoBehaviour {
 
 	public void Start() {
 
+		// Camera
 		SetGameCamera( GameObject.Find("Main Camera") );
 		SetEditorCamera( GameObject.Find("editorcamera") );
 		// SetGameState( GameLogicModal newmodal )
@@ -114,7 +115,7 @@ public class GameLogic : MonoBehaviour {
 
 
 	// Levels (Load etc.)
-	LevelEditor levelEditor;
+	public LevelEditor levelEditor;
 	public int level = 1;
 
 	public void SetGameLevel( int ilevel ) {

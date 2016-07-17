@@ -44,6 +44,27 @@ public class LevelEditor : MonoBehaviour {
 		return gameLogic;
 	}
 
+	// NotificationCenter
+	NotificationCenter notificationCenter;
+	NotificationCenter GetNotificationCenter() {
+			GameObject gl = GameObject.Find ("_NotificationCenter");
+		if (gl!=null) {
+			notificationCenter = gl.GetComponent<NotificationCenter>();
+			if (notificationCenter!=null) {
+				return notificationCenter;
+			} else {
+				AddEditorMessage("Could not find _NotificationCenter!");
+			}
+		}
+		return null;
+	}
+	// notification tester ...
+	bool notificationTesterAndHistory = true;
+	string fieldType  = "type";
+	string fieldTypeSub  = "subtype";
+	string fieldTarget = "target"; 
+	string fieldTimed = "0";
+	string fieldArgument = "argument";
 
 
 		// state special editor ...
@@ -525,6 +546,18 @@ public class LevelEditor : MonoBehaviour {
 	string selectFilter = ""; // names etc.  #name types ...  !abc.* !
 	Rect selectionDialogeVisual = new Rect(0,0,0,0);
 	GameElement[] selectionAffectedElements = {};
+
+	// notifcations
+	bool notificationDialog = true;
+	string notificationArea = "";
+	string notificationAreaSub = "";
+	int notificationDialogX = 300;
+	int notificationDialogY = 200 ;
+	Rect notificationVisual = new Rect(0,0,0,0);
+	string strNotification = "";
+
+
+
 
 	// prefab elements
 	// varia 
@@ -1257,6 +1290,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 	}
 
+	/*
 	public ArrayList GetGameElementsByName( string name ) {
 
 		ArrayList arr = new ArrayList ();
@@ -1270,6 +1304,7 @@ public class LevelEditor : MonoBehaviour {
 
 		return arr;
 	}
+	*/
 
 	public ArrayList GetGameElementsByNotCleanName( ) {
 
@@ -1286,6 +1321,22 @@ public class LevelEditor : MonoBehaviour {
 
 		return arr;
 	}
+
+	public ArrayList GetGameElementsByName( String name ) {
+
+		ArrayList arr = new ArrayList ();
+
+		for (int i=0; i<arrLevel.Count; i++) {
+			GameElement gx=(GameElement) arrLevel[i];
+			if (gx.name.Equals (name)) {
+				arr.Add (gx);
+			}
+		}
+
+		return arr;
+	}
+
+
 	void ClearElements() {
 		// Debug.Log ("ClearElements()");
 		int counted = arrLevel.Count;
@@ -1814,6 +1865,9 @@ public class LevelEditor : MonoBehaviour {
 		// Get GameLogic
 		GetGameLogic ();
 
+		// Notification Center
+		GetNotificationCenter();
+
 		// game logic
 		// gameLogic.SetGameState ( GameLogic.GameLogicModal.Editor );
 
@@ -1841,8 +1895,6 @@ public class LevelEditor : MonoBehaviour {
 
 		// start with level 1
 		SetLevel (1);
-
-
 
 
 		// check for playerId
@@ -1887,6 +1939,11 @@ public class LevelEditor : MonoBehaviour {
 			return true;
 		}
 
+		if ((mouseX>notificationVisual.x)&&(mouseX<(notificationVisual.x+notificationVisual.width))
+			&&
+			(mouseY>notificationVisual.y)&&(mouseY<(notificationVisual.y+notificationVisual.height))) {
+			return true;
+		}
 
 		// Debug.Log ("CheckMouseInEditor() > FALSE; ");
 		return false;
@@ -2733,12 +2790,13 @@ public class LevelEditor : MonoBehaviour {
 
 					string add="";
 					string title=""; 
-					if (i==0) { title = "ADD |>"; if (editorToolSub.Equals ("right")) { add=">";  } }
-					if (i==1) { title = "|< DEL"; if (editorToolSub.Equals ("left")) { add=">"; } }
-					if (i==2) { title = "ADD ^"; if (editorToolSub.Equals ("down")) { add=">";   } }
-					if (i==3) { title = "DEL ^"; if (editorToolSub.Equals ("up")) { add=">"; } }
+					GUIStyle gs = editorButtonStyle;
+					if (i==0) { title = "ADD |>"; if (editorToolSub.Equals ("right")) { add=">";  gs= editorButtonActiveStyle; } }
+					if (i==1) { title = "|< DEL"; if (editorToolSub.Equals ("left")) { add=">"; gs= editorButtonActiveStyle; } }
+					if (i==2) { title = "ADD ^"; if (editorToolSub.Equals ("down")) { add=">"; gs= editorButtonActiveStyle;   } }
+					if (i==3) { title = "DEL ^"; if (editorToolSub.Equals ("up")) { add=">"; gs= editorButtonActiveStyle; } }
 
-					if (GUI.Button (new Rect (editorX + i*60, editorY, 58, 20), add+""+title, editorButtonStyle )) {
+					if (GUI.Button (new Rect (editorX + i*60, editorY, 58, 20), add+""+title, gs )) {
 						editorToolSub	= arrEditorToolsSub[i];	
 					}
 
@@ -3136,6 +3194,7 @@ public class LevelEditor : MonoBehaviour {
 				 }
 			// }
 
+
 			// 	selectiondialoge
 			if (selectionDialoge) {
 
@@ -3354,6 +3413,132 @@ public class LevelEditor : MonoBehaviour {
 				filterTypeSubVisual.height = 22;
 
 			}
+
+			// NOTIFICATIONS
+			if (notificationDialog) {
+				notificationDialogX = (int) (Screen.width * 0.2f);
+				notificationDialogY = (int) (Screen.height * 0.2f);
+				notificationVisual.x = notificationDialogX;
+				notificationVisual.y = notificationDialogY;
+				notificationVisual.width = 150;
+				// notificationVisual.height = 50;
+				GUI.Label ( new Rect(notificationVisual.x-5,notificationVisual.y-5,notificationVisual.width+10,notificationVisual.height+10), "", editorBackground);
+
+				int notificationDialogXTmp = notificationDialogX;
+				int notificationDialogYTmp = notificationDialogY;
+
+				ArrayList arr = notificationCenter.GetNotificationTypesUnique();
+
+				if (GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), "ALL NOTIFICATIONS *.* ", editorButtonActiveStyle)) {
+					notificationArea = "";
+				}
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+
+				strNotification = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+strNotification, editorButtonActiveStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+
+				notificationDialogYTmp = notificationDialogYTmp + 3;
+
+				if (arr.Count>0)
+				for (int i=0;i<arr.Count; i++) {
+					Notification nt = (Notification)arr [i];
+					string text = "" + nt.type+".*";
+					GUIStyle guix = editorButtonStyleNotActive;
+					// if (editorSelected==gae) guix = editorButtonActiveStyle;
+					bool flagShow = true;
+					if (!notificationArea.Equals("")) {
+						if (!notificationArea.Equals(nt.type)) {
+						  flagShow = false;
+						} else {
+								guix = editorButtonActiveStyle;			
+						}
+					}
+					if (flagShow) {
+							bool buttonClicked = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+text+"", guix);
+						if (buttonClicked) {
+							notificationArea = nt.type;
+							notificationAreaSub = "";
+							strNotification = notificationArea+"."+notificationAreaSub;
+						}
+						notificationDialogYTmp = notificationDialogYTmp + 22;
+					}
+					
+					// counter++;
+					// if (counter>5) break;
+				}
+
+				notificationDialogYTmp = notificationDialogYTmp + 5;
+
+				if (!notificationArea.Equals("")) {
+					ArrayList arrxy = notificationCenter.GetNotificationTypes(notificationArea);
+					if (arrxy.Count>0)
+						for (int i=0;i<arrxy.Count; i++) {
+							Notification nt = (Notification)arrxy [i];
+							string text = "" + nt.type+"."+nt.subtype;
+							GUIStyle guix = editorButtonStyleNotActive;
+							bool flagShow = true;
+							if (nt.subtype.Equals(notificationAreaSub)) guix = editorButtonActiveStyle;			
+							if (flagShow) {
+								bool buttonClicked = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), " "+text+"", guix);
+								if (buttonClicked) {
+									notificationAreaSub = nt.subtype;
+									strNotification = notificationArea+"."+notificationAreaSub;
+								}
+								notificationDialogYTmp = notificationDialogYTmp + 22;
+							}
+
+							// counter++;
+							// if (counter>5) break;
+						}
+				}
+
+				notificationVisual.height = notificationDialogYTmp - notificationDialogY;
+
+				// NOTIFICATION TESTER
+
+				notificationDialogX = (int) (Screen.width * 0.2f) + 220;
+				notificationDialogY = (int) (Screen.height * 0.2f);
+				// GUI.Label ( new Rect(notificationVisual.x-5,notificationVisual.y-5,notificationVisual.width+10,notificationVisual.height+10), "", editorBackground);
+				notificationDialogXTmp = notificationDialogX;
+				notificationDialogYTmp = notificationDialogY;
+
+				if (notificationTesterAndHistory) {
+				bool buttonClickedX = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), "ADD NOTIFICATION", editorButtonActiveStyle);
+				if (buttonClickedX) {
+					float timed = float.Parse( fieldTimed );
+						notificationCenter.AddNotification(fieldType,fieldTypeSub,fieldTarget,timed,fieldArgument, new Vector3());
+				}
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+				fieldType = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldType, editorButtonStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+				fieldTypeSub = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTypeSub, editorButtonStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+				fieldTarget = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTarget, editorButtonStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+				fieldTimed = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTimed, editorButtonStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+				fieldArgument = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldArgument, editorButtonStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+
+				// add history ...
+				// Debug.Log("LevelEditor.OnGUI(); // "+notificationCenter.arrNotificationPipline.Count);
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+
+				if (notificationCenter.arrNotificationPipline.Count>0) {
+				for (int i=(notificationCenter.arrNotificationPipline.Count-1);i>=0;i--) {
+					Notification nt = (Notification)notificationCenter.arrNotificationPipline [i];
+							string text = "[" + nt.state+"] "+nt.type+"/"+nt.subtype+" {>"+nt.targetName+"} "+nt.argument+" ("+nt.timed+")";
+					GUIStyle guix = editorButtonStyleNotActive;
+					GUI.Label (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width*2, 20), " "+text+"", guix);
+					notificationDialogYTmp = notificationDialogYTmp + 22;
+				}
+				}
+				}
+
+			}
+
+			// the history with all objects ...
+
 
 			// MODE
 			// 	

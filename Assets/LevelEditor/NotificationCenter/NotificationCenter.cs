@@ -16,6 +16,21 @@ namespace GameLab.NotficationCenter
 	 * */
     public class NotificationCenter : MonoBehaviour
 	{
+		// GameLogic
+		// game logic
+		GameLogic gameLogic;
+		GameLogic GetGameLogic( ) {
+
+			if (gameLogic == null) {
+
+				GameObject gl = GameObject.Find ("_GameLogic");
+				gameLogic = gl.GetComponent<GameLogic>();
+
+			}
+
+			return gameLogic;
+		}
+
 		// types
 		ArrayList arrNotifcationTypes = new ArrayList();
 
@@ -23,10 +38,11 @@ namespace GameLab.NotficationCenter
 		public NotificationType[] Visual2D = { };
 		public NotificationType[] Sound3D = { };
 		public NotificationType[] Visual3D= { };
+		public NotificationType[] ObjectManipulation = { };
 		public NotificationType[] PlayerTypes = { };
 
 		// pipeline .. 
-		ArrayList arrNotificationPipline = new ArrayList();
+		public ArrayList arrNotificationPipline = new ArrayList();
 
 
 		void Start() {
@@ -35,15 +51,151 @@ namespace GameLab.NotficationCenter
 			RegisterNotificationTypes( "visual2d", Visual2D );
 			RegisterNotificationTypes( "sound3d", Sound3D );
 			RegisterNotificationTypes( "visual3d", Visual3D );
+			RegisterNotificationTypes( "object", ObjectManipulation );
 			RegisterNotificationTypes( "player", PlayerTypes );
+
+			// get gamelogic
+			gameLogic = GetGameLogic();
 
 		}
 
 		// manage the notifications
 		void Update() {
 
+			// process the pipline and do it!!!
+			ProcessNotificationPipeline();
 
 		}
+
+		// AddNotification("x.y", 
+		public void AddNotification( string typesubtype, string targetName, float timed, string argument ) {
+			string[] arr = typesubtype.Split('.');
+			if (arr.Length>1) {
+				AddNotification( arr[0],arr[1],  targetName,  timed,  argument, new Vector3() );
+			}
+
+			AddNotification( arr[0], "???",  targetName,  timed,  argument, new Vector3() );
+		}
+
+		public void AddNotification( string type, string subtype, string targetName, float timed, string argument, Vector3 pos  ) {
+			// 1. get notification
+			Notification nt = GetNotificationType( type, subtype );
+
+			if (nt!=null) {
+				// 2. identify ..
+				nt.type = type;
+				nt.subtype = subtype;
+				if (!targetName.Equals("target")) nt.targetName = targetName;
+				nt.timed = timed;
+				if (!argument.Equals("argument")) nt.argument = argument;
+				nt.timeStop = Time.time + timed;
+				nt.targetPoint = pos;
+				// 3. Add To Pipeline
+				arrNotificationPipline.Add(nt);
+			} else {
+				Notification nx = new Notification();
+				nx.state = "error";
+				nx.type = type;
+				nx.subtype = subtype;
+				nx.argument = "type not found";
+				arrNotificationPipline.Add(nx);
+			}
+
+		}
+
+		// ProcessNotificationPipeline
+		void ProcessNotificationPipeline() {
+			Notification nt;
+			for (int i=0;i<arrNotificationPipline.Count;i++) {
+				nt = (Notification) arrNotificationPipline[i];
+				if (nt.state.Equals("")) {
+					if (Time.time>nt.timeStop) {
+						ProcessNotification( nt );
+					}
+				}
+			} 
+
+			// done > kill now !!!
+			for (int i=0;i<arrNotificationPipline.Count;i++) {
+				nt = (Notification) arrNotificationPipline[i];
+				if (nt.state.Equals("done")) {
+					arrNotificationPipline.Remove(nt);
+					break;
+				}
+			} 
+
+		}
+
+		// ProcessNotification
+		void ProcessNotification( Notification nt ) {
+			if (nt.type.Equals("visual3d")) ProcessVisual3d( nt );
+			if (nt.type.Equals("object")) ProcessObject( nt );
+
+			nt.state = "done";
+		}
+
+		// Process it!
+		void ProcessVisual3d( Notification nt ) {
+			// gameLogics
+			// print(""+nt.targetName);
+			ArrayList arr = GetGameElementsByTargetName( nt.targetName );
+			for (int a=0;a<arr.Count;a++) {
+				GameElement ge = (GameElement) arr[a];
+				Debug.LogFormat("NotificationCenter.ProcessVisual3d() a. // "+ge.name)	;			
+			}
+		}
+
+		// Process Object
+		void ProcessObject( Notification nt ) {
+			// gameLogics
+			// print(""+nt.targetName);
+			ArrayList arr = GetGameElementsByTargetName( nt.targetName );
+			for (int a=0;a<arr.Count;a++) {
+				GameElement ge = (GameElement) arr[a];
+				// Debug.LogFormat("NotificationCenter.ProcessVisual3d() a. // "+ge.name)	;			
+
+				// object/remove
+				if (nt.subtype.Equals("remove")) {
+					gameLogic.levelEditor.RemoveElement( ge );
+				}
+
+				// object/rotate
+				if (nt.subtype.Equals("rotate")) {
+					if (ge.gameObject!=null) {
+						ge.gameObject.transform.Rotate( new Vector3(0.0f,15.0f,0.0f));
+					}
+				}
+
+			}
+		}
+
+		ArrayList GetGameElementsByTargetName( string targetName  ) {
+			ArrayList arr = gameLogic.levelEditor.GetGameElementsByName( targetName );
+			return arr;
+		}
+
+		// GetPointsFor( nt )
+		/*
+		 * ArrayList GetPointsFor( Notification nt  ) {
+			ArrayList arr = new ArrayList();
+
+			if (!nt.targetName.Equals("")) {
+				ArrayList arr = gameLogic.levelEditor.GetGameElementsByName( nt.targetName );
+				for (int u=0;u<arr.Count;u++) {
+					GameElement ge = (GameElement) arr[u];
+					// ... 
+					Vector3 pos = new Vector3( ge.position.x, ge.position.y, ge.position.z );
+					arr.Add(pos);
+				}
+			} else {
+				
+				// arr.Add()	;
+			}
+
+
+			return arr;
+		}
+		*/
 
 		// register levelelement arrays
 		void RegisterNotificationTypes( string prefix, NotificationType[] inotificationTypes ) {
@@ -85,9 +237,67 @@ namespace GameLab.NotficationCenter
 
 				}
 
+				// get all types (not subtypes) background etc ..
+				public ArrayList GetNotificationTypesUnique(  ) {
+
+					ArrayList arr = new ArrayList ();
+
+					for (int a=0; a<arrNotifcationTypes.Count; a++) {
+						Notification nelement = (Notification)arrNotifcationTypes [a];
+						bool found=false;
+						for (int aa=0; aa<arr.Count; aa++) {
+							Notification nelementInArray = (Notification)arr [aa];	
+							if (nelement.type.Equals (nelementInArray.type)) {
+								found=true;
+							}
+						}
+						if (!found) {
+							arr.Add (nelement);
+						}
+					}
+
+
+					return arr;
+
+				}
+
+				public ArrayList GetNotificationTypes( string strType ) {
+
+					ArrayList arr = new ArrayList ();
+
+					for (int a=0; a<arrNotifcationTypes.Count; a++) {
+						Notification nelement = (Notification)arrNotifcationTypes [a];
+						if (nelement.type.Equals ( strType )) {
+							arr.Add (nelement);
+						}
+					}
+
+
+					return arr;
+
+				}
+
+				public Notification GetNotificationType( string elementArea, string elementSubArea ) {
+
+					for (int a=0; a<arrNotifcationTypes.Count; a++) {
+						Notification nelement = (Notification)arrNotifcationTypes [a];
+						if (nelement.type.Equals (elementArea)) {
+							if (nelement.subtype.Equals (elementSubArea)) {
+								Notification gaex = nelement.Copy();
+								return gaex;
+								// return nelement;
+							}
+						}
+					}
+
+					return null;
+
+				}	
+
 			}
 
 
+						
 
 }
 
