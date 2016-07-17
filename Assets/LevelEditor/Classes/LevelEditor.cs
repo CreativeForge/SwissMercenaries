@@ -2633,6 +2633,7 @@ public class LevelEditor : MonoBehaviour {
 								editorSelected.type=unique.type; 
 								editorSelected.subtype=unique.subtype; 
 								UpdateElementVisual(editorSelected); 
+								AddToEditorHistory();
 							}
 						}
 						// delete objects
@@ -2993,10 +2994,11 @@ public class LevelEditor : MonoBehaviour {
 					}
 					string strType="";
 					if (cameraOverlayTypes) {
-						strType = ""+gaelement.type+"\n -"+gaelement.subtype;
+						// strType = ""+gaelement.type+"\n -"+gaelement.subtype;
+						strType = ""+gaelement.subtype;
 					}
 					if (!showInfo) {
-						GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y , 200, 80),"."+waiting+" "+strType,editorElementType );
+						GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y , 200, 80),""+waiting+" "+strType,editorElementType );
 					}
 					if (showInfo) {
 						// GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y, 200, 80),+"        "+strType,editorElementType );

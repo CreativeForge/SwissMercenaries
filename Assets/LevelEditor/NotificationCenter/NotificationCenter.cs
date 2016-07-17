@@ -129,48 +129,55 @@ namespace GameLab.NotficationCenter
 		// ProcessNotification
 		void ProcessNotification( Notification nt ) {
 
-			CreateInstantiatePrefab(nt, new Vector3());
 
 			bool parsed = false;
-			//if (nt.type.Equals("visual")) { ProcessVisual( nt ); parsed = true;}
-			//if (nt.type.Equals("object")) { ProcessObject( nt ); parsed = true; }
+			if (nt.type.Equals("visual")) { ProcessVisual( nt ); parsed = true;}
+			if (nt.type.Equals("object")) { ProcessObject( nt ); parsed = true; }
 
 			if (!parsed) {
-				// default parsing
-				// CreateInstantiatePrefab( nt );
+				CreatePrefabsFor( nt );
 			}
 
 			nt.state = "done";
 		}
 
 		// Process it!
+		// create prefabs for notification
+		void CreatePrefabsFor( Notification nt ) {
+			// direct positions
+			if (nt.targetName.Equals("")) { if (nt.targetPoint!=null) CreateInstantiatePrefab(nt, nt.targetPoint); }
+			if (nt.targetName.Equals("self")) { if (nt.targetPoint!=null)  CreateInstantiatePrefab(nt, nt.targetPoint); }
+			if (nt.targetName.Equals("vector")) { if (nt.targetPoint!=null)  CreateInstantiatePrefab(nt, nt.targetPoint); }
+
+			// go for the names
+			ArrayList arr = GetGameElementsByTargetName( nt.targetName );
+			for (int a=0;a<arr.Count;a++) {
+				GameElement ge = (GameElement) arr[a];
+				// Debug.LogFormat("NotificationCenter.ProcessVisual3d() a. // "+ge.name)	;	
+				// Do it there 
+				if (ge.gameObject!=null) {
+					CreateInstantiatePrefab(nt, new Vector3(ge.gameObject.transform.position.x,ge.gameObject.transform.position.y,ge.gameObject.transform.position.z) );
+				} else {
+					// CreateInstantiatePrefab(nt, new Vector3(ge.gameObject.transform.position.x,ge.gameObject.transform.position.y,ge.gameObject.transform.position.z) );
+				}
+			}
+		}
+
+		// create prefab at ...
 		void CreateInstantiatePrefab( Notification nt, Vector3 position ) {
 			// check for .. 
-			Debug.Log("NotificationCenter.CreateInstantiatePrefab() // "+nt.type+"/"+nt.subtype );
+			// Debug.Log("NotificationCenter.CreateInstantiatePrefab() // "+nt.type+"/"+nt.subtype );
 			if (nt.prefabGameObject!=null) {
-				Debug.Log("NotificationCenter.CreateInstantiatePrefab() // Prefab existing");
+				// Debug.Log("NotificationCenter.CreateInstantiatePrefab() // Prefab existing");
 				GameObject go=Instantiate(nt.prefabGameObject, position, new Quaternion()) as GameObject;
-
 			}
 
 		}
 
 		// Process visual
 		void ProcessVisual( Notification nt ) {
-			// gameLogics
-			// print(""+nt.targetName);
-			if (nt.targetName.Equals("")) {
-				// do it on yourself
-			}
-			ArrayList arr = GetGameElementsByTargetName( nt.targetName );
-			for (int a=0;a<arr.Count;a++) {
-				GameElement ge = (GameElement) arr[a];
-				Debug.LogFormat("NotificationCenter.ProcessVisual3d() a. // "+ge.name)	;	
-				// Do it there 
-
-				// CreateInstantiatePrefab()
-			}
-
+			// create prefab
+			CreatePrefabsFor( nt );
 
 		}
 
@@ -182,6 +189,11 @@ namespace GameLab.NotficationCenter
 			for (int a=0;a<arr.Count;a++) {
 				GameElement ge = (GameElement) arr[a];
 				// Debug.LogFormat("NotificationCenter.ProcessVisual3d() a. // "+ge.name)	;			
+
+				// object/remove
+				if (nt.subtype.Equals("activate")) {
+					gameLogic.levelEditor.AddElement(ge);
+				}
 
 				// object/remove
 				if (nt.subtype.Equals("remove")) {
