@@ -45,7 +45,7 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	// NotificationCenter
-	NotificationCenter notificationCenter;
+	public NotificationCenter notificationCenter;
 	NotificationCenter GetNotificationCenter() {
 			GameObject gl = GameObject.Find ("_NotificationCenter");
 		if (gl!=null) {
@@ -1119,7 +1119,7 @@ public class LevelEditor : MonoBehaviour {
 					Destroy (elem.gameObject);
 				}
 
-				GameElement elPrefab = GetElementType (elem.type,elem.subtype);
+			GameElement elPrefab = GetElementType (elem.type,elem.subtype);
 			if (elPrefab==null) { Debug.Log("Error: Could not find Type("+elem.type+"/"+elem.subtype+")"); return; } 
 				if (elPrefab!=null) { 
 					// Debug.LogError("Could find Type("+elem.type+"/"+elem.subtype+")");
@@ -1155,6 +1155,8 @@ public class LevelEditor : MonoBehaviour {
 					
 					// if (elPrefab.prefabGameObject!=null) {
 					if (true) {
+
+						
 
 						// special - only in editor?
 						if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor ) {
@@ -1255,7 +1257,8 @@ public class LevelEditor : MonoBehaviour {
 								TriggerBase trb = go.GetComponent<TriggerBase>();
 								// Debug.Log ("---"+trb.ToString ());
 								if (trb!=null) {
-									trb.SetGameElementArgument(argument);
+									trb.SetGameElement( elem );
+									// trb.SetGameElementArgument(argument);
 									// Debug.Log ("ARGUMENT 2: "+trb.argument);
 								}
 
@@ -1403,8 +1406,10 @@ public class LevelEditor : MonoBehaviour {
 	void SetSelectedElement( GameElement ga ) {
 		// Debug.Log ("SetSelectedElement()");
 		editorSelected = ga;
-		editorArea = ga.type;
-		SetSelectedElementToGUI ();
+		if (ga!=null) {
+			editorArea = ga.type;
+			SetSelectedElementToGUI ();
+		}
 	}
 		// update to 
 		void SetSelectedElementToGUI() {
@@ -1616,6 +1621,8 @@ public class LevelEditor : MonoBehaviour {
 			LoadLevel(level, "", "" ); // load a level raw
 
 			historyIndexMinus = 0;
+
+			SetSelectedElement(null);
 
 			// update 
 			UpdateShowEvaluationData ();
@@ -2313,6 +2320,7 @@ public class LevelEditor : MonoBehaviour {
 			if (enter) {  
 				// Debug.Log("RETURN!!!");
 				GUI.FocusControl(null);
+				AddToEditorHistory();
 			}
 
 			// infos about the mouse point (for putting in 

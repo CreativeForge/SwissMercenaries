@@ -10,7 +10,7 @@ using GameLab.NotficationCenter;
 
 public class EnterActivate : TriggerBase {
 	
-	
+	/*
 	public override void OnPlayerFirstEnter( PlayerScript PlayerScript, Collider col ) {
 		
 		// gameLogic.LoadGameNextLevel ();
@@ -33,6 +33,7 @@ public class EnterActivate : TriggerBase {
 
 		gameLogic.AddGameElements (arr);
 	}
+	*/
 	
 }
 

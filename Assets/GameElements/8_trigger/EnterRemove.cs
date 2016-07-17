@@ -10,7 +10,8 @@ using GameLab.NotficationCenter;
 
 public class EnterRemove : TriggerBase {
 	
-	
+
+	/*
 	public override void OnPlayerFirstEnter( PlayerScript PlayerScript, Collider col ) {
 		
 		// gameLogic.LoadGameNextLevel ();
@@ -28,6 +29,7 @@ public class EnterRemove : TriggerBase {
 			gameLogic.RemoveGameElement(gx);
 		}
 	}
+	*/
 	
 }
 

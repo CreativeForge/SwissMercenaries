@@ -24,7 +24,7 @@ public class GameElement {
 
 	public string strevent = "enter";
 	public float timed = 0.0f;
-	public string target = "";
+	public string target = "self"; // default self .. 
 
 	public int index = 0; // index of the gameelement ... 
 
