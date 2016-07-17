@@ -2679,6 +2679,7 @@ public class LevelEditor : MonoBehaviour {
 							editorSelected.subtype=gelement.subtype;  
 							// showElementsSubTypeOnly
 							UpdateElementVisual(editorSelected); 
+							AddToEditorHistory();
 						}
 
 					}
@@ -3020,14 +3021,20 @@ public class LevelEditor : MonoBehaviour {
 				
 					if (editorTool.Equals ("MOVE")) {
 
+						if (!gaelement.type.Equals("base")) {
 						if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20, 20), editorMoveImage, editorIconGUI)) {
 							// SetSelectedElement(gaelement);
 							//		Debug.Log("Move Pressed");
 
 						}
+						} else {
+								if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20, 20), editorEditImage, editorIconGUI)) {
+									SetSelectedElement(gaelement);
+								}
+						}
 						if (editorSelected==gaelement) {
 							GUI.Label (new Rect (screenPos.x-10, Screen.height - screenPos.y-10, 40, 40), editorSelectedImage, editorIconGUI);
-						}
+						} 
 					}
 
 					// version 2.0
@@ -3037,6 +3044,7 @@ public class LevelEditor : MonoBehaviour {
 						float buttonY=Screen.height-screenPos.y;
 						float buttonWidth=20.0f;
 
+						if (!gaelement.type.Equals("base"))
 						if (
 							 (mouseX>buttonX)&&(mouseX<(buttonX+buttonWidth)) 
 							 &&
@@ -3651,7 +3659,7 @@ public class LevelEditor : MonoBehaviour {
 
 	}
 
-	bool enabledEditorEdges =false;
+	bool enabledEditorEdges =true;
 
 	void Update() {
 
@@ -3781,21 +3789,24 @@ public class LevelEditor : MonoBehaviour {
 				GameObject xcontainer=GameObject.Find ("editorCameraContainer");
 				GameObject xeditorcamera=GameObject.Find ("editorcamera");
 
-				if (enabledEditorEdges) {
+				if (enabledEditorEdges) 
+				if (!CheckMouseInEditor())
+				{
 					
-					float rotatex = 0.75f;
-					float rotatey = 0.5f;
-					if (mouseY<20) {
+					
+					float rotatex = 1.0f;
+					float rotatey = 1.0f;
+					if ((mouseY>=0)&&(mouseY<20)) {
 						xeditorcamera.transform.Rotate( -rotatey, 0.0f, 0.0f );
 					}
-					if (mouseY>(Screen.height-20)) {
+					if ((mouseY>(Screen.height-20))&&(mouseY<=(Screen.height))) {
 						xeditorcamera.transform.Rotate( +rotatey, 0.0f,  0.0f );
 					}
 
-					if (mouseX<20) {
+					if ((mouseX>=0)&&(mouseX<20)) {
 						xcontainer.transform.Rotate( 0.0f, -rotatex, 0.0f );
 					}
-					if (mouseX>(Screen.width-20)) {
+					if ((mouseX<=(Screen.width))&&(mouseX>(Screen.width-20))) {
 						xcontainer.transform.Rotate( 0.0f, rotatex, 0.0f );
 					}
 					/*
