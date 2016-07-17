@@ -1409,12 +1409,13 @@ public class LevelEditor : MonoBehaviour {
 		if (ga!=null) {
 			editorArea = ga.type;
 			SetSelectedElementToGUI ();
+
+			// also update preview for recognition
+			editorArea = ga.type;
+			editorSubArea = ga.subtype;
+			SetSubEditorArea( editorSubArea );
 		}
 
-		// also update preview for recognition
-		editorArea = ga.type;
-		editorSubArea = ga.subtype;
-		SetSubEditorArea( editorSubArea );
 	}
 		// update to 
 		void SetSelectedElementToGUI() {
@@ -3306,7 +3307,7 @@ public class LevelEditor : MonoBehaviour {
 					int county = 0;
 					for (int i=0;i<arrLevel.Count;i++) {
 						xby = (GameElement)arrLevel[i];
-						float sizewidth = 0.5f;
+						float sizewidth = 1.0f;
 						float middlex = editorSelected.position.x;
 						float middlez = editorSelected.position.z;
 						if ((middlex>(xby.position.x-sizewidth)) && (middlex<(xby.position.x+sizewidth))) {
