@@ -3127,7 +3127,9 @@ public class LevelEditor : MonoBehaviour {
 					GUI.Label (new Rect(editorDetailX,editorDetailY,240,20),"name:                       ");
 					editDetailName=GUI.TextField (new Rect(editorDetailX+42,editorDetailY,160,20),editDetailName);
 					if (!editorSelected.name.Equals(editDetailName)) {
+						editorSelected.name=editDetailName + "";
 						UpdateElementVisual(editorSelected);
+						AddToEditorHistory("[GUI][OBJECT][CHANGEDNAME]");
 					}
 					editorSelected.name=editDetailName + "";
 					if (GUI.Button (new Rect(editorDetailX+42+165,editorDetailY,40,20),"DUPL",editorButtonStyle)) {
@@ -3153,8 +3155,25 @@ public class LevelEditor : MonoBehaviour {
 						filterType = editorSelected.type;
 						filterTypeSub = editorSelected.subtype;
 					}
-
 					editorDetailY=editorDetailY+22;
+
+
+					// trigger (add some keys)
+					if (editorSelected.type.Equals("trigger")) {
+						GUI.Label (new Rect(editorDetailX,editorDetailY,40,24),"Event:");
+					editorSelected.strevent=GUI.TextField (new Rect(editorDetailX+42,editorDetailY,160,20),editorSelected.strevent);
+						editorDetailY=editorDetailY+22;
+
+						GUI.Label (new Rect(editorDetailX,editorDetailY,40,24),"Target:");
+						editorSelected.target=GUI.TextField (new Rect(editorDetailX+42,editorDetailY,160,20),editorSelected.target);
+						editorDetailY=editorDetailY+22;
+
+						GUI.Label (new Rect(editorDetailX,editorDetailY,40,24),"After:");
+						string strTimed =GUI.TextField (new Rect(editorDetailX+42,editorDetailY,160,20),""+editorSelected.timed);
+						editorSelected.timed =   float.Parse( strTimed );
+						editorDetailY=editorDetailY+22;
+					}
+
 					if (editorSelected!=null) {	
 						if (editorSelected.guiBoolArgument) {
 							GUI.Label (new Rect(editorDetailX,editorDetailY,40,24),""+editorSelected.guiLabel+":");
@@ -3162,12 +3181,14 @@ public class LevelEditor : MonoBehaviour {
 						    bool changed=false;
 							if (editDetailArgument!=editorSelected.argument) {
 								changed=true;
+								AddToEditorHistory();
 							}
 							editorSelected.argument=editDetailArgument;
 							editorDetailY=editorDetailY+22*1;
 							if (changed) {
 								UpdateElementVisual(editorSelected);
 								UpdateRelationVisualisationAndCheckError();
+								AddToEditorHistory();
 							}
 							
 						}

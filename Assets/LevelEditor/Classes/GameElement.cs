@@ -16,11 +16,15 @@ public class GameElement {
 	public string subtype="";
 	
 	public string argument="";
+
 	public string argumentInputType = ""; // name, names, notifcation, path, points ... env.* || path.point || select
 	public string argumentInputTypeSelect = ""; // name, names, notifcation
 
 	public string argumentsub = "";
 
+	public string strevent = "enter";
+	public float timed = 0.0f;
+	public string target = "";
 
 	public int index = 0; // index of the gameelement ... 
 
@@ -96,7 +100,13 @@ public class GameElement {
 		copyX.argument = argument;
 		copyX.argumentInputType = argumentInputType;
 		copyX.argumentInputTypeSelect = argumentInputTypeSelect;
+
 		copyX.argumentsub = argumentsub;
+		copyX.argumentsub = argumentsub;
+
+		copyX.strevent = strevent;
+		copyX.target = target;
+		copyX.timed = timed;
 
 		copyX.index = index;
 
@@ -150,7 +160,12 @@ public class GameElement {
 		jsonObj.AddField("index", index);
 		jsonObj.AddField("argument", argument);
 		jsonObj.AddField("argumentsub", argumentsub);
-		jsonObj.AddField("release", release);
+
+		jsonObj.AddField("target", target);
+		jsonObj.AddField("strevent", strevent);
+		jsonObj.AddField("timed", timed);
+
+		jsonObj.AddField("release", release); // target?
 		jsonObj.AddField("releasearg", releaseArg);
 		jsonObj.AddField("rotation", rotation);
 		jsonObj.AddField("size", size);
@@ -179,7 +194,10 @@ public class GameElement {
 			if (key.Equals ("x")) { 	position.x=(float)jkeyObj.n; }
 			if (key.Equals ("y")) { 	position.y=(float)jkeyObj.n; }
 			if (key.Equals ("z")) { 	position.z=(float)jkeyObj.n; }
+			if (key.Equals ("timed")) { 	timed=(float)jkeyObj.n; }
 			if (key.Equals ("argument")) { 	argument=jkeyObj.str; }
+			if (key.Equals ("target")) { 	target=jkeyObj.str; }
+			if (key.Equals ("strevent")) { 	strevent=jkeyObj.str; }
 			if (key.Equals ("index")) { 	index=(int)jkeyObj.n; }
 			if (key.Equals ("argumentsub")) { 	argumentsub=jkeyObj.str; }
 			if (key.Equals ("release")) { 	release=jkeyObj.str; }
