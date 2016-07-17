@@ -1633,7 +1633,8 @@ public class LevelEditor : MonoBehaviour {
 			// update 
 			UpdateShowEvaluationData ();
 
-			if (gameLogic.modal == GameLogic.GameLogicModal.Editor) {
+			Debug.Log("gameLogic: "+gameLogic);
+			if (gameLogic && gameLogic.modal == GameLogic.GameLogicModal.Editor) {
 				AddToEditorHistory("LoadLevel");
 			}
 	}
