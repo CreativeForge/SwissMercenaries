@@ -39,7 +39,7 @@ public class PlayerScript : MonoBehaviour {
 
 	bool isGrounded;
 
-	uint money = 0;
+	int money = 0;
 	float faith = 0;
 	public float holyRageEnergy = 0;
 
@@ -279,7 +279,7 @@ public class PlayerScript : MonoBehaviour {
 		transform.rotation = originalRotation;
 	}
 
-	public uint Money{
+	public int Money{
 		get {
 			return money;
 		}

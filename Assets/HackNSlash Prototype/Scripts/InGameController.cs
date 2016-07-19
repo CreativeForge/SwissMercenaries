@@ -14,6 +14,7 @@ public class InGameController : MonoBehaviour {
 
 	public bool isPaused;
 	public bool isBulletTime;
+	public bool isInShop;
 
 	public Material normalSkyBoxMat;
 	public Material plunderSkyBoxMat;
@@ -256,6 +257,11 @@ public class InGameController : MonoBehaviour {
 				Time.timeScale = 1;
 			}
 		}
+	}
+
+	public void InShop(bool inBool){
+		isInShop = inBool;
+		IsPaused = inBool;
 	}
 
 	public void UpdateHealthEnemy(float inValue, Vector3 inPos){

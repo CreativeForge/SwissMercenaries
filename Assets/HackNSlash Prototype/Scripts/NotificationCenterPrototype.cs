@@ -78,7 +78,7 @@ public class NotificationCenterPrototype : MonoBehaviour {
 	public void AdjustFaithVisualisation(float inFaith){
 		faithT.localScale = new Vector3(inFaith/100f,1,1);
 	}
-	public void AdjustMoneyVisualisation(uint inMoney){
+	public void AdjustMoneyVisualisation(int inMoney){
 		moneyText.text = "Gold gesammelt: "+inMoney;
 	}
 

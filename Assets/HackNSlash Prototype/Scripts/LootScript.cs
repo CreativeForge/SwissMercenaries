@@ -8,7 +8,7 @@ public class LootScript : MonoBehaviour {
 	bool isMoving = false;
 	Rigidbody rB;
 	float speed = 10;
-	public uint moneyBonus = 0;
+	public int moneyBonus = 0;
 	public float healthBonus = 0;
 	public float fightingSpiritBonus = 0;
 	public float faithBonus = 0;
@@ -35,9 +35,9 @@ public class LootScript : MonoBehaviour {
 
 	void FixedUpdate(){
 		if(isMoving){
-			transform.LookAt(InGameController.i.playerS.transform);
+			Vector3 tDir = Vector3.Normalize( InGameController.i.playerS.transform.position - transform.position);
 			speed += Time.fixedDeltaTime*speed*10;
-			rB.MovePosition(rB.position + transform.forward * Time.fixedDeltaTime * speed);
+			rB.MovePosition(rB.position + tDir * Time.fixedDeltaTime * speed);
 		}
 		Quaternion rot = Quaternion.Euler( 0, transform.rotation.eulerAngles.y, 0 );
 		transform.rotation = rot;
