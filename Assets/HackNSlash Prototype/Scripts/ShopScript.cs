@@ -62,8 +62,8 @@ public class ShopScript : MonoBehaviour {
 	void Set3RandomItems(){
 		itemsShowed = new List<ShopItemScript>();
 		List<GameObject> tempItemsLeft = new List<GameObject>(itemPrefabs);
-		Debug.Log("tempItemsLeft count: "+tempItemsLeft.Count);
-		Debug.Log("itemPrefabs count: "+itemPrefabs.Count);
+		//Debug.Log("tempItemsLeft count: "+tempItemsLeft.Count);
+		//Debug.Log("itemPrefabs count: "+itemPrefabs.Count);
 		for(int i=0; i<3; i++){
 			int rand = Random.Range(0, tempItemsLeft.Count);
 			//Debug.Log("rand: "+rand);
@@ -84,12 +84,19 @@ public class ShopScript : MonoBehaviour {
 
 	}
 	void ConsumeSelectItem(int inIndex){
-		ShopItemScript tchosenItem = itemsShowed[inIndex];
-		Debug.Log("chose: "+inIndex+" item: "+tchosenItem);
-		ShopItemCaseScript tCase = tchosenItem.Consume();
-		Debug.Log("chosn case: "+tCase);
-
 		IsShowingShop = false;
+
+		ShopItemScript tchosenItem = itemsShowed[inIndex];
+
+		if(InGameController.i.playerS.Money<tchosenItem.price){
+			InGameController.i.ShowInGameMessage("You dont have enough money to buy this.\n(Press M to cheat and earn 100 Schilling)", true, 2);
+			return;
+		}
+		InGameController.i.playerS.Money -= Mathf.RoundToInt( tchosenItem.price);
+		//Debug.Log("chose: "+inIndex+" item: "+tchosenItem);
+		ShopItemCaseScript tCase = tchosenItem.Consume();
+		//Debug.Log("chosn case: "+tCase);
+
 		ShowConsumeInfos(tchosenItem.itemName, tCase);
 
 		InGameController.i.playerS.dS.Health += tCase.healthChange;

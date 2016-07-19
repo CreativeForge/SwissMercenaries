@@ -145,6 +145,9 @@ public class InGameController : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.K)){
 			KillAllLootableEnemies();
 		}
+		if(Input.GetKeyDown(KeyCode.M)){
+			playerS.Money+= 100;
+		}
 
 		/* // is done in myFreeLookCamScript
 		if(Input.GetKeyDown(KeyCode.F)){
