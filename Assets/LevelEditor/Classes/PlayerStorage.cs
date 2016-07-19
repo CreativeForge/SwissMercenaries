@@ -8,7 +8,7 @@ public class PlayerStorage {
 
 	float health = 100f;
 	float faith = 0f;
-	uint money = 0;
+	int money = 0;
 	string weapon = "sword";
 	int levelMastered = 0;
 
@@ -20,7 +20,7 @@ public class PlayerStorage {
 		this.attributes = new Hashtable();
 	}
 
-	public PlayerStorage(GameObject playerInstance, float health, float faith, uint money) {
+	public PlayerStorage(GameObject playerInstance, float health, float faith, int money) {
 
 		this.health = health;
 		this.faith = faith;
@@ -38,7 +38,7 @@ public class PlayerStorage {
 
 	}
 
-	public PlayerStorage(GameObject playerInstance, float health, float faith, uint money, string weapon, int levelMastered) {
+	public PlayerStorage(GameObject playerInstance, float health, float faith, int money, string weapon, int levelMastered) {
 
 		this.health = health;
 		this.faith = faith;
@@ -115,7 +115,7 @@ public class PlayerStorage {
 
 	}
 
-	public uint Money {
+	public int Money {
 
 		get { return money; }
 
