@@ -73,8 +73,8 @@ public class ShopScript : MonoBehaviour {
 			ShopItemScript tItemS = tItemGO.GetComponent<ShopItemScript>();
 			//Debug.Log("item: "+tItemS);
 			itemsShowed.Add(tItemS);
-			titleTexts[i].text = tItemS.itemName;
-			subTexts[i].text = tItemS.description + "("+ tItemS.price+" Schilling)";
+			titleTexts[i].text = tItemS.itemName + " ("+ tItemS.price+" S.)";
+			subTexts[i].text = tItemS.description;
 			itemImages[i].sprite = tItemS.image;
 
 			tempItemsLeft.Remove(tItemPrfab);
@@ -99,6 +99,6 @@ public class ShopScript : MonoBehaviour {
 	}
 
 	void ShowConsumeInfos(string inChosenItemName, ShopItemCaseScript inCase){
-		InGameController.i.ShowInGameMessage(""+inChosenItemName.ToUpper()+"\nCase: "+inCase.caseName, true, 5);
+		InGameController.i.ShowInGameMessage(""+inChosenItemName.ToUpper()+"\n"+inCase.description, true, 5);
 	}
 }
