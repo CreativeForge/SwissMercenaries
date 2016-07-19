@@ -68,8 +68,18 @@ public class PlayerScript : MonoBehaviour {
 		if(FindObjectOfType<GameLogic>() != null)
 			foundGL = true;
 
-		if((FindObjectOfType<GameLogic>().Store == null) && foundGL)
-			FindObjectOfType<GameLogic>().Store = new PlayerStorage(gameObject);
+		if(foundGL) {
+			if(FindObjectOfType<GameLogic>().Store == null) {
+				FindObjectOfType<GameLogic>().Store = new PlayerStorage(gameObject);
+				Debug.Log("New player storage created.");
+			} else {
+				// Load player values
+				money = FindObjectOfType<GameLogic>().Store.Money;
+				faith = FindObjectOfType<GameLogic>().Store.Faith;
+				GetComponent<DestructibleScript>().health = FindObjectOfType<GameLogic>().Store.Health;
+				Debug.Log("Player values loaded from existing player storage.");
+			}
+		}
 	}
 
 	public void SetCamT(Transform inT){
