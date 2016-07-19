@@ -99,6 +99,6 @@ public class ShopScript : MonoBehaviour {
 	}
 
 	void ShowConsumeInfos(string inChosenItemName, ShopItemCaseScript inCase){
-		InGameController.i.ShowInGameMessage(inChosenItemName.ToUpper+"\nCase: "+inCase.caseName, true, 5);
+		InGameController.i.ShowInGameMessage(""+inChosenItemName.ToUpper()+"\nCase: "+inCase.caseName, true, 5);
 	}
 }
