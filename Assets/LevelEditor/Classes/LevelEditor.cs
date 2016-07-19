@@ -113,7 +113,7 @@ public class LevelEditor : MonoBehaviour {
 	void AddToEditoryHistoryOnFixedUpdate() {
 		if (timeToGoHistory>Time.time) {
 			timeToGoHistory = Time.time + 1.0f;
-
+			// check
 		}
 	}
 
@@ -233,9 +233,23 @@ public class LevelEditor : MonoBehaviour {
 	int actualLevel=1;
 	int maxLevel=8;
 
+	// toolsx
+	int toolsX = 10;
+	int toolsY = 20;
+	int toolsWidth = 300;
+	int toolsHeight = 200;
+	Rect toolsRect = new Rect(0,0,200,100);
+
+	// typeselection
+	int typeselectionX = 10;
+	int typeselectionY = 200;
+	int typeselectionWidth = 300;
+	int typeselectionHeight = 200;
+	Rect typeselectionRect = new Rect(0,0,200,100);
+
 	// inspector
 	int inspectorX = 10;
-	int inspectorY = 200;
+	int inspectorY = 100;
 	int inspectorWidth = 300;
 	int inspectorHeight = 200;
 	Rect inspectorRect = new Rect(0,0,200,100);
@@ -669,6 +683,7 @@ public class LevelEditor : MonoBehaviour {
 						geType.type = prefix; 
 						geType.subtype = el.typetypesub; 
 						geType.prefabGameObject = el.gameObject;
+						geType.skyBoxMaterial = el.skyBoxMaterial;
 						geType.prefabEditorDummyGameObject = el.editorPrefab; // dummy prefab
 						// copy and add all prefabs for arguments (evaluation.allover 2,1,0 etc
 						geType.prefabEditorDummyArguments = el.prefabEditorDummyArguments; // .Copy(); // all the same reference
@@ -1189,6 +1204,22 @@ public class LevelEditor : MonoBehaviour {
 					// if (elPrefab.prefabGameObject!=null) {
 					if (true) {
 
+						// skyBoxMaterial
+						if (elem.skyBoxMaterial!=null) {
+							// if there is a skybox
+							// Debug.Log("LevelEditor.UpdateElementVisual().AddSkybox");
+							Camera cam = Camera.main;
+							if (cam!=null) {
+							Skybox skyBox = cam.GetComponent<Skybox>();
+							if (skyBox!=null) {
+								skyBox.material = 	elem.skyBoxMaterial	;						
+							}
+							} else {
+								Debug.Log("No cam found!")	;
+							}
+
+							
+						}
 						
 
 						// special - only in editor?
@@ -1549,6 +1580,7 @@ public class LevelEditor : MonoBehaviour {
 	// GameElement editorChangeToSelection = new GameElement(); // [EDIT]: change element type to ... 
 
 	public GUIStyle editorBackground;
+	public GUIStyle editorInspectorBackground;
 
 	    public GUIStyle editorButtonStyle;
 		public GUIStyle editorButtonStyleNotActive;
@@ -1960,11 +1992,13 @@ public class LevelEditor : MonoBehaviour {
 		float mouseX=Input.mousePosition.x;
 		float mouseY=Screen.height-Input.mousePosition.y;
 
+		/*
 		if ((mouseX>editorPrefX)&&(mouseX<(editorPrefX+editorWidth))&&(mouseY>editorPrefY)&&(mouseY<(editorPrefY+editorHeight))) {
 			// Debug.Log ("CheckMouseInEditor() > TRUE; ");
 			return true;
 
 		}
+		*/
 		if ((mouseX>filterTypeVisual.x)&&(mouseX<(filterTypeVisual.x+filterTypeVisual.width))
 			&&
 			(mouseY>filterTypeVisual.y)&&(mouseY<(filterTypeVisual.y+filterTypeVisual.height))) {
@@ -1997,6 +2031,18 @@ public class LevelEditor : MonoBehaviour {
 		if ((mouseX>nearbyRect.x)&&(mouseX<(nearbyRect.x+nearbyRect.width))
 			&&
 			(mouseY>nearbyRect.y)&&(mouseY<(nearbyRect.y+nearbyRect.height))) {
+			return true;
+		}
+
+		if ((mouseX>toolsRect.x)&&(mouseX<(toolsRect.x+toolsRect.width))
+			&&
+			(mouseY>toolsRect.y)&&(mouseY<(toolsRect.y+toolsRect.height))) {
+			return true;
+		}
+
+		if ((mouseX>typeselectionRect.x)&&(mouseX<(typeselectionRect.x+typeselectionRect.width))
+			&&
+			(mouseY>typeselectionRect.y)&&(mouseY<(typeselectionRect.y+typeselectionRect.height))) {
 			return true;
 		}
 
@@ -2373,16 +2419,26 @@ public class LevelEditor : MonoBehaviour {
 
 			// infos about the mouse point (for putting in 
 
+			/*
+			 *   TOOLS
+			 * 
+			 * */
+			// background
+			GUI.Label ( new Rect(toolsRect.x-5,toolsRect.y-5,toolsRect.width+5,toolsRect.height+10), "", editorBackground);
+
+
 			// editor X / Y
-			int editorX=editorPrefX;
-			int editorY=editorPrefY;
+			int toolsXTmp=toolsX;
+			int toolsXTmpMax = toolsX;
+			int toolsYTmp=toolsY;
 
 //			GUI.Label (new Rect (editorX, editorY, editorWidth, editorHeight), "", editorBackground);
 
 			// working on level
 			// maxLevel
-			GUI.Label (new Rect (editorX, editorY, 60, 20), "LEVEL: ", editorButtonActiveStyle);
+			GUI.Label (new Rect (toolsXTmp, toolsYTmp, 60, 20), "LEVEL: ", editorButtonActiveStyle);
 			// levels
+			toolsXTmp = toolsXTmp + 62;
 			for (int i=1; i<maxLevel; i++) {
 				string text = "" + i;
 				// actualLevel
@@ -2392,7 +2448,7 @@ public class LevelEditor : MonoBehaviour {
 					text = ">" + text + "";
 				}
 
-				bool buttonClicked = GUI.Button (new Rect (editorX + 62 + (i - 1) * 22, editorY, 20, 20), text, gui);
+				bool buttonClicked = GUI.Button (new Rect (toolsXTmp, toolsYTmp, 20, 20), text, gui);
 				if (buttonClicked) {
 					// scroll=0.0f;
 					// EditorUpdateCameraToScroll(scroll);
@@ -2400,23 +2456,27 @@ public class LevelEditor : MonoBehaviour {
 					// SetLevel (i);
 					gameLogic.SetGameLevel( i );
 				}
+
+				toolsXTmp = toolsXTmp + 22;
 			}
 
+			toolsXTmp = toolsXTmp + 2;
 
 			// clear
-			if (GUI.Button (new Rect (editorX + 214, editorY, 58, 20), "CLEAR", editorButtonActiveStyle)) {
+			if (GUI.Button (new Rect (toolsXTmp , toolsYTmp, 58, 20), "CLEAR", editorButtonActiveStyle)) {
 				ClearLevel ();  
 				// NewLevel();
 				DefaultElements();
 				SaveLevel (actualLevel);
 			}
+			toolsXTmp = toolsXTmp + 60;
 
-
-			int widthWorking = 280;
 			// COPYTO
-			if (GUI.Button (new Rect (editorX + widthWorking, editorY, 80, 20), "SAVE AS ", editorButtonActiveStyle)) {
+			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 60, 20), "SAVE AS ", editorButtonActiveStyle)) {
 				flagShowSaveAs = !flagShowSaveAs;
 			}
+			toolsXTmp = toolsXTmp + 62;
+
 			if (flagShowSaveAs) {
 			// levels
 			for (int i=1; i<maxLevel; i++) {
@@ -2424,33 +2484,27 @@ public class LevelEditor : MonoBehaviour {
 				// actualLevel
 				GUIStyle gui = editorButtonStyle;
 
-				bool buttonClicked = GUI.Button (new Rect (editorX + widthWorking + 82 + (i - 1) * 22, editorY, 20, 20), text, gui);
+					bool buttonClicked = GUI.Button (new Rect (	toolsXTmp, toolsYTmp, 20, 20), text, gui);
 				if (buttonClicked) {
 					SaveLevel (i);
 					gameLogic.SetGameLevel(i);
+					flagShowSaveAs = !flagShowSaveAs;
 				}
+				toolsXTmp = toolsXTmp + 22;
 			}
 			}
-			editorY = editorY + 26;
+
+			if (toolsXTmp>toolsXTmpMax) toolsXTmpMax = toolsXTmp;
+
+			toolsYTmp = toolsYTmp + 26;
 
 			// UNDO/REDO
 			// undoVisual
-			editorX = 10;
-			if (GUI.Button (new Rect (editorX, editorY, 40, 20), "UNDO", editorButtonActiveStyle)) {
-				Undo();
-			}  
-			widthWorking = 42;
-			editorX= editorX + widthWorking;
-			ArrayList arrx = GetActualEditorHistory();
-			if (GUI.Button (new Rect (editorX, editorY, 40, 20), "" + historyIndexMinus + "/" + arrx.Count, editorButtonStyle)) {
-				Redo();
-			}
-			widthWorking = 42;
-			editorX= editorX + widthWorking;
-			if (GUI.Button (new Rect (editorX, editorY, 40, 20), "REDO", editorButtonActiveStyle)) {
-				Redo();
-			}
+			toolsXTmp = toolsX;
+			// toolsXTmp = toolsX;
+
 				
+// 			toolsYTmp = toolsYTmp + 22;
 			/*
 			// load & save
 			for (int i=0; i<4; i++) {
@@ -2509,9 +2563,11 @@ public class LevelEditor : MonoBehaviour {
 			// editorLogText="";
 			GUI.Label (new Rect (editorX + 250, editorY, 150, 20), "" + editorLogText);
 			*/
+			/*
 			// camera
 			editorX = 10;
 			editorY = editorY + 26;
+			*/
 
 			/*
 			// OVERLAY
@@ -2578,7 +2634,6 @@ public class LevelEditor : MonoBehaviour {
 */
 
 			// editorY = editorY + 26;
-
 			// tools
 			for (int i=0; i<arrEditorTools.Length; i++) {
 				string tool = arrEditorTools [i];
@@ -2588,7 +2643,7 @@ public class LevelEditor : MonoBehaviour {
 					gui = editorButtonActiveStyle;
 					text = "[" + text + "]";
 				}
-				bool buttonClicked = GUI.Button (new Rect (editorX + i * 68, editorY, 66, 20), text, gui);
+				bool buttonClicked = GUI.Button (new Rect (toolsXTmp, toolsYTmp, 66, 20), text, gui);
 				if (buttonClicked) {
 
 					// default deselect
@@ -2597,58 +2652,92 @@ public class LevelEditor : MonoBehaviour {
 					// set the tool
 					SetTool (tool);
 				}
-			}
 
-			editorY = editorY + 26;
-			editorX = 10;
+				toolsXTmp = toolsXTmp + 68;
+			}
+			// toolsYTmp = toolsYTmp + 24;
+
+			toolsXTmp = toolsXTmp + 6;
+
+			// UNDO/REDO
+			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 38, 20), "UNDO", editorButtonActiveStyle)) {
+				Undo();
+			}  
+			toolsXTmp = toolsXTmp + 40;
+			ArrayList arrx = GetActualEditorHistory();
+			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 38, 20), "" + (arrx.Count-historyIndexMinus) + "/" + arrx.Count, editorButtonStyle)) {
+				Redo();
+			}
+			toolsXTmp = toolsXTmp + 40;
+			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 40, 20), "REDO", editorButtonActiveStyle)) {
+				Redo();
+			}
+			toolsXTmp = toolsXTmp + 54;
+
+			toolsYTmp = toolsYTmp + 22;
+
+
+			if (toolsXTmp>toolsXTmpMax) toolsXTmpMax = toolsXTmp;
+
+
+			toolsRect.x = toolsX;
+			toolsRect.y = toolsY;
+			toolsRect.width = toolsXTmpMax-toolsX;
+			toolsRect.height = toolsYTmp - toolsY;
+
+			// inspector ... 
+			// background
+			GUI.Label ( new Rect(inspectorRect.x-5,inspectorRect.y-5,inspectorRect.width+5,inspectorRect.height+10), "", editorInspectorBackground);
+			int inspectorXTmp = inspectorX ;
+			int inspectorYTmp = inspectorY;
 
 			// RASTER & ROTATE
 			if (editorTool.Equals("CREATE")) {
-			// rasters
-			GUI.Button (new Rect (editorX , editorY, 58, 20), "RASTER", editorButtonStyle);
-			editorX = editorX + 70;
-			for (int i=0; i<arrRasters.Length; i++) {
-				float raster = arrRasters [i];
-				string text = ""+raster;
-				GUIStyle gui = editorButtonStyle;
-				if (editorRaster==i) {
-					gui = editorButtonActiveStyle;
-					text = "" + text + "";
-				}
-				bool buttonClicked = GUI.Button (new Rect (editorX , editorY, 22, 20), text, gui);
-				if (buttonClicked) {
-					SetRasterIndex ( i );
-				}
+				// rasters
+				GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 58, 20), "RASTER", editorButtonStyle);
+				inspectorXTmp = inspectorXTmp + 70;
+				for (int i=0; i<arrRasters.Length; i++) {
+					float raster = arrRasters [i];
+					string text = ""+raster;
+					GUIStyle gui = editorButtonStyle;
+					if (editorRaster==i) {
+						gui = editorButtonActiveStyle;
+						text = "" + text + "";
+					}
+					bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 22, 20), text, gui);
+					if (buttonClicked) {
+						SetRasterIndex ( i );
+					}
 
-				editorX = editorX + 24;
-			}
-			// raster rotation
-			editorX = editorX + 20;
-			int deg = 0;
-			for (int i=0; i<10; i++) {
+					inspectorXTmp = inspectorXTmp + 24;
+				}
+				// raster rotation
+				inspectorXTmp = inspectorXTmp + 20;
+				int deg = 0;
+				for (int i=0; i<10; i++) {
 					if (i==1) continue;
 					if (i==5) continue;
 					if (i==8) continue;
-				string text = ""+(i*15);
-				GUIStyle gui = editorButtonStyle;
+					string text = ""+(i*15);
+					GUIStyle gui = editorButtonStyle;
 					if (editorDegree==(i*15)) {
-					gui = editorButtonActiveStyle;
-					text = "" + (i*15) + "";
-				}
-				bool buttonClicked = GUI.Button (new Rect (editorX , editorY, 22, 20), text, gui);
-				if (buttonClicked) {
-					editorDegree = i * 15;
+						gui = editorButtonActiveStyle;
+						text = "" + (i*15) + "";
+					}
+					bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 22, 20), text, gui);
+					if (buttonClicked) {
+						editorDegree = i * 15;
+					}
+
+					inspectorXTmp = inspectorXTmp + 24;
 				}
 
-				editorX = editorX + 24;
+				inspectorYTmp = inspectorYTmp + 24;
+				inspectorXTmp = 10;
 			}
 
-			editorY = editorY + 24;
-			editorX = 10;
-			}
 
-
-			// editorY
+			// inspectorYTmp
 
 			// 3 possibilites
 			bool showElements=false;
@@ -2661,7 +2750,7 @@ public class LevelEditor : MonoBehaviour {
 					if (editorSelected!=null) {
 						if (!filterType.Equals("*")) {
 							if (filterType.Equals(editorSelected.type)) {
-								
+								// showElementsSubTypeOnly = true;
 							} else {
 								filterType = editorSelected.type;
 							}
@@ -2677,14 +2766,17 @@ public class LevelEditor : MonoBehaviour {
 			// show elements
 			if ((showElements)||(showElementsSubTypeOnly)) {
 
-				editorX = 10;
+				inspectorXTmp = 10;
+
+				// wrap
+				int maxXToWrap = 450 - 60;
 
 				string selectedEditorArea=""+editorArea;
 
 				// categories
 				if (!showElementsSubTypeOnly) {
 					ArrayList arrTypesUnique = GetElementTypesUnique ();
-					int editorXTemp = editorX;
+					int inspectorXTmpTemp = inspectorXTmp;
 					for (int i=0; i<arrTypesUnique.Count; i++) {
 						GameElement unique = (GameElement)arrTypesUnique [i];
 						string text = "" + unique.type;
@@ -2701,7 +2793,7 @@ public class LevelEditor : MonoBehaviour {
 							text = ">" + text;
 
 						}
-						bool buttonClicked = GUI.Button (new Rect (editorXTemp, editorY, 58, 20), text, guix);
+						bool buttonClicked = GUI.Button (new Rect (inspectorXTmpTemp, inspectorYTmp, 58, 20), text, guix);
 						if (buttonClicked) {
 							// do it ...
 							// editorArea=ieditorArea;
@@ -2715,19 +2807,19 @@ public class LevelEditor : MonoBehaviour {
 						}
 						// delete objects
 						// CountElementsType( string elementArea, string elementSubArea )
-						editorXTemp = editorXTemp + 60;
-						if (editorXTemp>650) {
-							editorXTemp = 10;
-							editorY = editorY + 21;
+						inspectorXTmpTemp = inspectorXTmpTemp + 60;
+						if (inspectorXTmpTemp>maxXToWrap) {
+							inspectorXTmpTemp = 10;
+							inspectorYTmp = inspectorYTmp + 21;
 						}
 
 					}
-					editorY = editorY + 22;
+					inspectorYTmp = inspectorYTmp + 22;
 				}
 
 				// show subcategories!
 				ArrayList arr = GetElementTypes (selectedEditorArea);
-				int editorXXTemp = 10;
+				int inspectorXTmpXTemp = 10;
 				for (int a=0; a<arr.Count; a++) {
 					GameElement gelement = (GameElement)arr [a];
 					string text = "" + gelement.subtype;
@@ -2739,10 +2831,10 @@ public class LevelEditor : MonoBehaviour {
 						text = ">" + text;
 					}
 					int count=CountElementsType( gelement.type, gelement.subtype );
-					if (count>0) { if (GUI.Button (new Rect (editorXXTemp , editorY, 6, 20), "x", guix)) { RemoveElementsType(gelement.type, gelement.subtype);} }
+					if (count>0) { if (GUI.Button (new Rect (inspectorXTmpXTemp , inspectorYTmp, 6, 20), "x", guix)) { RemoveElementsType(gelement.type, gelement.subtype);} }
 					string strCount="";
 					if (count>0) strCount="("+count+")";
-					bool buttonClicked = GUI.Button (new Rect (editorXXTemp+5, editorY, 70, 20), text+strCount, guix);
+					bool buttonClicked = GUI.Button (new Rect (inspectorXTmpXTemp+5, inspectorYTmp, 70, 20), text+strCount, guix);
 					if (buttonClicked) {
 						// do it ...
 						if (editorTool.Equals ("CREATE")) {  
@@ -2761,10 +2853,10 @@ public class LevelEditor : MonoBehaviour {
 
 					}
 
-					editorXXTemp = editorXXTemp + 80;
-					if (editorXXTemp>620) {
-						editorXXTemp = 10;
-						editorY = editorY + 21;
+					inspectorXTmpXTemp = inspectorXTmpXTemp + 80;
+					if (inspectorXTmpXTemp>maxXToWrap) {
+						inspectorXTmpXTemp = 10;
+						inspectorYTmp = inspectorYTmp + 21;
 					}
 				}
 
@@ -2779,77 +2871,77 @@ public class LevelEditor : MonoBehaviour {
 				if (editorSelected!=null) {
 					// showElements=true; 
 
-				
 
-					editorY = editorY + 22;
+
+					inspectorYTmp = inspectorYTmp + 22;
 
 					// transform
 
-					// editorX=editorX + 62 + 5 + arrScales.Length*24;
-					if (GUI.Button (new Rect (editorX, editorY, 64, 20), "TOP:", editorButtonStyle )) {
+					// inspectorXTmp=inspectorXTmp + 62 + 5 + arrScales.Length*24;
+					if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 64, 20), "TOP:", editorButtonStyle )) {
 						editorSelected.rotation =0.0f;
 						UpdateElementVisual( editorSelected );
 						AddToEditorHistory("[GUI][OBJECT][Y]Reset");
 					}
-					editorX = editorX +64;
-					if (GUI.Button (new Rect (editorX, editorY, 18, 20), "-", editorButtonStyle )) {
+					inspectorXTmp = inspectorXTmp +64;
+					if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 18, 20), "-", editorButtonStyle )) {
 						editorSelected.position.y =editorSelected.position.y - 0.1f;
 						UpdateElementVisual( editorSelected );
 						AddToEditorHistory("[GUI][OBJECT][Y]-");
 					}
-					editorX=editorX+20;
-					if (GUI.Button (new Rect (editorX, editorY, 38, 20), ""+editorSelected.position.y, editorButtonStyle )) {
+					inspectorXTmp=inspectorXTmp+20;
+					if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 38, 20), ""+editorSelected.position.y, editorButtonStyle )) {
 						//editorSelected.rotation =editorSelected.rotation - 10.0f;
 						//UpdateElementVisual( editorSelected );
 
 					}
-					editorX=editorX+40;
-					if (GUI.Button (new Rect (editorX, editorY, 20, 20), "+", editorButtonStyle )) {
+					inspectorXTmp=inspectorXTmp+40;
+					if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 20, 20), "+", editorButtonStyle )) {
 						editorSelected.position.y =editorSelected.position.y + 0.1f;
 						UpdateElementVisual( editorSelected );
 						AddToEditorHistory("[GUI][OBJECT][Y]+");
 					}
-					editorX = editorX +42;
+					inspectorXTmp = inspectorXTmp +42;
 
-					editorX = 10;
-					editorY = editorY + 22;
+					inspectorXTmp = 10;
+					inspectorYTmp = inspectorYTmp + 22;
 					// rotations
-					// editorX=editorX + 62 + 5 + arrScales.Length*24;
-					if (GUI.Button (new Rect (editorX, editorY, 38, 20), "ROT:", editorButtonStyle )) {
+					// inspectorXTmp=inspectorXTmp + 62 + 5 + arrScales.Length*24;
+					if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 38, 20), "ROT:", editorButtonStyle )) {
 						editorSelected.rotation =0.0f;
 						UpdateElementVisual( editorSelected );
 						AddToEditorHistory("[GUI][OBJECT][RX]0");
 					}
-					editorX=editorX+40;
-					if (GUI.Button (new Rect (editorX, editorY, 8, 20), "<", editorButtonStyle )) {
+					inspectorXTmp=inspectorXTmp+40;
+					if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 8, 20), "<", editorButtonStyle )) {
 						editorSelected.rotation =editorSelected.rotation + 10.0f;
 						UpdateElementVisual( editorSelected );
 						AddToEditorHistory("[GUI][OBJECT][RX]<");
 					}
-					editorX=editorX+10;
-					if (GUI.Button (new Rect (editorX, editorY, 28, 20), ""+editorSelected.rotation, editorButtonStyle )) {
+					inspectorXTmp=inspectorXTmp+10;
+					if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 28, 20), ""+editorSelected.rotation, editorButtonStyle )) {
 						//editorSelected.rotation =editorSelected.rotation - 10.0f;
 						//UpdateElementVisual( editorSelected );
 					}
-					editorX=editorX+30;
-					if (GUI.Button (new Rect (editorX, editorY, 8, 20), ">", editorButtonStyle )) {
+					inspectorXTmp=inspectorXTmp+30;
+					if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 8, 20), ">", editorButtonStyle )) {
 						editorSelected.rotation =editorSelected.rotation - 10.0f;
 						UpdateElementVisual( editorSelected );
 						AddToEditorHistory("[GUI][OBJECT][RX]>");
 					}
-					editorX = editorX +10;
-					if (GUI.Button (new Rect (editorX, editorY, 10, 20), "~", editorButtonStyle )) {
+					inspectorXTmp = inspectorXTmp +10;
+					if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 10, 20), "~", editorButtonStyle )) {
 						editorSelected.rotation = UnityEngine.Random.Range(0.0f,360.0f);
 						UpdateElementVisual( editorSelected );
 						AddToEditorHistory("[GUI][OBJECT][RX]RND");
 					}
-					editorX = editorX +12;
+					inspectorXTmp = inspectorXTmp +12;
 
 					// show size
-					editorX = 10;
-					editorY = editorY + 22;
+					inspectorXTmp = 10;
+					inspectorYTmp = inspectorYTmp + 22;
 					float[] arrScales = { 0.2f, 0.5f, 0.75f, 1.0f, 1.5f, 2.0f, 3.0f, 4.0f, 8.0f };
-					GUI.Button (new Rect (editorX, editorY, 60, 20), "SIZE", editorButtonStyle );
+					GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 60, 20), "SIZE", editorButtonStyle );
 					for (int i=0; i<arrScales.Length; i++) {
 						float size = arrScales [i];
 						string text = ""+size;
@@ -2858,7 +2950,7 @@ public class LevelEditor : MonoBehaviour {
 							gui = editorButtonActiveStyle;
 							text = ">" + text + "";
 						}
-						bool buttonClicked = GUI.Button (new Rect (editorX + 62 + i * 24, editorY, 22, 20), text , gui );
+						bool buttonClicked = GUI.Button (new Rect (inspectorXTmp + 62 + i * 24, inspectorYTmp, 22, 20), text , gui );
 						if (buttonClicked) {
 							editorSelected.size =size;
 							UpdateElementVisual( editorSelected );
@@ -2868,9 +2960,9 @@ public class LevelEditor : MonoBehaviour {
 
 
 					/*
-					editorX=editorX + 62 + 5 + arrScales.Length*24;
+					inspectorXTmp=inspectorXTmp + 62 + 5 + arrScales.Length*24;
 					float[] arrRotations = { 0.0f, 30.0f, 60.0f, 90.0f };
-					GUI.Button (new Rect (editorX, editorY, 60, 20), "ROT", editorButtonStyle );
+					GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 60, 20), "ROT", editorButtonStyle );
 					for (int i=0; i<arrRotations.Length; i++) {
 						float rotation = arrRotations [i];
 						string text = ""+rotation;
@@ -2879,7 +2971,7 @@ public class LevelEditor : MonoBehaviour {
 							gui = editorButtonActiveStyle;
 							text = ">" + text + "";
 						}
-						bool buttonClicked = GUI.Button (new Rect (editorX + 62 + i * 24, editorY, 22, 20), text , gui );
+						bool buttonClicked = GUI.Button (new Rect (inspectorXTmp + 62 + i * 24, inspectorYTmp, 22, 20), text , gui );
 						if (buttonClicked) {
 							editorSelected.rotation =rotation;
 							UpdateElementVisual( editorSelected );
@@ -2888,11 +2980,11 @@ public class LevelEditor : MonoBehaviour {
 					*/
 
 					/*
-					 * GUI.Label (new Rect(editorDetailX,editorDetailY,40,24),""+editorSelected.guiLabel+":");
+					* GUI.Label (new Rect(editorDetailX,editorDetailY,40,24),""+editorSelected.guiLabel+":");
 					editDetailArgument=GUI.TextField (new Rect(editorDetailX+42,editorDetailY,160,20),editDetailArgument);
 					editorSelected.argument=editDetailArgument;
 					*/
-					editorY = editorY + 22;
+					inspectorYTmp = inspectorYTmp + 22;
 				}
 			}
 			// if (editorTool.Equals ("MOVE")) { showElements=true; }
@@ -2911,12 +3003,12 @@ public class LevelEditor : MonoBehaviour {
 					if (i==2) { title = "ADD ^"; if (editorToolSub.Equals ("down")) { add=">"; gs= editorButtonActiveStyle;   } }
 					if (i==3) { title = "DEL ^"; if (editorToolSub.Equals ("up")) { add=">"; gs= editorButtonActiveStyle; } }
 
-					if (GUI.Button (new Rect (editorX + i*60, editorY, 58, 20), add+""+title, gs )) {
+					if (GUI.Button (new Rect (inspectorXTmp + i*60, inspectorYTmp, 58, 20), add+""+title, gs )) {
 						editorToolSub	= arrEditorToolsSub[i];	
 					}
 
 				}
-				editorY = editorY + 22;
+				inspectorYTmp = inspectorYTmp + 22;
 			}
 
 			// EVALUATION
@@ -2926,24 +3018,24 @@ public class LevelEditor : MonoBehaviour {
 				string evData="VISUALIZE ";
 				string evDataOn = "ON";
 				if (!editorShowEvaluationData) evDataOn = "OFF";
-				if (GUI.Button (new Rect (editorX + 0*60, editorY, 118, 20), evData + evDataOn, editorButtonStyle )) {
+				if (GUI.Button (new Rect (inspectorXTmp + 0*60, inspectorYTmp, 118, 20), evData + evDataOn, editorButtonStyle )) {
 					ToggleShowEvaluationData(); // editorShowEvaluationData
 				}
 
-				if (GUI.Button (new Rect (editorX + 2*60, editorY, 58, 20), "RELOAD", editorButtonStyle )) {
+				if (GUI.Button (new Rect (inspectorXTmp + 2*60, inspectorYTmp, 58, 20), "RELOAD", editorButtonStyle )) {
 					UpdateShowEvaluationData();
 				}
 
 				// FILTERS ...
 
 
-				editorY = editorY + 22;
+				inspectorYTmp = inspectorYTmp + 22;
 
 				// PLAYERS
-				int dtx = editorX; 
+				int dtx = inspectorXTmp; 
 				string addOnX = "";
 				if (editorEvaluationFilter.Equals("all")) { addOnX = ">"; } 
-				if (GUI.Button (new Rect (editorX + 0*60, editorY, 58, 20), addOnX+"ALL", editorButtonStyle )) {
+				if (GUI.Button (new Rect (inspectorXTmp + 0*60, inspectorYTmp, 58, 20), addOnX+"ALL", editorButtonStyle )) {
 
 					if (!editorShowEvaluationData) {
 						editorShowEvaluationData = true;
@@ -2958,43 +3050,43 @@ public class LevelEditor : MonoBehaviour {
 				EvaluationPlayer pl;
 				if (arrEvaluationPlayersObj!=null)
 				if (arrEvaluationPlayersObj.Length>0) 
-				for (int o=0;o<arrEvaluationPlayersObj.Length;o++) {
-					pl = arrEvaluationPlayersObj[o];
+					for (int o=0;o<arrEvaluationPlayersObj.Length;o++) {
+						pl = arrEvaluationPlayersObj[o];
 						string addOn = "";
 						if (editorEvaluationPlayerId.Equals(pl.playerId))  {
 							addOn = ">";
 						}
-						if (GUI.Button (new Rect (dtx + (o+1)*60, editorY, 58, 20), addOn+"" + pl.name, editorButtonStyle )) {
-						// UpdateShowEvaluationData();
-						// playerId
+						if (GUI.Button (new Rect (dtx + (o+1)*60, inspectorYTmp, 58, 20), addOn+"" + pl.name, editorButtonStyle )) {
+							// UpdateShowEvaluationData();
+							// playerId
 
-						if (!editorShowEvaluationData) {
-							editorShowEvaluationData = true;
+							if (!editorShowEvaluationData) {
+								editorShowEvaluationData = true;
+							}
+
+							editorEvaluationFilter = "player";
+							editorEvaluationPlayerId = pl.playerId;
+							editorEvaluationSessionId = "";	
+
+							UpdateShowEvaluationData();
 						}
-						
-						editorEvaluationFilter = "player";
-						editorEvaluationPlayerId = pl.playerId;
-						editorEvaluationSessionId = "";	
-
-						UpdateShowEvaluationData();
 					}
-				}
-				editorY = editorY + 22;
+				inspectorYTmp = inspectorYTmp + 22;
 
 				// session id
-				dtx = editorX; 
+				dtx = inspectorXTmp; 
 				addOnX = "";
 				if (editorEvaluationSessionId.Equals("")) { addOnX = ">"; } 
-				if (GUI.Button (new Rect (editorX + 0*60, editorY, 58, 20), addOnX+"ALL", editorButtonStyle )) {
-					
+				if (GUI.Button (new Rect (inspectorXTmp + 0*60, inspectorYTmp, 58, 20), addOnX+"ALL", editorButtonStyle )) {
+
 					if (!editorShowEvaluationData) {
 						editorShowEvaluationData = true;
 					}
-					
+
 					editorEvaluationFilter = "player";
 					// editorEvaluationPlayerId = ""+el.evaluationPlayerId;
 					editorEvaluationSessionId = "";	
-					
+
 					UpdateShowEvaluationData();
 				}
 
@@ -3009,7 +3101,7 @@ public class LevelEditor : MonoBehaviour {
 					if (editorEvaluationSessionId.Equals(""+el.evaluationSessionId)) {
 						addOn = ">";
 					}
-					if (GUI.Button (new Rect (dtx + (o+1)*60, editorY, 58, 20), addOn+"/" + el.evaluationSessionId, editorButtonStyle )) {
+					if (GUI.Button (new Rect (dtx + (o+1)*60, inspectorYTmp, 58, 20), addOn+"/" + el.evaluationSessionId, editorButtonStyle )) {
 
 						editorEvaluationFilter = "player.session";
 						editorEvaluationPlayerId = ""+el.evaluationPlayerId;
@@ -3022,10 +3114,30 @@ public class LevelEditor : MonoBehaviour {
 
 			}
 
-			editorHeight = editorY + 20;
+			editorHeight = inspectorYTmp + 20;
+
+
+
+
+			// add
+			inspectorYTmp = inspectorYTmp + 22;
+			// the rect ... 
+			inspectorRect.x = inspectorX;
+			inspectorRect.y = inspectorY;
+			inspectorRect.width = 440; //  inspectorXTmp - inspectorX;
+			inspectorRect.height = inspectorYTmp - inspectorY;
+
+
+
+ 			
 
 			// setup height
 			// editorHeight = editorY;
+
+			/*
+			 *  SCENE RENDERING (ICONS ETC.)
+			 * 
+			 * */
 
 			// visualize the objects with no gameobject
 			float mouseX=Input.mousePosition.x;
@@ -3238,136 +3350,13 @@ public class LevelEditor : MonoBehaviour {
 				
 			} // element	
 		
-			// edit: detail editor
-			// if (editorTool.Equals ("EDIT")) {
-			if (editorSelected!=null) {
-				// editorX
-				// name
-				float editorDetailX=inspectorX;  
-				float editorDetailY=inspectorY;
-				GUI.Label (new Rect(editorDetailX+124,editorDetailY,100,20),""+editorSelected.type+"/"+editorSelected.subtype);
-				if (GUI.Button (new Rect(editorDetailX,editorDetailY,120,20),"INSPECTOR",editorButtonStyle)) {
-					SetSelectedElementFromGUI();
-				}
 
-				editorDetailY=editorDetailY+22;
-
-				// x/y/z
-				string inspectorEditDetailX = ""+editorSelected.position.x;
-				string inspectorEditDetailY = ""+editorSelected.position.y;
-				string inspectorEditDetailZ = ""+editorSelected.position.z;
-				int editorXTmp = editorX;
-				inspectorEditDetailX=GUI.TextField (new Rect(editorXTmp,editorDetailY,48,20),inspectorEditDetailX);
-				if (!inspectorEditDetailX.Equals(""+editorSelected.position.x)) {
-					editorSelected.position.x = float.Parse( inspectorEditDetailX );
-					AddToEditorHistory();
-				}
-				editorXTmp = editorXTmp + 50;
-				inspectorEditDetailY=GUI.TextField (new Rect(editorXTmp,editorDetailY,48,20),inspectorEditDetailY);
-				editorXTmp = editorXTmp + 50;
-				inspectorEditDetailZ=GUI.TextField (new Rect(editorXTmp,editorDetailY,48,20),inspectorEditDetailZ);
-				editorXTmp = editorXTmp + 50;
-
-				editorDetailY=editorDetailY+22;
-				GUI.Label (new Rect(editorDetailX,editorDetailY,240,20),"name:                       ");
-				editDetailName=GUI.TextField (new Rect(editorDetailX+42,editorDetailY,160,20),editDetailName);
-				if (!editorSelected.name.Equals(editDetailName)) {
-					editorSelected.name=editDetailName + "";
-					UpdateElementVisual(editorSelected);
-					AddToEditorHistory("[GUI][OBJECT][CHANGEDNAME]");
-				}
-				editorSelected.name=editDetailName + "";
-				if (GUI.Button (new Rect(editorDetailX+42+165,editorDetailY,40,20),"DUPL",editorButtonStyle)) {
-					// copy here ... 
-					GameElement copyThis = editorSelected.Copy ();
-					copyThis.position.x=copyThis.position.x+UnityEngine.Random.Range ( 0.3f, 0.9f );
-					// copyThis.position.y=UnityEngine.Random.Range ( 0.5f, 1.0f );
-					AddElement(copyThis);
-
-					// add to editor history
-					AddToEditorHistory("[GUI][OBJECT][DUPLICATE]");
-
-
-				}
-				if (GUI.Button (new Rect(editorDetailX+42+165+42,editorDetailY,30,20),"DEL",editorButtonStyle)) {
-					RemoveElement(editorSelected);
-					editorSelected = null;
-					// add to editor history
-					AddToEditorHistory("[GUI][OBJECT][DELETE]");
-
-				}
-				if (GUI.Button (new Rect(editorDetailX+42+165+42+36,editorDetailY,40,20),"SAME",editorButtonStyle)) {
-					filterType = editorSelected.type;
-					filterTypeSub = editorSelected.subtype;
-				}
-				editorDetailY=editorDetailY+22;
-
-
-				// trigger (add some keys)
-				if (editorSelected!=null)
-				if (editorSelected.type.Equals("trigger")) {
-					GUI.Label (new Rect(editorDetailX,editorDetailY,40,24),"Event:");
-					editorSelected.strevent=GUI.TextField (new Rect(editorDetailX+42,editorDetailY,160,20),editorSelected.strevent);
-					editorDetailY=editorDetailY+22;
-
-					GUI.Label (new Rect(editorDetailX,editorDetailY,40,24),"Target:");
-					editorSelected.target=GUI.TextField (new Rect(editorDetailX+42,editorDetailY,160,20),editorSelected.target);
-					editorDetailY=editorDetailY+22;
-
-					GUI.Label (new Rect(editorDetailX,editorDetailY,40,24),"After:");
-					string strTimed =GUI.TextField (new Rect(editorDetailX+42,editorDetailY,160,20),""+editorSelected.timed);
-					if (!strTimed.Equals(""+editorSelected.timed)) {
-						editorSelected.timed  =   float.Parse( strTimed );
-						AddToEditorHistory()	;					
-					}
-					editorDetailY=editorDetailY+22;
-				}
-
-				if (editorSelected!=null) {	
-					if (editorSelected.guiBoolArgument) {
-						GUI.Label (new Rect(editorDetailX,editorDetailY,40,24),""+editorSelected.guiLabel+":");
-						editDetailArgument=GUI.TextField (new Rect(editorDetailX+42,editorDetailY,160,20),editDetailArgument);
-						bool changed=false;
-						if (editDetailArgument!=editorSelected.argument) {
-							changed=true;
-							AddToEditorHistory();
-						}
-						editorSelected.argument=editDetailArgument;
-						editorDetailY=editorDetailY+22*1;
-						if (changed) {
-							UpdateElementVisual(editorSelected);
-							UpdateRelationVisualisationAndCheckError();
-							AddToEditorHistory();
-						}
-
-					}
-					// description?
-					if (!editorSelected.guiDescription.Equals ("")) {
-						GUI.Label (new Rect(editorDetailX+42,editorDetailY,240,20),editorSelected.guiDescription);
-						editorDetailY=editorDetailY+22*1;
-					}
-					// specials refer type?
-					string release=""+editorSelected.release;
-					string add="";
-					if (release.Equals ("")) { add=">"; }
-					if (GUI.Button (new Rect(editorDetailX+42,editorDetailY,58,20),add+"active",editorButtonStyle)) {
-						editorSelected.release="";
-					}
-					add = "";
-					if (release.Equals ("wait")) { add=">"; }
-					if (GUI.Button (new Rect(editorDetailX+42+60,editorDetailY,58,20),add+"standby",editorButtonStyle)) {
-						editorSelected.release="wait";
-					}
-				}
-
-
-			}
-			// }
 
 
 
 			// 	selectiondialoge
 			if (selectionDialoge) {
+
 
 				// FILTER
 				// background
@@ -3527,22 +3516,26 @@ public class LevelEditor : MonoBehaviour {
 			// filterDev
 			int filterY = Screen.height-80;
 			int filterX = 0;
-			if (GUI.Button (new Rect(0,filterY,60,20),"VIEW *.* " ,editorComment)) {
-				filterType = "*";
-			}
 
-			if (GUI.Button (new Rect(0,filterY-24,60,20),"NOTYS" ,editorComment)) {
-				notificationDialog = !notificationDialog;
-			}
 			// NAMES
-			// filterX = filterX + 10;
+			filterX = filterX + 0;
 			GUIStyle activestylext = editorButtonStyle;
 			if (cameraOverlayTypes)  activestylext = editorButtonActiveStyle;
-			if (GUI.Button (new Rect (62,filterY-24, 50, 20), "NAMES ", activestylext )) {
+			if (GUI.Button (new Rect (filterX,filterY-24, 50, 20), "NAMES ", activestylext )) {
 				cameraOverlayTypes=!cameraOverlayTypes;
 			}
 			filterX = filterX + 60;
+			if (GUI.Button (new Rect(62,filterY-24,140,20),"NOTIFICATIONS" ,editorComment)) {
+				notificationDialog = !notificationDialog;
+			}
 
+			filterX = 0;
+
+			GUIStyle xyz = editorButtonActiveStyle;
+			if (filterType.Equals(""))  xyz = editorButtonStyle;
+			if (GUI.Button (new Rect(0,filterY,60,20),"VIEW *.* " ,xyz)) {
+				filterType = "*";
+			}
 
 			filterX = filterX +70;
 			// type: *
