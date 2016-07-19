@@ -3067,6 +3067,9 @@ public class LevelEditor : MonoBehaviour {
 					inspectorXTmp = 10;
 
 					// transform
+					AddSensButton(inspectorXTmp,inspectorYTmp, 40,40, "X", "forward" );
+					inspectorXTmp = inspectorXTmp + 42;
+					AddSensButton(inspectorXTmp,inspectorYTmp, 40,40, "X", "forward" );
 
 					// inspectorXTmp=inspectorXTmp + 62 + 5 + arrScales.Length*24;
 					if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 64, 20), "TOP:", editorButtonStyle )) {
@@ -3541,7 +3544,18 @@ public class LevelEditor : MonoBehaviour {
 				
 			} // element	
 		
+			if (true) {
+				// render the specials
+				SensButton sb;
+				for (int i=0;i<arrSensButtons.Count;i++) {
+					sb = (SensButton) arrSensButtons[i];
+					if (GUI.Button ( sb.rect, "---"+sb.text, editorButtonStyle)) {
+						
+					}
 
+				}
+
+			}
 
 
 
