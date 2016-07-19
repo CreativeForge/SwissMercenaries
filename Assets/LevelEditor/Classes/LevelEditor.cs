@@ -176,6 +176,32 @@ public class LevelEditor : MonoBehaviour {
 		return arr;
 	}
 
+	// buttons
+	ArrayList arrSensButtons = new ArrayList();
+	class SensButton {
+		public Rect rect = new Rect();
+		public string text = "";
+		public string key = "";
+		public void Init( int ix, int iy, int iwidth, int iheight, string itext, string ikey) {
+			rect.x = ix	;
+			rect.y = iy;
+			rect.width = iwidth;
+			rect.height = iheight;
+			text = itext;
+			key = ikey;
+		}
+	}
+	void AddSensButton(int x, int y, int width, int height, string text, string key) {
+		SensButton sensbuttonObj = new SensButton();
+		sensbuttonObj.Init( x,  y,  width,  height,  text,  key);
+		arrSensButtons.Add(sensbuttonObj);
+	}
+
+	void DoSensButton() {
+
+
+	}
+
 	// 0 ... 
 	int historyIndexMinus = 0;
 
@@ -1583,6 +1609,7 @@ public class LevelEditor : MonoBehaviour {
 	public GUIStyle editorInspectorBackground;
 
 	    public GUIStyle editorButtonStyle;
+		public GUIStyle editorButtonStyleBig;
 		public GUIStyle editorButtonStyleNotActive;
 		public GUIStyle editorButtonActiveStyle;
 
@@ -2869,11 +2896,73 @@ public class LevelEditor : MonoBehaviour {
 			// EDIT
 			if (editorTool.Equals ("EDIT")) { 
 				if (editorSelected!=null) {
-					// showElements=true; 
+					showElements=true; 
+
+					float editorDetailY=inspectorY;
+
+					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,200,20),"INSPECTOR",editorButtonStyleBig)) {
+						SetSelectedElementFromGUI();
+					}
+
+					inspectorXTmp = inspectorXTmp +200;
 
 
 
-					inspectorYTmp = inspectorYTmp + 22;
+					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,60,20),"DELETE",editorButtonStyle)) {
+						RemoveElement(editorSelected);
+						editorSelected = null;
+						// add to editor history
+						AddToEditorHistory("[GUI][OBJECT][DELETE]");
+
+					}
+
+
+					inspectorYTmp = inspectorYTmp + 50; 
+					inspectorXTmp = 10;
+
+					// name
+					GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,240,20),"NAME: #");
+					editDetailName=GUI.TextField (new Rect(inspectorXTmp+50,inspectorYTmp,160,20),editDetailName);
+					if (!editorSelected.name.Equals(editDetailName)) {
+						editorSelected.name=editDetailName + "";
+						UpdateElementVisual(editorSelected);
+						AddToEditorHistory("[GUI][OBJECT][CHANGEDNAME]");
+					}
+					editorSelected.name=editDetailName + "";
+					inspectorXTmp = inspectorXTmp +218;
+
+
+					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,100,20),"DUPLICATE ++",editorButtonStyle)) {
+						// copy here ... 
+						GameElement copyThis = editorSelected.Copy ();
+						copyThis.position.x=copyThis.position.x+UnityEngine.Random.Range ( 0.3f, 0.9f );
+						// copyThis.position.y=UnityEngine.Random.Range ( 0.5f, 1.0f );
+						AddElement(copyThis);
+
+						// add to editor history
+						AddToEditorHistory("[GUI][OBJECT][DUPLICATE]");
+
+
+					}
+
+					inspectorYTmp = inspectorYTmp + 22; 
+					inspectorXTmp = 10;
+
+					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,200,20),"TYPE: "+editorSelected.type+"/"+editorSelected.subtype,editorButtonStyle)) {
+						
+					}
+
+					inspectorXTmp = inspectorXTmp +210;
+
+					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,60,20),"SAME >",editorButtonStyle)) {
+						filterType = editorSelected.type;
+						filterTypeSub = editorSelected.subtype;
+					}
+
+
+					inspectorYTmp = inspectorYTmp + 22; 
+
+					inspectorXTmp = 10;
 
 					// transform
 
@@ -4020,9 +4109,9 @@ public class LevelEditor : MonoBehaviour {
 									string[] words = 	editorPrefabX.guiDescription.Split(',');
 									int max = words.Length-1;
 									if (max<0) max=0;
-									int index = UnityEngine.Random.Range(0,max);
+									int indexx = UnityEngine.Random.Range(0,max);
 									// Debug.Log("LevelEditor.Update() //  ["+index+"]<"+words.Length+" ");
-									string subtypeConf = words[index];
+									string subtypeConf = words[indexx];
 									GameElement editorPrefabXX = GetElementType (editorArea,subtypeConf);
 									if (editorPrefabXX!=null) { 
 										editorPrefabX = editorPrefabXX ;
