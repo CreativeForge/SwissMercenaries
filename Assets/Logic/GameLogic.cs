@@ -57,6 +57,9 @@ public class GameLogic : MonoBehaviour {
 		Editor
 	}
 
+	// player values
+	public PlayerStorage Store { get; set; }
+
 	public void Start() {
 
 		// Camera

@@ -30,6 +30,8 @@ public class DestructibleScript : MonoBehaviour {
 	public Animator anim;
 	public bool useAnimOnDeath = false;
 
+	bool foundGL = false;
+
 	// Use this for initialization
 	void Awake () {
 		originalColor = appearanceAlive.GetComponent<Renderer>().material.color;
@@ -41,6 +43,10 @@ public class DestructibleScript : MonoBehaviour {
 		pS = GetComponent<PlayerScript>();
 		eS = GetComponent<EnemyScript>();
 		hS = GetComponent<HitterScript>();
+
+		// player should store its values globally
+		if(FindObjectOfType<GameLogic>() != null)
+			foundGL = true;
 	}
 
 	void Start(){
@@ -185,6 +191,10 @@ public class DestructibleScript : MonoBehaviour {
 			health = Mathf.Clamp(value,0,100);
 			if(pS){
 				InGameController.i.AdjustHealthVisualisation(diff);
+
+				// store health
+				if(foundGL)
+					FindObjectOfType<GameLogic>().Store.Health = health;
 			}else
 				InGameController.i.UpdateHealthEnemy(diff, transform.position);
 			if(health <= 0){
