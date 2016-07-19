@@ -2844,10 +2844,9 @@ public class LevelEditor : MonoBehaviour {
 				// raster rotation
 				inspectorXTmp = inspectorXTmp + 20;
 				int deg = 0;
-				for (int i=0; i<10; i++) {
-					if (i==1) continue;
-					if (i==5) continue;
-					if (i==8) continue;
+				for (int i=0; i<20; i++) {
+					if (i==1 || i==5 || i==8 || i==10 || i==11 || i==13 || i==14 ||
+						i==16 || i==17 || i==19) continue;
 					string text = ""+(i*15);
 					GUIStyle gui = editorButtonStyle;
 					if (editorDegree==(i*15)) {
