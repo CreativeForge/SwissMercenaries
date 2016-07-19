@@ -102,6 +102,9 @@ public class PlayerScript : MonoBehaviour {
 			}
 		}
 
+		if(foundGL)
+			InGameController.i.AdjustHealthVisualisation(GetComponent<DestructibleScript>().health);
+
 	}
 	
 	void Update () {
