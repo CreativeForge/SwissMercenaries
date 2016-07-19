@@ -2086,11 +2086,114 @@ public class LevelEditor : MonoBehaviour {
 		return false;
 	}
 
+	void HandleMouseDownToCreate(){
+		if (!editorTool.Equals ("CREATE"))return;
+
+		//	if (true) {
+
+		// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // CREATE ");
+
+
+		// Debug.Log("LevelEditor.Update() // "+editorTool);
+
+		// Debug.Log ("CREATE NOW");
+
+		// sorry nothing found
+		if (editorPrefab==null) {
+
+			//Debug.Log ("Sorry no correct prefab!");
+			editorLogText = "Nothing yet selected to create!";
+			AddEditorMessage(editorLogText);
+		}
+
+		if (editorPrefab!=null) {
+
+			// check here ...
+			// if (editorPrefab.prefabGameObject!=null) {
+
+			GameElement editorPrefabX = GetElementType (editorArea,editorSubArea);
+
+			if (editorPrefabX==null) {
+				Debug.Log("LevelEditor().Update() // Create object. Could not find GameObjectType: "+editorArea+"/"+editorSubArea);
+				AddEditorMessage("Could not find GameObjectType: "+editorArea+"/"+editorSubArea);
+				return;
+			}
+
+			// (paint-)tools
+			bool flagTool = false;
+			if (editorSubArea.IndexOf("+")!=-1) { 
+				if (editorPrefabX.guiDescription.Equals("")) return;
+				string[] words = 	editorPrefabX.guiDescription.Split(',');
+				int max = words.Length-1;
+				if (max<0) max=0;
+				int index = UnityEngine.Random.Range(0,max);
+				// Debug.Log("LevelEditor.Update() //  ["+index+"]<"+words.Length+" ");
+				string subtypeConf = words[index];
+				GameElement editorPrefabXX = GetElementType (editorArea,subtypeConf);
+				if (editorPrefabXX!=null) { 
+					editorPrefabX = editorPrefabXX ;
+					flagTool = true;
+				} else {
+					// Debug.LogWarning("LevelEditor.Update() //  Searching for Painting Tool. Config Array: Unity3dLevelEditor: "+editorArea+"/"+subtypeConf);
+					AddEditorMessage("[Tool "+editorArea+"/"+subtypeConf+"]: Could not find part: "+editorArea+"/"+subtypeConf);
+					return; 
+				}
+			}
+
+			// arg
+			GameElement arg = editorPrefabX.Copy();
+			AddElement(arg);
+			UpdateGameElementToPosition(arg, Input.mousePosition);
+
+			// copy to the actualGameElement
+			editorLastTouchedGameElement = arg;
+
+			// Debug.Log ("CREATE NOW");
+
+			float offsetX=0.25f;
+			float offsetZ=0.25f;
+			float raster=GetRaster ();
+			if (raster!=0.0f) {
+				if (arg!=null) {
+					arg.position.x=(Mathf.Floor((arg.position.x+offsetX)/raster))*raster;
+					arg.position.z=(Mathf.Floor((arg.position.z+offsetZ)/raster))*raster;
+					UpdateElementVisual(arg);
+				}
+			}
+
+			// rotation
+			arg.rotation = editorDegree;
+			UpdateElementVisual(arg);
+
+			// tool: add randomness
+			if (flagTool) {
+				float factorSize = UnityEngine.Random.Range(5,15)/10.0f;
+				float factorRotation = UnityEngine.Random.Range(0,360);
+				arg.size = arg.size * factorSize;		
+				arg.rotation = arg.rotation + factorRotation;
+				UpdateElementVisual(arg);
+			}
+
+			// add to editor history
+			AddToEditorHistory("[INGAME][CREATE]");
+
+
+			// }
+		}
+		// 
+	}
 
 	int directMouseInputX = 0;
 	int directMouseInputY = 0;
 
 	void OnGUI() {
+
+
+		if (Event.current.type == EventType.MouseUp && Event.current.button == 0 && GUIUtility.hotControl == 0) {
+			// This code will be ignored if the user had mouse-downed on a GUI element.
+			HandleMouseDownToCreate();
+		}
+
 
 		bool debugThis = false; 
 		
@@ -4071,100 +4174,12 @@ public class LevelEditor : MonoBehaviour {
 					// create something here!!!
 					// if (!CheckMouseInEditor()) < coming from above
 					if (editorTool.Equals ("CREATE")) {
-						if (Input.GetMouseButtonDown(0)) {
-					//	if (true) {
-
-							// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // CREATE ");
-
-
-							// Debug.Log("LevelEditor.Update() // "+editorTool);
-
-							// Debug.Log ("CREATE NOW");
-
-							// sorry nothing found
-							if (editorPrefab==null) {
-
-								Debug.Log ("Sorry no correct prefab!");
-								editorLogText = "Nothing yet selected to create!";
-								AddEditorMessage(editorLogText);
-							}
-
-							if (editorPrefab!=null) {
-
-// check here ...
-								// if (editorPrefab.prefabGameObject!=null) {
-
-								GameElement editorPrefabX = GetElementType (editorArea,editorSubArea);
-
-								if (editorPrefabX==null) {
-									Debug.Log("LevelEditor().Update() // Create object. Could not find GameObjectType: "+editorArea+"/"+editorSubArea);
-									AddEditorMessage("Could not find GameObjectType: "+editorArea+"/"+editorSubArea);
-									return;
-								}
-
-								// (paint-)tools
-								bool flagTool = false;
-								if (editorSubArea.IndexOf("+")!=-1) { 
-									if (editorPrefabX.guiDescription.Equals("")) return;
-									string[] words = 	editorPrefabX.guiDescription.Split(',');
-									int max = words.Length-1;
-									if (max<0) max=0;
-									int indexx = UnityEngine.Random.Range(0,max);
-									// Debug.Log("LevelEditor.Update() //  ["+index+"]<"+words.Length+" ");
-									string subtypeConf = words[indexx];
-									GameElement editorPrefabXX = GetElementType (editorArea,subtypeConf);
-									if (editorPrefabXX!=null) { 
-										editorPrefabX = editorPrefabXX ;
-										flagTool = true;
-									} else {
-										// Debug.LogWarning("LevelEditor.Update() //  Searching for Painting Tool. Config Array: Unity3dLevelEditor: "+editorArea+"/"+subtypeConf);
-										AddEditorMessage("[Tool "+editorArea+"/"+subtypeConf+"]: Could not find part: "+editorArea+"/"+subtypeConf);
-										return; 
-									}
-								}
-
-								// arg
-								GameElement arg = editorPrefabX.Copy();
-									AddElement(arg);
-									UpdateGameElementToPosition(arg, Input.mousePosition);
-
-									// copy to the actualGameElement
-									editorLastTouchedGameElement = arg;
-
-									// Debug.Log ("CREATE NOW");
-
-									float offsetX=0.25f;
-									float offsetZ=0.25f;
-									float raster=GetRaster ();
-									if (raster!=0.0f) {
-										if (arg!=null) {
-											arg.position.x=(Mathf.Floor((arg.position.x+offsetX)/raster))*raster;
-											arg.position.z=(Mathf.Floor((arg.position.z+offsetZ)/raster))*raster;
-											UpdateElementVisual(arg);
-										}
-									}
-
-									// rotation
-									arg.rotation = editorDegree;
-									UpdateElementVisual(arg);
-
-									// tool: add randomness
-									if (flagTool) {
-										float factorSize = UnityEngine.Random.Range(5,15)/10.0f;
-										float factorRotation = UnityEngine.Random.Range(0,360);
-										arg.size = arg.size * factorSize;		
-										arg.rotation = arg.rotation + factorRotation;
-										UpdateElementVisual(arg);
-									}
-
-									// add to editor history
-									AddToEditorHistory("[INGAME][CREATE]");
-
-
-								// }
-							}
-							// 
+						/*
+						if (Input.GetMouseButtonDown(0)) { // is done in ongui in HandleMouseDownToCreate() to ignore ongui-clicks
+							//HandleMouseDownToCreate();
 						}
+						*/
+						
 					} // CREATE
 					
 				}
