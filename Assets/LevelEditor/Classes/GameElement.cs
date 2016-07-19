@@ -123,6 +123,7 @@ public class GameElement {
 
 		copyX.editorDisplaySize = editorDisplaySize;
 
+		copyX.skyBoxMaterial = skyBoxMaterial;
 
 		copyX.prefabGameObject = prefabGameObject;
 		copyX.prefabEditorDummyGameObject = prefabEditorDummyGameObject;
@@ -136,6 +137,9 @@ public class GameElement {
 	// UpdateTo - 
 	
 	// representations
+	// material
+	public Material skyBoxMaterial;
+	// gameobject
 	public GameObject gameObject;
 	
 	// prefab (used in editor)

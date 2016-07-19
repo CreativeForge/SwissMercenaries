@@ -8,6 +8,7 @@ public class LevelElement {
 	public string typetypesub="type.typesub"; // type & subtype in one
 
 	public GameObject gameObject ;
+	public Material skyBoxMaterial;
 	public GameObject editorPrefab; // dummy object
 	public LevelElementOption[] prefabEditorDummyArguments;
 

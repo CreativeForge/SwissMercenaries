@@ -51,6 +51,7 @@ public class PlayerScript : MonoBehaviour {
 	Vector3 originalPosition;
 	Quaternion originalRotation;
 
+	bool foundGL = false;
 
 	void Awake(){
 		myR = GetComponent<Rigidbody>();
@@ -62,6 +63,13 @@ public class PlayerScript : MonoBehaviour {
 		anim.SetFloat("VelocityMod",1);
 
 		halberdGO.SetActive(false);
+
+		// player should store its values globally
+		if(FindObjectOfType<GameLogic>() != null)
+			foundGL = true;
+
+		if((FindObjectOfType<GameLogic>().Store == null) && foundGL)
+			FindObjectOfType<GameLogic>().Store = new PlayerStorage(gameObject);
 	}
 
 	public void SetCamT(Transform inT){
@@ -272,6 +280,10 @@ public class PlayerScript : MonoBehaviour {
 			else
 				money = value;
 			InGameController.i.AdjustMoneyVisualisation(diff, transform.position);
+
+			// store money
+			if(foundGL)
+				FindObjectOfType<GameLogic>().Store.Money = money;
 		}
 	}
 
@@ -289,6 +301,10 @@ public class PlayerScript : MonoBehaviour {
 				StartHolyRage();
 			}
 			InGameController.i.AdjustFaithVisualisation(diff, transform.position);
+
+			// store faith
+			if(foundGL)
+				FindObjectOfType<GameLogic>().Store.Faith = faith;
 		}
 		
 	}
