@@ -24,16 +24,16 @@ public class ShopScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(IsShowingShop){
-			if(Input.GetKeyDown(KeyCode.A)){
+			if(Input.GetKeyDown(KeyCode.A) || Input.GetButtonDown("Jump")){ // keyboard Space, controller A
 				ConsumeSelectItem(0);
 				
-			}else if(Input.GetKeyDown(KeyCode.B)){
+			}else if(Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Fire1")){ // keyboard E, controller B
 				ConsumeSelectItem(1);
 
-			}else if(Input.GetKeyDown(KeyCode.X)){ // exit shop
+			}else if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.X) || Input.GetButtonDown("Fire2")){ // controller X // exit shop
 				IsShowingShop = false;
 
-			}else if(Input.GetKeyDown(KeyCode.Y)){
+			}else if(Input.GetKeyDown(KeyCode.Y) || Input.GetButtonDown("Fire3")){ // controller Y
 				ConsumeSelectItem(2);
 			}
 		}
