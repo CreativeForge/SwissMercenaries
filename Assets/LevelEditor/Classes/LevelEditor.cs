@@ -181,6 +181,9 @@ public class LevelEditor : MonoBehaviour {
 	float speedObject = 0.6f;
 
 	// buttons
+	bool cursorObject = true; // object or ...
+	int cursorX = Screen.width - 300;
+	int cursorY = Screen.height - 200;
 	ArrayList arrSensButtons = new ArrayList();
 	class SensButton {
 		public Rect rect = new Rect();
@@ -201,8 +204,51 @@ public class LevelEditor : MonoBehaviour {
 		arrSensButtons.Add(sensbuttonObj);
 	}
 
-	void DoSensButton() {
+	void DoSensButton( SensButton bu, string strevent) {
+		GameObject container=GameObject.Find ("editorCameraContainer");
 
+		Debug.Log("DoSensButton("+strevent+")");
+
+
+		if (strevent.Equals("down")) {
+			// camera 
+			if (bu.key.Equals("left")) {
+				container.transform.Translate ( new Vector3(-speedCamera, 0.0f, 0.0f));
+			}
+			if (bu.key.Equals("right")) {
+				container.transform.Translate ( new Vector3( speedCamera, 0.0f, 0.0f));
+			}
+			if (bu.key.Equals("up")) {
+				container.transform.Translate ( new Vector3( 0.0f, speedCamera, 0.0f));
+			}
+			if (bu.key.Equals("down")) {
+				container.transform.Translate ( new Vector3( 0.0f, -speedCamera, 0.0f));
+			}
+			if (bu.key.Equals("forward")) {
+				container.transform.Translate ( new Vector3( 0.0f, 0.0f, speedCamera));
+			}
+			if (bu.key.Equals("backward")) {
+				container.transform.Translate ( new Vector3( 0.0f, 0.0f, -speedCamera));
+			}
+			// 	rotate left & right					
+			if (bu.key.Equals("rotateleft")) {
+				container.transform.Rotate ( new Vector3(0.0f, -2.0f, 0.0f));
+			}
+			if (bu.key.Equals("rotateright")) {
+				container.transform.Rotate ( new Vector3(0.0f, 2.0f, 0.0f));
+			}
+			// 	rotate left & right					
+			if (bu.key.Equals("rotateforward")) {
+				container.transform.Rotate ( new Vector3(-2.0f,0.0f, 0.0f));
+			}
+			if (bu.key.Equals("rotatebackward")) {
+				container.transform.Rotate ( new Vector3(2.0f,0.0f,  0.0f));
+			}
+
+
+
+			// object
+		}
 
 	}
 
@@ -2033,6 +2079,13 @@ public class LevelEditor : MonoBehaviour {
 
 		}
 		*/
+
+		if ((mouseX>(Screen.width-200))&&(mouseX<(Screen.width))
+			&&
+			(mouseY>=0)&&(mouseY<(20))) {
+			return true;
+		}
+
 		if ((mouseX>filterTypeVisual.x)&&(mouseX<(filterTypeVisual.x+filterTypeVisual.width))
 			&&
 			(mouseY>filterTypeVisual.y)&&(mouseY<(filterTypeVisual.y+filterTypeVisual.height))) {
@@ -2201,6 +2254,28 @@ public class LevelEditor : MonoBehaviour {
 			HandleMouseDownToCreate();
 		}
 
+		// handle mouse down and up on cursors ... 
+		if (true) { // }Input.GetMouseButton(1)) {
+			SensButton sb;
+			float mouseXT=Input.mousePosition.x;
+			float mouseYT=Screen.height-Input.mousePosition.y;
+			for (int i=0;i<arrSensButtons.Count;i++) {
+				sb = (SensButton) arrSensButtons[i];
+				if ((mouseXT>sb.rect.x)&&(mouseXT<(sb.rect.x+sb.rect.width))) {
+					if ((mouseYT>sb.rect.y)&&(mouseYT<(sb.rect.y+sb.rect.height))) {
+						Debug.Log("LevelEditor.OnGUI() // sens mouse handler");
+						if (Input.GetMouseButton(0)) { 
+							DoSensButton( sb, "down" );
+							Debug.Log("LevelEditor.OnGUI() // sens mouse handler down");
+						}
+						if (Input.GetMouseButtonUp(0)) { 
+							DoSensButton( sb, "up" );
+							Debug.Log("LevelEditor.OnGUI() // sens mouse handler up");
+						}
+					}
+				}
+			}
+		}
 
 		bool debugThis = false; 
 		
@@ -2801,10 +2876,10 @@ public class LevelEditor : MonoBehaviour {
 			toolsXTmp = toolsXTmp + 6;
 
 			// UNDO/REDO
-			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 38, 20), "UNDO", editorButtonActiveStyle)) {
+			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 48, 20), "UNDO", editorButtonActiveStyle)) {
 				Undo();
 			}  
-			toolsXTmp = toolsXTmp + 40;
+			toolsXTmp = toolsXTmp + 50;
 			ArrayList arrx = GetActualEditorHistory();
 			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 38, 20), "" + (arrx.Count-historyIndexMinus) + "/" + arrx.Count, editorButtonStyle)) {
 				Redo();
@@ -3431,18 +3506,24 @@ public class LevelEditor : MonoBehaviour {
 			 *  cursors
 			 * 
 			 * */
-			/*
+
 			// transform
+			inspectorXTmp = cursorX;
+			inspectorYTmp = cursorY;
 			if (arrSensButtons.Count==0) {
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "<", "rotateleft" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "|", "rotateforward" );
+				inspectorXTmp = inspectorXTmp + 30;
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "\\", "rotateleft" );
 				inspectorXTmp = inspectorXTmp + 30;
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "^", "up" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, ">", "rotateright" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "/", "rotateright" );
 				inspectorXTmp = inspectorXTmp + 30;
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "-", "forward" );
-				inspectorXTmp = 10; 
 				inspectorYTmp = inspectorYTmp + 30; 
+				inspectorXTmp = cursorX; 
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "||", "rotatebackward" );
+				inspectorXTmp = inspectorXTmp + 30;
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "<", "left" );
 				inspectorXTmp = inspectorXTmp + 30;
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "u", "down" );
@@ -3450,11 +3531,23 @@ public class LevelEditor : MonoBehaviour {
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, ">", "right" );
 				inspectorXTmp = inspectorXTmp + 30;
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "_", "backward" );
+
+				// 1-4
+				inspectorYTmp = inspectorYTmp + 30; 
+				inspectorXTmp = cursorX; 
+				for (int y=0;y<4;y++) {
+					float val = 0.2f + 0.2f * y;
+					GUIStyle guixx = editorButtonStyleNotActive;
+					if (speedCamera==val) {
+						guixx = editorButtonActiveStyle;
+					}
+					if (GUI.Button (new Rect (inspectorXTmp, inspectorXTmp, 20, 20), ""+val, guixx)) {
+						speedCamera = val;
+					}
+					inspectorXTmp = inspectorXTmp + 32;
+				}
 			}
 			inspectorYTmp = inspectorYTmp + 75; 
-
-
-			*/
 
 
  			
@@ -4534,12 +4627,12 @@ public class LevelEditor : MonoBehaviour {
 					if ((Input.GetKey ("2"))||(Input.GetKey ("3"))||(Input.GetKey ("y"))) {
 						// scroll = scroll + 0.3f;
 						//						DoEditorScroll( 0.0f, 0.0f, -speed.z );
-						editorcamera.transform.Rotate ( new Vector3(-3.0f, 0.0f, 0.0f));
+						editorcamera.transform.Rotate ( new Vector3(3.0f, 0.0f, 0.0f));
 					}
 					if ((Input.GetKey ("x"))) {
 						// scroll = scroll + 0.3f;
 						//						DoEditorScroll( 0.0f, 0.0f, -speed.z );
-						editorcamera.transform.Rotate ( new Vector3(3.0f, 0.0f, 0.0f));
+						editorcamera.transform.Rotate ( new Vector3(-3.0f, 0.0f, 0.0f));
 					}
 
 					// up & down 
