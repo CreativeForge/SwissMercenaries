@@ -2911,8 +2911,8 @@ public class LevelEditor : MonoBehaviour {
 			if (editorTool.Equals ("EDIT")) { 
 
 				if (editorSelected!=null) {
-					
-				if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,60,20),"DELETE",editorButtonStyle)) {
+					inspectorXTmp = inspectorXTmp +380;
+				if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp-28,60,20),"DELETE",editorButtonStyle)) {
 					RemoveElement(editorSelected);
 					editorSelected = null;
 					// add to editor history
@@ -2921,8 +2921,30 @@ public class LevelEditor : MonoBehaviour {
 				}
 
 
-				inspectorYTmp = inspectorYTmp + 40; 
+				// inspectorYTmp = inspectorYTmp + 24; 
 				inspectorXTmp = 10;
+
+					// specials refer type?
+					string release=""+editorSelected.release;
+					string add="";
+					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"STATE: ",editorButtonStyle)) {
+						editorSelected.release="";
+					}
+					inspectorXTmp= inspectorXTmp + 60;
+					if (release.Equals ("")) { add=">"; }
+					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"active",editorButtonStyle)) {
+						editorSelected.release="";
+					}
+					inspectorXTmp= inspectorXTmp + 60;
+					add = "";
+					if (release.Equals ("wait")) { add=">"; }
+					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"standby",editorButtonStyle)) {
+						editorSelected.release="wait";
+					}
+					inspectorXTmp= inspectorXTmp + 60;
+					inspectorYTmp = inspectorYTmp + 30; 
+
+					inspectorXTmp = 10;
 
 				// name
 				GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,240,20),"NAME: #");
@@ -2949,7 +2971,7 @@ public class LevelEditor : MonoBehaviour {
 
 				}
 
-				inspectorYTmp = inspectorYTmp + 22; 
+				inspectorYTmp = inspectorYTmp + 32; 
 				inspectorXTmp = 10;
 
 				if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,200,20),"TYPE: "+editorSelected.type+"/"+editorSelected.subtype,editorButtonStyle)) {
@@ -2963,32 +2985,9 @@ public class LevelEditor : MonoBehaviour {
 					filterTypeSub = editorSelected.subtype;
 				}
 
-				inspectorYTmp = inspectorYTmp + 10;
-
-				// show size
-				inspectorXTmp = 10;
 				inspectorYTmp = inspectorYTmp + 22;
-				float[] arrScales = { 0.2f, 0.5f, 0.75f, 1.0f, 1.5f, 2.0f, 3.0f, 4.0f, 8.0f };
-				GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 60, 20), "SIZE", editorButtonStyle );
-				for (int i=0; i<arrScales.Length; i++) {
-					float size = arrScales [i];
-					string text = ""+size;
-					GUIStyle gui = editorButtonStyle;
-					if (editorSelected.size==size) {
-						gui = editorButtonActiveStyle;
-						text = ">" + text + "";
-					}
-					bool buttonClicked = GUI.Button (new Rect (inspectorXTmp + 62 + i * 24, inspectorYTmp, 22, 20), text , gui );
-					if (buttonClicked) {
-						editorSelected.size =size;
-						UpdateElementVisual( editorSelected );
-						AddToEditorHistory("[GUI][OBJECT][SIZE]"+size);
-					}
-				}
 
-				inspectorYTmp = inspectorYTmp + 10;
-
-				inspectorYTmp = inspectorYTmp + 22; 
+				
 				
 				}
 			}
@@ -3108,6 +3107,31 @@ public class LevelEditor : MonoBehaviour {
 
 					float editorDetailY=inspectorY;
 
+					// show size
+					inspectorXTmp = 10;
+					inspectorYTmp = inspectorYTmp + 10;
+					float[] arrScales = { 0.2f, 0.5f, 0.75f, 1.0f, 1.5f, 2.0f, 3.0f, 4.0f, 8.0f };
+					GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 60, 20), "SIZE", editorButtonStyle );
+					for (int i=0; i<arrScales.Length; i++) {
+						float size = arrScales [i];
+						string text = ""+size;
+						GUIStyle gui = editorButtonStyle;
+						if (editorSelected.size==size) {
+							gui = editorButtonActiveStyle;
+							text = ">" + text + "";
+						}
+						bool buttonClicked = GUI.Button (new Rect (inspectorXTmp + 62 + i * 24, inspectorYTmp, 22, 20), text , gui );
+						if (buttonClicked) {
+							editorSelected.size =size;
+							UpdateElementVisual( editorSelected );
+							AddToEditorHistory("[GUI][OBJECT][SIZE]"+size);
+						}
+					}
+
+					inspectorYTmp = inspectorYTmp + 10;
+
+					inspectorYTmp = inspectorYTmp + 22; 
+
 					/*
 					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,200,20),""+editorTool,editorButtonStyleBig)) {
 						SetSelectedElementFromGUI();
@@ -3161,24 +3185,7 @@ public class LevelEditor : MonoBehaviour {
 							GUI.Label (new Rect(inspectorXTmp+42,inspectorYTmp,240,20),editorSelected.guiDescription);
 							inspectorYTmp=inspectorYTmp+22*1;
 						}
-						// specials refer type?
-						string release=""+editorSelected.release;
-						string add="";
-						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"START: ",editorButtonStyle)) {
-							editorSelected.release="";
-						}
-						inspectorXTmp= inspectorXTmp + 60;
-						if (release.Equals ("")) { add=">"; }
-						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"active",editorButtonStyle)) {
-							editorSelected.release="";
-						}
-						inspectorXTmp= inspectorXTmp + 60;
-						add = "";
-						if (release.Equals ("wait")) { add=">"; }
-						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"standby",editorButtonStyle)) {
-							editorSelected.release="wait";
-						}
-						inspectorXTmp= inspectorXTmp + 60;
+
 					}
 
 
