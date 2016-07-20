@@ -1,0 +1,180 @@
+fileFormatVersion: 2
+guid: d2c8907cf258142e582d22f7541c8bb9
+timeCreated: 1439635159
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: stone
+    100004: stone_10
+    100006: stone_11
+    100008: stone_12
+    100010: stone_13
+    100012: stone_14
+    100014: stone_2
+    100016: stone_3
+    100018: stone_4
+    100020: stone_5
+    100022: stone_6
+    100024: stone_7
+    100026: stone_8
+    100028: stone_9
+    100030: Stones
+    100032: Wood
+    100034: wood
+    100036: wood_2
+    100038: wood_3
+    100040: wood_4
+    100042: wood_5
+    100044: wood_6
+    100046: wood_7
+    400000: //RootNode
+    400002: stone
+    400004: stone_10
+    400006: stone_11
+    400008: stone_12
+    400010: stone_13
+    400012: stone_14
+    400014: stone_2
+    400016: stone_3
+    400018: stone_4
+    400020: stone_5
+    400022: stone_6
+    400024: stone_7
+    400026: stone_8
+    400028: stone_9
+    400030: Stones
+    400032: Wood
+    400034: wood
+    400036: wood_2
+    400038: wood_3
+    400040: wood_4
+    400042: wood_5
+    400044: wood_6
+    400046: wood_7
+    2300000: stone
+    2300002: stone_10
+    2300004: stone_11
+    2300006: stone_12
+    2300008: stone_13
+    2300010: stone_14
+    2300012: stone_2
+    2300014: stone_3
+    2300016: stone_4
+    2300018: stone_5
+    2300020: stone_6
+    2300022: stone_7
+    2300024: stone_8
+    2300026: stone_9
+    2300028: wood
+    2300030: wood_2
+    2300032: wood_3
+    2300034: wood_4
+    2300036: wood_5
+    2300038: wood_6
+    2300040: wood_7
+    3300000: stone
+    3300002: stone_10
+    3300004: stone_11
+    3300006: stone_12
+    3300008: stone_13
+    3300010: stone_14
+    3300012: stone_2
+    3300014: stone_3
+    3300016: stone_4
+    3300018: stone_5
+    3300020: stone_6
+    3300022: stone_7
+    3300024: stone_8
+    3300026: stone_9
+    3300028: wood
+    3300030: wood_2
+    3300032: wood_3
+    3300034: wood_4
+    3300036: wood_5
+    3300038: wood_6
+    3300040: wood_7
+    4300000: stone
+    4300002: stone_2
+    4300004: stone_3
+    4300006: stone_4
+    4300008: stone_5
+    4300010: stone_6
+    4300012: stone_7
+    4300014: stone_8
+    4300016: stone_9
+    4300018: stone_10
+    4300020: stone_11
+    4300022: stone_12
+    4300024: stone_13
+    4300026: stone_14
+    4300028: wood
+    4300030: wood_2
+    4300032: wood_3
+    4300034: wood_4
+    4300036: wood_5
+    4300038: wood_6
+    4300040: wood_7
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
