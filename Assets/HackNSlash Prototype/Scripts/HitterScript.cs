@@ -152,7 +152,7 @@ public class HitterScript : MonoBehaviour {
 				// is player
 				if(Input.GetKeyDown(KeyCode.Mouse0) || Input.GetButtonDown("Jump")){ // keyboard Space, controller B
 					InGameController.i.HitButtonPressed();
-					if(pS.IsWithHalberd){
+					if(pS.IsUsingHalberd){
 						DoSlowHalberdHit();
 					}else{
 						DoFastSwordHit();
@@ -306,7 +306,7 @@ public class HitterScript : MonoBehaviour {
 		if(pS){ // player hits something
 
 			float tHitForce = hitForce;
-			if(pS.IsWithHalberd)
+			if(pS.IsUsingHalberd)
 				tHitForce = hitStrongForce;
 			inDS.IsHitted(tHitForce);
 			return true;
@@ -325,9 +325,11 @@ public class HitterScript : MonoBehaviour {
 		
 	public void ActivateTrail(bool inActive){
 		//Debug.Log("trail: "+inActive+" "+Time.time);
-		GameObject wTrail = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail Sword");
-		if(wTrail)wTrail.GetComponent<MeshRenderer>().enabled = inActive;// SetActive(inActive);
-		GameObject wTrail2 = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail Halberd");
+		if((!inActive && pS.IsUsingHalberd) || !pS.IsUsingHalberd){
+			GameObject wTrail = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail Sword");
+			if(wTrail)wTrail.GetComponent<MeshRenderer>().enabled = inActive;// SetActive(inActive);
+		}
+		GameObject wTrail2 = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail 2");
 		if(wTrail2)wTrail2.GetComponent<MeshRenderer>().enabled = inActive;// 
 	}
 }
