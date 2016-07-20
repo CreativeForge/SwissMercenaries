@@ -30,7 +30,7 @@ public class ShopScript : MonoBehaviour {
 			}else if(Input.GetKeyDown(KeyCode.B) || Input.GetButtonDown("Fire1")){ // keyboard E, controller B
 				ConsumeSelectItem(1);
 
-			}else if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.X) || Input.GetButtonDown("Fire2")){ // controller X // exit shop
+			}else if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.X) || Input.GetButtonDown("Fire2") || Input.GetMouseButtonDown(0)){ // controller X // exit shop
 				IsShowingShop = false;
 
 			}else if(Input.GetKeyDown(KeyCode.Y) || Input.GetButtonDown("Fire3")){ // controller Y
