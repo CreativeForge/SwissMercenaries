@@ -45,7 +45,7 @@ public class PlayerScript : MonoBehaviour {
 
 	public bool hasPickedUpHalberd = false;
 	public GameObject swordGO;
-	bool isWithHalberd = false;
+	bool isUsingHalberd = false;
 	public GameObject halberdGO;
 
 	Vector3 originalPosition;
@@ -129,27 +129,27 @@ public class PlayerScript : MonoBehaviour {
 		HandleHolyRage();
 
 		if(Input.GetButtonDown("Fire1")){ // keyboard E, controller B
-			IsWithHalberd = !IsWithHalberd;
+			IsUsingHalberd = !IsUsingHalberd;
 		}
 	}
 
-	public bool IsWithHalberd{
+	public bool IsUsingHalberd{
 
 		get{
-			return isWithHalberd;
+			return isUsingHalberd;
 		}
 		set{
 			if(!HasPickedUpHalberd){
 				Debug.Log("you have to pickup halberd");
 				return;
 			}
-			isWithHalberd = value;
-			if(isWithHalberd){
-				anim.SetBool("IsWithHalberd", true);
+			isUsingHalberd = value;
+			if(isUsingHalberd){
+				anim.SetBool("IsUsingHalberd", true);
 				halberdGO.SetActive(true);
 				swordGO.SetActive(false);
 			}else{
-				anim.SetBool("IsWithHalberd", false);
+				anim.SetBool("IsUsingHalberd", false);
 				halberdGO.SetActive(false);
 				swordGO.SetActive(true);
 				
@@ -361,7 +361,7 @@ public class PlayerScript : MonoBehaviour {
 		}
 		set{
 			hasPickedUpHalberd = value;
-			IsWithHalberd = true;
+			IsUsingHalberd = true;
 
 		}
 	}

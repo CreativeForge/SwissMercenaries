@@ -22,7 +22,7 @@ public class InGameTriggerMessageScript : MonoBehaviour {
 	void OnTriggerEnter(Collider inC){
 		if(InGameController.i.playerS.transform == inC.transform){
 			InGameController.i.ShowInGameMessage(message, centered, displayDuration);
-			Destroy(gameObject);
+			GetComponent<Collider>().enabled = false;
 		}
 	}
 }
