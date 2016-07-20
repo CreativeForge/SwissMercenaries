@@ -40,6 +40,7 @@ namespace GameLab.NotficationCenter
 		public NotificationType[] PlayerTypes = { };
 		public NotificationType[] SoundGUI = { };
 		public NotificationType[] VisualGUI = { };
+		public NotificationType[] Level = { };
 
 		// pipeline .. 
 		public ArrayList arrNotificationPipline = new ArrayList();
@@ -51,6 +52,7 @@ namespace GameLab.NotficationCenter
 			RegisterNotificationTypes( "visual", Visual );
 			RegisterNotificationTypes( "object", ObjectManipulation );
 			RegisterNotificationTypes( "player", PlayerTypes );
+			RegisterNotificationTypes( "level", Level );
 			RegisterNotificationTypes( "soundgui", SoundGUI );
 			RegisterNotificationTypes( "visualgui", VisualGUI );
 
@@ -133,6 +135,7 @@ namespace GameLab.NotficationCenter
 			bool parsed = false;
 			if (nt.type.Equals("visual")) { ProcessVisual( nt ); parsed = true;}
 			if (nt.type.Equals("object")) { ProcessObject( nt ); parsed = true; }
+			if (nt.type.Equals("level")) { ProcessLevel( nt ); parsed = true; }
 
 			if (!parsed) {
 				CreatePrefabsFor( nt );
@@ -192,6 +195,7 @@ namespace GameLab.NotficationCenter
 
 				// object/remove
 				if (nt.subtype.Equals("activate")) {
+					ge.release = "";
 					gameLogic.levelEditor.AddElement(ge);
 				}
 
@@ -207,6 +211,21 @@ namespace GameLab.NotficationCenter
 					}
 				}
 
+			}
+		}
+
+		// Process Object
+		void ProcessLevel( Notification nt ) {
+			// gameLogics
+			print("ProcessLevel()"+nt.argument);
+			if (nt.subtype.Equals("next")) {
+				// gameLogic.levelEditor.
+				gameLogic.LoadNextLevel();
+			}
+			// take argument
+			if (nt.subtype.Equals("load")) {
+				int levelx = Int32.Parse(nt.argument);
+				gameLogic.LoadGameLevel(levelx);
 			}
 		}
 

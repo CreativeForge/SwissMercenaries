@@ -3292,7 +3292,7 @@ public class LevelEditor : MonoBehaviour {
 					inspectorXTmp= inspectorXTmp + 60;
 					add = "";
 					if (release.Equals ("wait")) { add=">"; }
-					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"standby",editorButtonStyle)) {
+					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"hidden",editorButtonStyle)) {
 						editorSelected.release="wait";
 						AddToEditorHistory();
 					}
@@ -3463,7 +3463,7 @@ public class LevelEditor : MonoBehaviour {
 			if (editorTool.Equals ("EDIT")) { 
 				if (editorSelected!=null) {
 					showElements=true; 
-
+					 
 					float editorDetailY=inspectorY;
 
 					// show size
