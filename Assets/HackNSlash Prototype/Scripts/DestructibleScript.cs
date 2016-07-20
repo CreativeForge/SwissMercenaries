@@ -12,6 +12,7 @@ public class DestructibleScript : MonoBehaviour {
 	public GameObject colliderAlive;
 	public GameObject colliderDead;
 	public GameObject appearanceAlive;
+	public Renderer[] appearanceAliveAllRenderers;
 	public GameObject appearanceDead;
 	public Transform ragdollCenter;
 
@@ -34,7 +35,15 @@ public class DestructibleScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-		originalColor = appearanceAlive.GetComponent<Renderer>().material.color;
+		if(appearanceAlive.GetComponent<Renderer>()){
+			appearanceAliveAllRenderers = new Renderer[1];
+			appearanceAliveAllRenderers[0] = appearanceAlive.GetComponent<Renderer>();
+
+		}else{
+			appearanceAliveAllRenderers = appearanceAlive.GetComponentsInChildren<Renderer>();
+		}
+		originalColor = appearanceAliveAllRenderers[0].GetComponent<Renderer>().material.color;
+
 		if(appearanceDead)appearanceDead.SetActive(false);
 		if(colliderDead)colliderDead.SetActive(false);
 		bloodParticlesGO = Instantiate(bloodParticlesPrefab, transform.position, Quaternion.identity) as GameObject;
@@ -112,8 +121,13 @@ public class DestructibleScript : MonoBehaviour {
 	}
 
 	void SetColor(Color inColor){
-		if(appearanceAlive)appearanceAlive.GetComponent<Renderer>().material.color = inColor;
-		appearanceDead.GetComponent<Renderer>().material.color = inColor;
+		if(appearanceAlive){
+			foreach(Renderer tR in appearanceAliveAllRenderers){
+				tR.material.color = inColor;
+			}
+		}
+		if(appearanceDead.GetComponent<Renderer>())
+			appearanceDead.GetComponent<Renderer>().material.color = inColor;
 	}
 
 	public void Die(){
