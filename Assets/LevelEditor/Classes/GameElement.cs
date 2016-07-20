@@ -102,7 +102,6 @@ public class GameElement {
 		copyX.argumentInputTypeSelect = argumentInputTypeSelect;
 
 		copyX.argumentsub = argumentsub;
-		copyX.argumentsub = argumentsub;
 
 		copyX.strevent = strevent;
 		copyX.target = target;
@@ -122,9 +121,7 @@ public class GameElement {
 		copyX.guiLabel = guiLabel;
 
 		copyX.editorDisplaySize = editorDisplaySize;
-
 		copyX.skyBoxMaterial = skyBoxMaterial;
-
 		copyX.prefabGameObject = prefabGameObject;
 		copyX.prefabEditorDummyGameObject = prefabEditorDummyGameObject;
 
@@ -134,7 +131,24 @@ public class GameElement {
 		return copyX;
 	}
 
-	// UpdateTo - 
+	// UpdateTo (On Change Type)
+	public void ChangeTypeInEditMode( GameElement template ) {
+
+		guiBoolArgument = template.guiBoolArgument;
+		size = template.size;
+
+		guiBoolArgument = template.guiBoolArgument;
+		guiDescription = template.guiDescription;
+		guiLabel = template.guiLabel;
+
+		editorDisplaySize = template.editorDisplaySize;
+
+		skyBoxMaterial = template.skyBoxMaterial;
+		prefabGameObject = template.prefabGameObject;
+		prefabEditorDummyGameObject = template.prefabEditorDummyGameObject;
+
+			
+	}
 	
 	// representations
 	// material
