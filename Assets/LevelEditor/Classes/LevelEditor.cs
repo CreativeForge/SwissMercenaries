@@ -2309,8 +2309,9 @@ public class LevelEditor : MonoBehaviour {
 	void OnGUI() {
 
 
-		if (Event.current.type == EventType.MouseUp && Event.current.button == 0 && GUIUtility.hotControl == 0) {
-			// This code will be ignored if the user had mouse-downed on a GUI element.
+		if (Event.current.type == EventType.MouseUp && Event.current.button == 0 && GUIUtility.hotControl == 0 && // This code will be ignored if the user had mouse-downed on a GUI element.
+			gameLogic !=null &&  gameLogic.modal==GameLogic.GameLogicModal.Editor) { // check if in editormode, not in playmode
+
 			HandleMouseDownToCreate();
 		}
 
