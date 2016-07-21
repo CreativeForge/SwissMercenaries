@@ -29,7 +29,7 @@ public class InGameController : MonoBehaviour {
 
 	public bool inEditorUsed = true;
 
-	NotificationCenterPrototype notificationC;
+	public NotificationCenterPrototype notificationC;
 
 	// Use this for initialization
 	void Awake () {
@@ -39,6 +39,15 @@ public class InGameController : MonoBehaviour {
 
 		playerS = FindObjectOfType<PlayerScript>();
 		notificationC = GetComponent<NotificationCenterPrototype>();
+
+		// register in leveleditor
+		GameObject le = GameObject.Find ("_LevelEditor");
+		if (le!=null) {
+			LevelEditor levelEditor = le.GetComponent<LevelEditor>();
+			if (levelEditor!=null) {
+				levelEditor.SetIngameController(this);
+			}
+		}
 
 		ReloadCamera();
 

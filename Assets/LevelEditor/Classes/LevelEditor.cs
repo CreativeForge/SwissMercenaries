@@ -58,6 +58,17 @@ public class LevelEditor : MonoBehaviour {
 		}
 		return null;
 	}
+
+	// IngameController
+	// IngameNotificationCenter
+	public InGameController ingameController = null;
+	public void SetIngameController( InGameController iingameControllerIn ) {
+		ingameController = iingameControllerIn;
+		ingameNotificationCenter = null;
+		if (iingameControllerIn!=null)	ingameNotificationCenter = ingameController.notificationC;
+	}
+	public NotificationCenterPrototype ingameNotificationCenter; 
+
 	// notification tester ...
 	bool notificationTesterAndHistory = true;
 	string fieldType  = "visual";
@@ -407,7 +418,7 @@ public class LevelEditor : MonoBehaviour {
 		GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
 		ArrayList arrToClear = new ArrayList();
 		foreach(GameObject go in allObjects) {
-			Debug.Log("Root.GameObject"+go.name+" "+go.tag);
+			// Debug.Log("Root.GameObject"+go.name+" "+go.tag);
 			if (go.transform.parent==null) {
 				if (!go.tag.Equals("Essentials")) {
 					arrToClear.Add(go);
@@ -1652,6 +1663,7 @@ public class LevelEditor : MonoBehaviour {
 			//editDetailY = ""+ editorSelected.position.y;
 			editDetailName = ""+ editorSelected.name;
 			editDetailArgument = ""+ editorSelected.argument;
+			editDetailArgumentSub = "" + editorSelected.argumentsub;
 		}
 	void StoreSelectedElement(  ) {
 		SetSelectedElementFromGUI ();
@@ -1662,6 +1674,7 @@ public class LevelEditor : MonoBehaviour {
 		// editorDetailSelected.position.x=editDetailY;
 		editorSelected.name=editDetailName;
 		editorSelected.argument=editDetailArgument;
+		editorSelected.argumentsub = editDetailArgumentSub;
 	}
 
 	// special tools: edit
@@ -1673,6 +1686,7 @@ public class LevelEditor : MonoBehaviour {
 	string createName = "";
 	string editDetailName="";
 	string editDetailArgument="";
+	string editDetailArgumentSub = "";
 	
 	// special tools: move
 	string editorToolMove="";
@@ -2417,6 +2431,7 @@ public class LevelEditor : MonoBehaviour {
 
 	void OnGUI() {
 
+		bool debugThis = false;
 
 		if (Event.current.type == EventType.MouseUp && Event.current.button == 0 && GUIUtility.hotControl == 0 && // This code will be ignored if the user had mouse-downed on a GUI element.
 			gameLogic !=null &&  gameLogic.modal==GameLogic.GameLogicModal.Editor) { // check if in editormode, not in playmode
@@ -2424,9 +2439,6 @@ public class LevelEditor : MonoBehaviour {
 			HandleMouseDownToCreate();
 		}
 
-
-
-		bool debugThis = false; 
 		
 		// SWITCH BETWEEN EDITOR/GAME
 		GUIStyle guixt = editorSwitchButtonStyle;
@@ -2497,6 +2509,133 @@ public class LevelEditor : MonoBehaviour {
 			if (gameLogic.modal == GameLogic.GameLogicModal.Editor) ver = gameLogic.GetVersionEditor();
 		if (GUI.Button (new Rect (Screen.width - 260, 0, 80, 20), " v."+ver, editorSwitchButtonStyle)) {
 			
+		}
+
+		/*
+		 *  NOTIFICATION CENTER
+		 * 
+		 * */
+		// NOTIFICATIONS
+		if (notificationDialog) {
+			notificationDialogX = (int) (Screen.width * 0.6f);
+			notificationDialogY = (int) (Screen.height * 0.3f);
+			notificationVisual.x = notificationDialogX;
+			notificationVisual.y = notificationDialogY;
+			notificationVisual.width = 150;
+			// notificationVisual.height = 50;
+			GUI.Label ( new Rect(notificationVisual.x-5,notificationVisual.y-5,notificationVisual.width+10,notificationVisual.height+10), "", editorBackground);
+
+			int notificationDialogXTmp = notificationDialogX;
+			int notificationDialogYTmp = notificationDialogY;
+
+			ArrayList arr = notificationCenter.GetNotificationTypesUnique();
+
+			if (GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), "ALL NOTIFICATIONS *.* ", editorButtonActiveStyle)) {
+				notificationArea = "";
+			}
+			notificationDialogYTmp = notificationDialogYTmp + 22;
+
+			strNotification = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+strNotification, editorButtonActiveStyle) ;
+			notificationDialogYTmp = notificationDialogYTmp + 22;
+
+			notificationDialogYTmp = notificationDialogYTmp + 3;
+
+			if (arr.Count>0)
+				for (int i=0;i<arr.Count; i++) {
+					Notification nt = (Notification)arr [i];
+					string text = "" + nt.type+".*";
+					GUIStyle guix = editorButtonStyleNotActive;
+					// if (editorSelected==gae) guix = editorButtonActiveStyle;
+					bool flagShow = true;
+					if (!notificationArea.Equals("")) {
+						if (!notificationArea.Equals(nt.type)) {
+							flagShow = false;
+						} else {
+							guix = editorButtonActiveStyle;			
+						}
+					}
+					if (flagShow) {
+						bool buttonClicked = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+text+"", guix);
+						if (buttonClicked) {
+							notificationArea = nt.type;
+							notificationAreaSub = "";
+							strNotification = notificationArea+"."+notificationAreaSub;
+						}
+						notificationDialogYTmp = notificationDialogYTmp + 22;
+					}
+
+					// counter++;
+					// if (counter>5) break;
+				}
+
+			notificationDialogYTmp = notificationDialogYTmp + 5;
+
+			if (!notificationArea.Equals("")) {
+				ArrayList arrxy = notificationCenter.GetNotificationTypes(notificationArea);
+				if (arrxy.Count>0)
+					for (int i=0;i<arrxy.Count; i++) {
+						Notification nt = (Notification)arrxy [i];
+						string text = "" + nt.type+"."+nt.subtype;
+						GUIStyle guix = editorButtonStyleNotActive;
+						bool flagShow = true;
+						if (nt.subtype.Equals(notificationAreaSub)) guix = editorButtonActiveStyle;			
+						if (flagShow) {
+							bool buttonClicked = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), " "+text+"", guix);
+							if (buttonClicked) {
+								notificationAreaSub = nt.subtype;
+								strNotification = notificationArea+"."+notificationAreaSub;
+							}
+							notificationDialogYTmp = notificationDialogYTmp + 22;
+						}
+
+						// counter++;
+						// if (counter>5) break;
+					}
+			}
+
+			notificationVisual.height = notificationDialogYTmp - notificationDialogY;
+
+			// NOTIFICATION TESTER
+
+			notificationDialogX = (int) (Screen.width * 0.2f) + 220;
+			notificationDialogY = (int) (Screen.height * 0.2f);
+			// GUI.Label ( new Rect(notificationVisual.x-5,notificationVisual.y-5,notificationVisual.width+10,notificationVisual.height+10), "", editorBackground);
+			notificationDialogXTmp = notificationDialogX;
+			notificationDialogYTmp = notificationDialogY;
+
+			if (notificationTesterAndHistory) {
+				bool buttonClickedX = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), "ADD NOTIFICATION", editorButtonActiveStyle);
+				if (buttonClickedX) {
+					float timed = float.Parse( fieldTimed );
+					notificationCenter.AddNotification(fieldType,fieldTypeSub,fieldTarget,timed,fieldArgument, new Vector3());
+				}
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+				fieldType = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldType, editorButtonStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+				fieldTypeSub = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTypeSub, editorButtonStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+				fieldTarget = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTarget, editorButtonStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+				fieldTimed = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTimed, editorButtonStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+				fieldArgument = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldArgument, editorButtonStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+
+				// add history ...
+				// Debug.Log("LevelEditor.OnGUI(); // "+notificationCenter.arrNotificationPipline.Count);
+				notificationDialogYTmp = notificationDialogYTmp + 22;
+
+				if (notificationCenter.arrNotificationPipline.Count>0) {
+					for (int i=(notificationCenter.arrNotificationPipline.Count-1);i>=0;i--) {
+						Notification nt = (Notification)notificationCenter.arrNotificationPipline [i];
+						string text = "[" + nt.state+"] "+nt.type+"/"+nt.subtype+" {>"+nt.targetName+"} "+nt.argument+" ("+nt.timed+")";
+						GUIStyle guix = editorButtonStyleNotActive;
+						GUI.Label (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width*2, 20), " "+text+"", guix);
+						notificationDialogYTmp = notificationDialogYTmp + 22;
+					}
+				}
+			}
+
 		}
 
 			/*
@@ -2650,7 +2789,7 @@ public class LevelEditor : MonoBehaviour {
 
 								if (editorSelected!=null) {
 
-									Debug.Log("LevelEditor.OnGUI() // MouseButtonUp(0)");
+									// Debug.Log("LevelEditor.OnGUI() // MouseButtonUp(0)");
 
 									float raster=GetRaster();
 									// Debug.Log ("raster: "+raster);
@@ -3678,6 +3817,8 @@ public class LevelEditor : MonoBehaviour {
 
 					inspectorXTmp = 10;
 
+// todo: check for change!
+
 					// trigger (add some keys)
 					if (editorSelected!=null)
 					if (editorSelected.type.Equals("trigger")) {
@@ -3720,6 +3861,24 @@ public class LevelEditor : MonoBehaviour {
 						if (!editorSelected.guiDescription.Equals ("")) {
 							GUI.Label (new Rect(inspectorXTmp+42,inspectorYTmp,240,20),editorSelected.guiDescription);
 							inspectorYTmp=inspectorYTmp+22*1;
+						}
+						// argumentsub
+						if (editorSelected.guiBoolArgument) {
+							GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,40,24),"ARG:");
+							editDetailArgumentSub=GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),editDetailArgumentSub);
+							bool changed=false;
+							if (editDetailArgumentSub!=editorSelected.argumentsub) {
+								changed=true;
+								AddToEditorHistory();
+							}
+							editorSelected.argumentsub=editDetailArgumentSub;
+							inspectorYTmp=inspectorYTmp+22*1;
+							if (changed) {
+								UpdateElementVisual(editorSelected);
+								UpdateRelationVisualisationAndCheckError();
+								AddToEditorHistory();
+							}
+
 						}
 
 					}
@@ -4308,128 +4467,7 @@ public class LevelEditor : MonoBehaviour {
 
 			}
 
-			// NOTIFICATIONS
-			if (notificationDialog) {
-				notificationDialogX = (int) (Screen.width * 0.6f);
-				notificationDialogY = (int) (Screen.height * 0.3f);
-				notificationVisual.x = notificationDialogX;
-				notificationVisual.y = notificationDialogY;
-				notificationVisual.width = 150;
-				// notificationVisual.height = 50;
-				GUI.Label ( new Rect(notificationVisual.x-5,notificationVisual.y-5,notificationVisual.width+10,notificationVisual.height+10), "", editorBackground);
 
-				int notificationDialogXTmp = notificationDialogX;
-				int notificationDialogYTmp = notificationDialogY;
-
-				ArrayList arr = notificationCenter.GetNotificationTypesUnique();
-
-				if (GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), "ALL NOTIFICATIONS *.* ", editorButtonActiveStyle)) {
-					notificationArea = "";
-				}
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-
-				strNotification = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+strNotification, editorButtonActiveStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-
-				notificationDialogYTmp = notificationDialogYTmp + 3;
-
-				if (arr.Count>0)
-				for (int i=0;i<arr.Count; i++) {
-					Notification nt = (Notification)arr [i];
-					string text = "" + nt.type+".*";
-					GUIStyle guix = editorButtonStyleNotActive;
-					// if (editorSelected==gae) guix = editorButtonActiveStyle;
-					bool flagShow = true;
-					if (!notificationArea.Equals("")) {
-						if (!notificationArea.Equals(nt.type)) {
-						  flagShow = false;
-						} else {
-								guix = editorButtonActiveStyle;			
-						}
-					}
-					if (flagShow) {
-							bool buttonClicked = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+text+"", guix);
-						if (buttonClicked) {
-							notificationArea = nt.type;
-							notificationAreaSub = "";
-							strNotification = notificationArea+"."+notificationAreaSub;
-						}
-						notificationDialogYTmp = notificationDialogYTmp + 22;
-					}
-					
-					// counter++;
-					// if (counter>5) break;
-				}
-
-				notificationDialogYTmp = notificationDialogYTmp + 5;
-
-				if (!notificationArea.Equals("")) {
-					ArrayList arrxy = notificationCenter.GetNotificationTypes(notificationArea);
-					if (arrxy.Count>0)
-						for (int i=0;i<arrxy.Count; i++) {
-							Notification nt = (Notification)arrxy [i];
-							string text = "" + nt.type+"."+nt.subtype;
-							GUIStyle guix = editorButtonStyleNotActive;
-							bool flagShow = true;
-							if (nt.subtype.Equals(notificationAreaSub)) guix = editorButtonActiveStyle;			
-							if (flagShow) {
-								bool buttonClicked = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), " "+text+"", guix);
-								if (buttonClicked) {
-									notificationAreaSub = nt.subtype;
-									strNotification = notificationArea+"."+notificationAreaSub;
-								}
-								notificationDialogYTmp = notificationDialogYTmp + 22;
-							}
-
-							// counter++;
-							// if (counter>5) break;
-						}
-				}
-
-				notificationVisual.height = notificationDialogYTmp - notificationDialogY;
-
-				// NOTIFICATION TESTER
-
-				notificationDialogX = (int) (Screen.width * 0.2f) + 220;
-				notificationDialogY = (int) (Screen.height * 0.2f);
-				// GUI.Label ( new Rect(notificationVisual.x-5,notificationVisual.y-5,notificationVisual.width+10,notificationVisual.height+10), "", editorBackground);
-				notificationDialogXTmp = notificationDialogX;
-				notificationDialogYTmp = notificationDialogY;
-
-				if (notificationTesterAndHistory) {
-				bool buttonClickedX = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), "ADD NOTIFICATION", editorButtonActiveStyle);
-				if (buttonClickedX) {
-					float timed = float.Parse( fieldTimed );
-						notificationCenter.AddNotification(fieldType,fieldTypeSub,fieldTarget,timed,fieldArgument, new Vector3());
-				}
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-				fieldType = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldType, editorButtonStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-				fieldTypeSub = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTypeSub, editorButtonStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-				fieldTarget = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTarget, editorButtonStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-				fieldTimed = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTimed, editorButtonStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-				fieldArgument = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldArgument, editorButtonStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-
-				// add history ...
-				// Debug.Log("LevelEditor.OnGUI(); // "+notificationCenter.arrNotificationPipline.Count);
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-
-				if (notificationCenter.arrNotificationPipline.Count>0) {
-				for (int i=(notificationCenter.arrNotificationPipline.Count-1);i>=0;i--) {
-					Notification nt = (Notification)notificationCenter.arrNotificationPipline [i];
-							string text = "[" + nt.state+"] "+nt.type+"/"+nt.subtype+" {>"+nt.targetName+"} "+nt.argument+" ("+nt.timed+")";
-					GUIStyle guix = editorButtonStyleNotActive;
-					GUI.Label (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width*2, 20), " "+text+"", guix);
-					notificationDialogYTmp = notificationDialogYTmp + 22;
-				}
-				}
-				}
-
-			}
 
 			// the history with all objects ...
 
@@ -4738,7 +4776,15 @@ public class LevelEditor : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 
-		// DefaultLight
+		/*
+		 *  NOTIFICATION CENTER
+		 * 
+		 * */
+		if (Input.GetKeyDown("p")) {
+			Debug.Log("LevelEditor.OnGUI() // notificationDialog: "+notificationDialog);
+			notificationDialog = !notificationDialog;
+		}
+
 
 		// check for directlight
 		// no > activate default 
