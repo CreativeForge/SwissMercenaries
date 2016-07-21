@@ -4764,7 +4764,8 @@ public class LevelEditor : MonoBehaviour {
 
 			if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor) {
 				
-
+				// scroll to zoom
+				container.transform.position += editorcamera.transform.forward*Input.GetAxis("Mouse ScrollWheel");
 
 				// keys
 				// float xspeed = 0.6f;
