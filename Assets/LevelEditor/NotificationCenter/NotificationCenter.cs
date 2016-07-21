@@ -173,6 +173,7 @@ namespace GameLab.NotficationCenter
 			if (nt.prefabGameObject!=null) {
 				// Debug.Log("NotificationCenter.CreateInstantiatePrefab() // Prefab existing");
 				GameObject go=Instantiate(nt.prefabGameObject, position, new Quaternion()) as GameObject;
+				go.name = "NotFound.Notification10";
 			}
 
 		}

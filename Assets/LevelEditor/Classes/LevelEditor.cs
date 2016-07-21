@@ -396,7 +396,28 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	void ClearLevel() {
+
 		ClearElements ();
+
+		// Clear not taggeds .. 
+		// Resources.FindObjectsOfTypeAll(typeof(UnityEngine.Object)).Length
+		GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+		ArrayList arrToClear = new ArrayList();
+		foreach(GameObject go in allObjects) {
+			Debug.Log("Root.GameObject"+go.name+" "+go.tag);
+			if (go.transform.parent==null) {
+				if (!go.tag.Equals("Essentials")) {
+					arrToClear.Add(go);
+				}
+			}
+		}
+
+		// destroy them all
+		if (arrToClear.Count>0)
+		for (int i=arrToClear.Count-1;i>=0;i--) {
+				GameObject obj = (GameObject)  arrToClear[i] ;
+				Destroy( obj );
+		}
 
 	}
 
@@ -1310,6 +1331,7 @@ public class LevelEditor : MonoBehaviour {
 						// take the dummy object
 						if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor ) {
 						   GameObject go=Instantiate(dummyEditorPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+							go.name = "NotFound7";
 							// size
 							if (elem.size!=1.0f) {
 								go.transform.localScale = elem.size * go.transform.localScale;
@@ -1338,13 +1360,21 @@ public class LevelEditor : MonoBehaviour {
 								Debug.Log("No cam found!")	;
 							}
 
+							// ambient light in argument
+							RenderSettings.ambientIntensity = 1.0f;
+							if (!elem.argument.Equals("")) {
+								float ambient = float.Parse(elem.argument);
+								RenderSettings.ambientIntensity = ambient;
+							}
+
 							
 						}
 						
 
 						// special - only in editor?
 						if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor ) {
-							
+
+
 							GameObject go = new GameObject();
 							if (elPrefab.prefabEditorDummyGameObject!=null) {
 								
@@ -1357,6 +1387,8 @@ public class LevelEditor : MonoBehaviour {
 								// no alternative elements for argument
 								if (elem.prefabEditorDummyArguments==null) {
 									go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+									go.name = "NotFound8";
+
 								} else {
 								// Debug.Log(". LeveLElementOption FOUND! "+elem.argument+" "+elem.prefabEditorDummyArguments);
 
@@ -1369,11 +1401,14 @@ public class LevelEditor : MonoBehaviour {
 											if (leo.editorPrefab!=null) {
 												found=true;
 												go=Instantiate(leo.editorPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+												go.name = "NotFound9";
+
 											}
 										}
 									} 
 									if (!found) {
 										go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+										go.name = "NotFound";
 									}
 								}
 
@@ -1386,6 +1421,8 @@ public class LevelEditor : MonoBehaviour {
 								go.transform.parent = levelObject.transform; 
 							} else {
 								go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+								go.name = "NotFoundXYZ";
+	
 								// size
 								if (elem.size!=1.0f) {
 									go.transform.localScale = elem.size * go.transform.localScale;
@@ -1409,6 +1446,8 @@ public class LevelEditor : MonoBehaviour {
 							// only instiante pure releases (no waits)
 							if (elem.release.Equals ("")) {
 								GameObject go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+								go.name = "NotFound2";
+
 								// size
 								if (elem.size!=1.0f) {
 									go.transform.localScale = elem.size * go.transform.localScale;
@@ -1683,6 +1722,8 @@ public class LevelEditor : MonoBehaviour {
 			if (prefab!=null) {
 
 				GameObject newPreview=Instantiate(prefab, new Vector3(preview.transform.position.x,preview.transform.position.y,preview.transform.position.z), new Quaternion()) as GameObject;
+				newPreview.name = "NotFound3";
+
 				float scaleFactor = 0.03f * scaling;
 				newPreview.transform.localScale = new Vector3(scaleFactor,scaleFactor,scaleFactor);
 				newPreview.transform.parent = preview.transform;
@@ -1717,6 +1758,8 @@ public class LevelEditor : MonoBehaviour {
 				}
 
 				GameObject newPreview=Instantiate(prefab, new Vector3(preview.transform.position.x,preview.transform.position.y,preview.transform.position.z), re) as GameObject;
+				newPreview.name = "NotFound4";
+
 				float scaleFactor = 1f * scaling;
 				newPreview.transform.localScale = new Vector3(scaleFactor,scaleFactor,scaleFactor);
 				/*// size
@@ -1853,6 +1896,7 @@ public class LevelEditor : MonoBehaviour {
 
 	void LoadLevel( int level  ) {
 
+			SetSelectedElement(null);
 
 			LoadLevel(level, "", "" ); // load a level raw
 
@@ -2244,9 +2288,13 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	void HandleMouseDownToCreate(){
+		HandleMouseDownToCreate( true );
+	}
+
+	void HandleMouseDownToCreate( bool createAtMousePosition ){
 		if (!editorTool.Equals ("CREATE"))return;
 
-		if (CheckMouseInEditor()) return;
+		if (createAtMousePosition) if (CheckMouseInEditor()) return;
 
 		//	if (true) {
 
@@ -2318,6 +2366,13 @@ public class LevelEditor : MonoBehaviour {
 					arg.position.z=(Mathf.Floor((arg.position.z+offsetZ)/raster))*raster;
 					UpdateElementVisual(arg);
 				}
+			}
+
+			if (!createAtMousePosition) {
+				arg.position.x=0.0f;
+				arg.position.y=0.0f;
+				arg.position.z=0.0f;
+				UpdateElementVisual(arg);
 			}
 
 			arg.name = createName;
@@ -3249,7 +3304,11 @@ public class LevelEditor : MonoBehaviour {
 					inspectorXTmp = inspectorXTmp + 24;
 				}
 				// raster rotation
-				inspectorXTmp = inspectorXTmp + 24;
+				inspectorXTmp = 10;
+				inspectorYTmp = inspectorYTmp + 24;
+
+				GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 58, 20), "ROTATE", editorButtonStyle);
+				inspectorXTmp = inspectorXTmp + 60;
 
 				inspectorXTmp = inspectorXTmp + 10;
 
@@ -3264,7 +3323,7 @@ public class LevelEditor : MonoBehaviour {
 							gui = editorButtonActiveStyle;
 							text = "" + (i*15) + "";
 						}
-						bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 22, 20), text, gui);
+						bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 26, 20), text, gui);
 						if (buttonClicked) {
 							editorDegree = i * 15;
 							Transform cursorPreviewT = GameObject.Find("editorcursorpreview").transform;
@@ -3275,12 +3334,14 @@ public class LevelEditor : MonoBehaviour {
 							}
 						}
 
-						inspectorXTmp = inspectorXTmp + 24;
+						inspectorXTmp = inspectorXTmp + 28;
 					}
 				}
 
 				inspectorYTmp = inspectorYTmp + 24;
 				inspectorXTmp = 10;
+
+
 			}
 
 
@@ -3314,18 +3375,23 @@ public class LevelEditor : MonoBehaviour {
 
 				if (editorSelected!=null) {
 					inspectorXTmp = inspectorXTmp +380;
-				if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp-28,60,20),"DELETE",editorButtonStyle)) {
-					RemoveElement(editorSelected);
-					editorSelected = null;
-					// add to editor history
-					AddToEditorHistory("[GUI][OBJECT][DELETE]");
+					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp-28,60,20),"DELETE",editorButtonStyle)) {
+						RemoveElement(editorSelected);
+						editorSelected = null;
+						// add to editor history
+						AddToEditorHistory("[GUI][OBJECT][DELETE]");
+					}
 
-				}
+					GUI.Label (new Rect(inspectorXTmp-300,inspectorYTmp-28,280,20),"("+editorSelected.type+"."+editorSelected.subtype+") ["+editorSelected.position.x+","+editorSelected.position.y+","+editorSelected.position.z+"]",editorButtonStyle);
+			
+						
 
 
 				// inspectorYTmp = inspectorYTmp + 24; 
 				inspectorXTmp = 10;
-
+				
+				if (editorSelected!=null) {
+						
 					// specials refer type?
 					string release=""+editorSelected.release;
 					string add="";
@@ -3394,6 +3460,7 @@ public class LevelEditor : MonoBehaviour {
 
 				
 				
+				}
 				}
 			}
 
@@ -3503,11 +3570,24 @@ public class LevelEditor : MonoBehaviour {
 					}
 				}
 
-				inspectorYTmp = inspectorYTmp + 25;
 
+
+
+				inspectorYTmp = inspectorYTmp + 25;
 
 			}
 
+			if (editorTool.Equals("CREATE")) {
+
+				inspectorYTmp = inspectorYTmp + 2;
+				inspectorXTmp = 10;
+
+				bool buttonClickedX = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 180, 20), "CREATE OBJECT AT (0,0,0)", editorButtonStyle);
+				if (buttonClickedX) {
+					HandleMouseDownToCreate( false );
+				}
+
+			}
 
 
 			// EDIT
@@ -5113,6 +5193,8 @@ public class LevelEditor : MonoBehaviour {
 		// Error
 		void CreateVisualRelationError( GameElement elem ) {
 		 	GameObject vl=Instantiate(lineVisualisationError, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
+			vl.name = "NotFound3";
+
 			LineRenderer lr=vl.GetComponent<LineRenderer>();
 			lr.SetPosition (0, elem.position );
 			lr.SetPosition (1, elem.position + new Vector3(0.0f,5.0f, 0.0f) );
@@ -5122,6 +5204,8 @@ public class LevelEditor : MonoBehaviour {
 		// Path Visuals
 		void CreateVisualRelationPath( GameElement elem, Vector3 pointTo ) {
 			GameObject vl=Instantiate(lineVisualisationPath, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
+			vl.name = "NotFound4";
+
 			LineRenderer lr=vl.GetComponent<LineRenderer>();
 			lr.SetPosition (0, elem.position );
 			lr.SetPosition (1, pointTo );
@@ -5130,6 +5214,7 @@ public class LevelEditor : MonoBehaviour {
 		// Action Visuals
 		void CreateVisualRelationAction( GameElement elem, Vector3 pointTo ) {
 			GameObject vl=Instantiate(lineVisualisation, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
+		vl.name = "NotFound5";
 			LineRenderer lr=vl.GetComponent<LineRenderer>();
 			lr.SetPosition (0, elem.position );
 			lr.SetPosition (1, pointTo );
@@ -5139,7 +5224,8 @@ public class LevelEditor : MonoBehaviour {
 	// CreateVisualRelationEvaluation
 		void CreateVisualRelationEvaluation( GameElement elem, Vector3 pointTo ) {
 			GameObject vl=Instantiate(lineVisualisation, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
-			LineRenderer lr=vl.GetComponent<LineRenderer>();
+		vl.name = "NotFound6";
+				LineRenderer lr=vl.GetComponent<LineRenderer>();
 			lr.SetPosition (0, elem.position );
 			lr.SetPosition (1, pointTo );
 			arrRelation.Add (vl);
