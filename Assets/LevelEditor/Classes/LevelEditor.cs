@@ -1744,7 +1744,6 @@ public class LevelEditor : MonoBehaviour {
 			// delete old one 
 			foreach (Transform child in preview.transform) {
 				Destroy(child.gameObject);
-				break;
 			}
 
 			// Debug.Log("SetEditorPreviewToPrefab(){ preFabFound = "+prefab+" }");
@@ -2429,7 +2428,11 @@ public class LevelEditor : MonoBehaviour {
 			guixt = editorSwitchButtonStyleActive ;
 		}
 		if (GUI.Button (new Rect (Screen.width - 160, 0, 80, 20), "GAME", guixt)) {
+				foreach(Transform childT in GameObject.Find("editorcursorpreview").transform){
+					childT.gameObject.SetActive(false);
+				}
 			gameLogic.SetGameState( GameLogic.GameLogicModal.Running );
+
 		}
 
 		// EDITOR
@@ -2472,7 +2475,9 @@ public class LevelEditor : MonoBehaviour {
 		}
 		if (GUI.Button (new Rect (Screen.width -160 + 80, 0, 80, 20), "EDITOR", guixt)) {
 			gameLogic.SetGameState( GameLogic.GameLogicModal.Editor );
-
+				foreach(Transform childT in GameObject.Find("editorcursorpreview").transform){
+					childT.gameObject.SetActive(true);
+				}
 		}
 	
 		
