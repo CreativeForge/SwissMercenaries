@@ -4809,39 +4809,47 @@ public class LevelEditor : MonoBehaviour {
 						vectorMove.z=speedObject;
 
 						if ((Input.GetKey ("a"))||(Input.GetKey ("left"))) {
-							editorSelected.position.x = editorSelected.position.x - vectorMove.x;
+							// editorSelected.position.x = editorSelected.position.x - vectorMove.x;
+							MoveObjectAlongEditorCamera("left");
 							UpdateElementVisual(editorSelected);
 						}
 						if ((Input.GetKey ("d"))||(Input.GetKey ("right"))) {
-							editorSelected.position.x = editorSelected.position.x + vectorMove.x;
+							// editorSelected.position.x = editorSelected.position.x + vectorMove.x;
+							MoveObjectAlongEditorCamera("right");
 							UpdateElementVisual(editorSelected);
 						}
 						if ((Input.GetKey ("w"))||(Input.GetKey ("up"))) {
-							editorSelected.position.z = editorSelected.position.z + vectorMove.z;
+							// editorSelected.position.z = editorSelected.position.z + vectorMove.z;
+							MoveObjectAlongEditorCamera("up");
 							UpdateElementVisual(editorSelected);
 						}
 						if ((Input.GetKey ("s"))||(Input.GetKey ("down"))) {
-							editorSelected.position.z = editorSelected.position.z - vectorMove.z;
+							// editorSelected.position.z = editorSelected.position.z - vectorMove.z;
+							MoveObjectAlongEditorCamera("down");
 							UpdateElementVisual(editorSelected);
 						}
 
 						if ((Input.GetKey ("r"))) {
-							editorSelected.position.y = editorSelected.position.y + vectorMove.y;
+							// editorSelected.position.y = editorSelected.position.y + vectorMove.y;
+							MoveObjectAlongEditorCamera("up");
 							UpdateElementVisual(editorSelected);
 						}
 						if ((Input.GetKey ("f"))) {
-							editorSelected.position.y = editorSelected.position.y - vectorMove.y;
+							// editorSelected.position.y = editorSelected.position.y - vectorMove.y;
+							MoveObjectAlongEditorCamera("down");
 							UpdateElementVisual(editorSelected);
 						}
 
 						// up & down 
 						if ((Input.GetKey ("q"))) {
 							// scroll = scroll + 0.3f;
-							editorSelected.rotation = editorSelected.rotation + 3.0f;
+							// editorSelected.rotation = editorSelected.rotation + 3.0f;
+							MoveObjectAlongEditorCamera("rotateright");
 							UpdateElementVisual(editorSelected);
 						}
 						if ((Input.GetKey ("e"))) {
-							editorSelected.rotation = editorSelected.rotation - 3.0f;
+//							editorSelected.rotation = editorSelected.rotation - 3.0f;
+							MoveObjectAlongEditorCamera("rotateleft");
 							UpdateElementVisual(editorSelected);
 						}
 					}
