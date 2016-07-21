@@ -1577,7 +1577,7 @@ public class LevelEditor : MonoBehaviour {
 
 	// raster
 	int editorRaster=0;
-	float[] arrRasters = { 0.0f, 0.5f, 1.0f, 2.0f, 3.0f, 4.0f, 8.0f };
+	float[] arrRasters = { 0.0f, 0.5f, 1.0f, 1.5f, 2.0f, 2.5f, 3.0f, 3.5f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f };
 	int editorDegree = 0;
 
 	void SetRasterIndex( int index ) { // Index!
@@ -1618,6 +1618,7 @@ public class LevelEditor : MonoBehaviour {
 	string editorTool= "CREATE"; 
 	string editorToolSub = "";
 	void SetTool(string ieditorTool) {
+		ActivateCursorPreview(ieditorTool=="CREATE");
 		editorTool = ieditorTool;
 		if (editorTool.Equals ("SPLIT")) {
 			editorToolSub="right";
@@ -2401,6 +2402,12 @@ public class LevelEditor : MonoBehaviour {
 	int directMouseInputX = 0;
 	int directMouseInputY = 0;
 
+	void ActivateCursorPreview(bool inBool){
+		foreach(Transform childT in GameObject.Find("editorcursorpreview").transform){
+			childT.gameObject.SetActive(inBool);
+		}
+	}
+
 	void OnGUI() {
 
 
@@ -2428,9 +2435,7 @@ public class LevelEditor : MonoBehaviour {
 			guixt = editorSwitchButtonStyleActive ;
 		}
 		if (GUI.Button (new Rect (Screen.width - 160, 0, 80, 20), "GAME", guixt)) {
-				foreach(Transform childT in GameObject.Find("editorcursorpreview").transform){
-					childT.gameObject.SetActive(false);
-				}
+				ActivateCursorPreview(false);
 			gameLogic.SetGameState( GameLogic.GameLogicModal.Running );
 
 		}
@@ -2475,9 +2480,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 		if (GUI.Button (new Rect (Screen.width -160 + 80, 0, 80, 20), "EDITOR", guixt)) {
 			gameLogic.SetGameState( GameLogic.GameLogicModal.Editor );
-				foreach(Transform childT in GameObject.Find("editorcursorpreview").transform){
-					childT.gameObject.SetActive(true);
-				}
+			ActivateCursorPreview(true);
 		}
 	
 		
