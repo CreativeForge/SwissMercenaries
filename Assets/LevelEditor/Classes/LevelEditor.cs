@@ -1451,7 +1451,7 @@ public class LevelEditor : MonoBehaviour {
 
 	// raster
 	int editorRaster=0;
-	float[] arrRasters = { 0.0f, 0.5f, 1.0f, 2.0f, 4.0f, 8.0f };
+	float[] arrRasters = { 0.0f, 0.5f, 1.0f, 2.0f, 3.0f, 4.0f, 8.0f };
 	int editorDegree = 0;
 
 	void SetRasterIndex( int index ) { // Index!
@@ -2860,21 +2860,23 @@ public class LevelEditor : MonoBehaviour {
 				// raster rotation
 				inspectorXTmp = inspectorXTmp + 20;
 				int deg = 0;
-				for (int i=0; i<12; i++) {
-					if (i==1 || i==5 || i==8 || i==10 || i==11 || i==13 || i==14 ||
-						i==16 || i==17 || i==19) continue;
-					string text = ""+(i*15);
-					GUIStyle gui = editorButtonStyle;
-					if (editorDegree==(i*15)) {
-						gui = editorButtonActiveStyle;
-						text = "" + (i*15) + "";
-					}
-					bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 22, 20), text, gui);
-					if (buttonClicked) {
-						editorDegree = i * 15;
-					}
+				for (int i=0; i<22; i++) {
+					/*if (i==1 || i==5 || i==8 || i==10 || i==11 || i==13 || i==14 ||
+						i==16 || i==17 || i==19) continue;*/
+					if(i==0 || i==3 || i==6 || i==9 || i==12 || i==15 || i==18 || i==21){
+						string text = ""+(i*15);
+						GUIStyle gui = editorButtonStyle;
+						if (editorDegree==(i*15)) {
+							gui = editorButtonActiveStyle;
+							text = "" + (i*15) + "";
+						}
+						bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 22, 20), text, gui);
+						if (buttonClicked) {
+							editorDegree = i * 15;
+						}
 
-					inspectorXTmp = inspectorXTmp + 24;
+						inspectorXTmp = inspectorXTmp + 24;
+					}
 				}
 
 				inspectorYTmp = inspectorYTmp + 24;
