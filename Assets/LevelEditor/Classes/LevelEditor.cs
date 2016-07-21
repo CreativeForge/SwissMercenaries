@@ -1450,7 +1450,7 @@ public class LevelEditor : MonoBehaviour {
 							// only instiante pure releases (no waits)
 							if (elem.release.Equals ("")) {
 								GameObject go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-								go.name = "NotFound2";
+								// go.name = "NotFound2";
 
 								// size
 								if (elem.size!=1.0f) {
