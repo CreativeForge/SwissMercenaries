@@ -1538,7 +1538,7 @@ public class LevelEditor : MonoBehaviour {
 
 	// raster
 	int editorRaster=0;
-	float[] arrRasters = { 0.0f, 0.5f, 1.0f, 2.0f, 4.0f, 8.0f };
+	float[] arrRasters = { 0.0f, 0.5f, 1.0f, 2.0f, 3.0f, 4.0f, 8.0f };
 	int editorDegree = 0;
 
 	void SetRasterIndex( int index ) { // Index!
@@ -1657,6 +1657,7 @@ public class LevelEditor : MonoBehaviour {
 				prefabObj = editorPrefab.prefabGameObject;
 			}
 			SetEditorPreviewToPrefab( prefabObj, sizeIt);
+			SetEditorCursorPreviewToPrefab( prefabObj, editorPrefab.size);
 		} else {
 			Debug.LogError("SetSubEditorArea() Could correct");
 		}
@@ -1688,6 +1689,46 @@ public class LevelEditor : MonoBehaviour {
 			}
 		} else {
 			Debug.LogError("SetEditorPreviewToPrefab() Could not find editorpreview-Object!");
+		}
+	}
+
+	public void SetEditorCursorPreviewToPrefab( GameObject prefab , float scaling) {
+
+		// Debug.Log("SetEditorPreviewToPrefab()");
+
+		// find preview
+		GameObject preview = GameObject.Find("editorcursorpreview");
+
+		if (preview!=null) {
+			// delete old one 
+			foreach (Transform child in preview.transform) {
+				Destroy(child.gameObject);
+				break;
+			}
+
+			// Debug.Log("SetEditorPreviewToPrefab(){ preFabFound = "+prefab+" }");
+
+			// create one an add it 
+			if (prefab!=null) {
+				// rotation 
+				Quaternion re = new Quaternion();
+				if (editorDegree!=0.0f) {
+					re = Quaternion.Euler(0, editorDegree, 0);
+				}
+
+				GameObject newPreview=Instantiate(prefab, new Vector3(preview.transform.position.x,preview.transform.position.y,preview.transform.position.z), re) as GameObject;
+				float scaleFactor = 1f * scaling;
+				newPreview.transform.localScale = new Vector3(scaleFactor,scaleFactor,scaleFactor);
+				/*// size
+				if (scaling!=1.0f) {
+					newPreview.transform.localScale = elem.size * go.transform.localScale;
+				}*/
+				newPreview.transform.parent = preview.transform;
+
+
+			}
+		} else {
+			Debug.LogError("SetEditorPreviewToPrefab() Could not find editorcursorpreview-Object!");
 		}
 	}
 
@@ -2309,8 +2350,9 @@ public class LevelEditor : MonoBehaviour {
 	void OnGUI() {
 
 
-		if (Event.current.type == EventType.MouseUp && Event.current.button == 0 && GUIUtility.hotControl == 0) {
-			// This code will be ignored if the user had mouse-downed on a GUI element.
+		if (Event.current.type == EventType.MouseUp && Event.current.button == 0 && GUIUtility.hotControl == 0 && // This code will be ignored if the user had mouse-downed on a GUI element.
+			gameLogic !=null &&  gameLogic.modal==GameLogic.GameLogicModal.Editor) { // check if in editormode, not in playmode
+
 			HandleMouseDownToCreate();
 		}
 
@@ -3212,21 +3254,29 @@ public class LevelEditor : MonoBehaviour {
 				inspectorXTmp = inspectorXTmp + 10;
 
 				int deg = 0;
-				for (int i=0; i<12; i++) {
-					if (i==1 || i==5 || i==8 || i==10 || i==11 || i==13 || i==14 ||
-						i==16 || i==17 || i==19) continue;
-					string text = ""+(i*15);
-					GUIStyle gui = editorButtonStyle;
-					if (editorDegree==(i*15)) {
-						gui = editorButtonActiveStyle;
-						text = "" + (i*15) + "";
-					}
-					bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 22, 20), text, gui);
-					if (buttonClicked) {
-						editorDegree = i * 15;
-					}
+				for (int i=0; i<22; i++) {
+					/*if (i==1 || i==5 || i==8 || i==10 || i==11 || i==13 || i==14 ||
+						i==16 || i==17 || i==19) continue;*/
+					if(i==0 || i==3 || i==6 || i==9 || i==12 || i==15 || i==18 || i==21){
+						string text = ""+(i*15);
+						GUIStyle gui = editorButtonStyle;
+						if (editorDegree==(i*15)) {
+							gui = editorButtonActiveStyle;
+							text = "" + (i*15) + "";
+						}
+						bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 22, 20), text, gui);
+						if (buttonClicked) {
+							editorDegree = i * 15;
+							Transform cursorPreviewT = GameObject.Find("editorcursorpreview").transform;
+							if(cursorPreviewT.childCount>0){
+								foreach(Transform childT in cursorPreviewT){
+									childT.rotation = Quaternion.Euler(0,editorDegree,0);
+								}
+							}
+						}
 
-					inspectorXTmp = inspectorXTmp + 24;
+						inspectorXTmp = inspectorXTmp + 24;
+					}
 				}
 
 				inspectorYTmp = inspectorYTmp + 24;
@@ -3385,7 +3435,7 @@ public class LevelEditor : MonoBehaviour {
 						if (buttonClicked) {
 							// do it ...
 							// editorArea=ieditorArea;
-							if (editorTool.Equals ("CREATE")) {  SetEditorArea (ieditorArea); SetSubEditorArea (unique.subtype);  }
+							if (editorTool.Equals ("CREATE")) {  SetEditorArea (ieditorArea); SetSubEditorArea (unique.subtype);}
 							if (editorTool.Equals ("EDIT")) { 
 								editorSelected.type=unique.type; 
 								editorSelected.subtype=unique.subtype; 
@@ -3430,6 +3480,7 @@ public class LevelEditor : MonoBehaviour {
 					if (buttonClicked) {
 						// do it ...
 						if (editorTool.Equals ("CREATE")) {  
+							Debug.Log("element selected: "+Time.time);
 							SetSubEditorArea (gelement.subtype); 
 							if (gelement.editorTileSize!=0.0f) {
 								editorRaster = GetRasterIndexFor(gelement.editorTileSize);
@@ -4713,7 +4764,8 @@ public class LevelEditor : MonoBehaviour {
 
 			if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor) {
 				
-
+				// scroll to zoom
+				container.transform.position += editorcamera.transform.forward*Input.GetAxis("Mouse ScrollWheel");
 
 				// keys
 				// float xspeed = 0.6f;
