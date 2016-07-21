@@ -61,7 +61,9 @@ public class GameLogic : MonoBehaviour {
 	public PlayerStorage Store { get; set; }
 
 	public void Start() {
-
+		int lastEditedLevel = PlayerPrefs.GetInt("LastEditedLevel");
+		if(lastEditedLevel>0)level = lastEditedLevel;
+			
 		// Camera
 		SetGameCamera( GameObject.Find("Main Camera") );
 		SetEditorCamera( GameObject.Find("editorcamera") );
@@ -123,6 +125,7 @@ public class GameLogic : MonoBehaviour {
 
 	public void SetGameLevel( int ilevel ) {
 
+		PlayerPrefs.SetInt("LastEditedLevel", ilevel);
 		level = ilevel;
 		LoadGameLevel (level);
 
