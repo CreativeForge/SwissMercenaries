@@ -1657,6 +1657,7 @@ public class LevelEditor : MonoBehaviour {
 				prefabObj = editorPrefab.prefabGameObject;
 			}
 			SetEditorPreviewToPrefab( prefabObj, sizeIt);
+			SetEditorCursorPreviewToPrefab( prefabObj, editorPrefab.size);
 		} else {
 			Debug.LogError("SetSubEditorArea() Could correct");
 		}
@@ -1688,6 +1689,46 @@ public class LevelEditor : MonoBehaviour {
 			}
 		} else {
 			Debug.LogError("SetEditorPreviewToPrefab() Could not find editorpreview-Object!");
+		}
+	}
+
+	public void SetEditorCursorPreviewToPrefab( GameObject prefab , float scaling) {
+
+		// Debug.Log("SetEditorPreviewToPrefab()");
+
+		// find preview
+		GameObject preview = GameObject.Find("editorcursorpreview");
+
+		if (preview!=null) {
+			// delete old one 
+			foreach (Transform child in preview.transform) {
+				Destroy(child.gameObject);
+				break;
+			}
+
+			// Debug.Log("SetEditorPreviewToPrefab(){ preFabFound = "+prefab+" }");
+
+			// create one an add it 
+			if (prefab!=null) {
+				// rotation 
+				Quaternion re = new Quaternion();
+				if (editorDegree!=0.0f) {
+					re = Quaternion.Euler(0, editorDegree, 0);
+				}
+
+				GameObject newPreview=Instantiate(prefab, new Vector3(preview.transform.position.x,preview.transform.position.y,preview.transform.position.z), re) as GameObject;
+				float scaleFactor = 1f * scaling;
+				newPreview.transform.localScale = new Vector3(scaleFactor,scaleFactor,scaleFactor);
+				/*// size
+				if (scaling!=1.0f) {
+					newPreview.transform.localScale = elem.size * go.transform.localScale;
+				}*/
+				newPreview.transform.parent = preview.transform;
+
+
+			}
+		} else {
+			Debug.LogError("SetEditorPreviewToPrefab() Could not find editorcursorpreview-Object!");
 		}
 	}
 
@@ -3226,6 +3267,12 @@ public class LevelEditor : MonoBehaviour {
 						bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 22, 20), text, gui);
 						if (buttonClicked) {
 							editorDegree = i * 15;
+							Transform cursorPreviewT = GameObject.Find("editorcursorpreview").transform;
+							if(cursorPreviewT.childCount>0){
+								foreach(Transform childT in cursorPreviewT){
+									childT.rotation = Quaternion.Euler(0,editorDegree,0);
+								}
+							}
 						}
 
 						inspectorXTmp = inspectorXTmp + 24;
@@ -3388,7 +3435,7 @@ public class LevelEditor : MonoBehaviour {
 						if (buttonClicked) {
 							// do it ...
 							// editorArea=ieditorArea;
-							if (editorTool.Equals ("CREATE")) {  SetEditorArea (ieditorArea); SetSubEditorArea (unique.subtype);  }
+							if (editorTool.Equals ("CREATE")) {  SetEditorArea (ieditorArea); SetSubEditorArea (unique.subtype);}
 							if (editorTool.Equals ("EDIT")) { 
 								editorSelected.type=unique.type; 
 								editorSelected.subtype=unique.subtype; 
@@ -3433,6 +3480,7 @@ public class LevelEditor : MonoBehaviour {
 					if (buttonClicked) {
 						// do it ...
 						if (editorTool.Equals ("CREATE")) {  
+							Debug.Log("element selected: "+Time.time);
 							SetSubEditorArea (gelement.subtype); 
 							if (gelement.editorTileSize!=0.0f) {
 								editorRaster = GetRasterIndexFor(gelement.editorTileSize);
