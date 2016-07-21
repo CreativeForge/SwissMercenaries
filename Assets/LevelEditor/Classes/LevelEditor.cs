@@ -348,7 +348,7 @@ public class LevelEditor : MonoBehaviour {
 
 	// actual level
 	int actualLevel=1;
-	int maxLevel=8;
+	int maxLevel=10;
 
 	// toolsx
 	int toolsX = 10;
@@ -370,6 +370,9 @@ public class LevelEditor : MonoBehaviour {
 	int inspectorWidth = 300;
 	int inspectorHeight = 200;
 	Rect inspectorRect = new Rect(0,0,200,100);
+
+	// wrap
+	int maxXToWrap = 450 - 60;
 
 	// show save
 	bool flagShowSaveAs = false;
@@ -843,6 +846,7 @@ public class LevelEditor : MonoBehaviour {
 
 						geType.editorDisplaySize = el.editorDisplaySize;
 
+						geType.editorRandom = el.editorRandom;
 
 			// }
 				}
@@ -2317,6 +2321,8 @@ public class LevelEditor : MonoBehaviour {
 			// check here ...
 			// if (editorPrefab.prefabGameObject!=null) {
 
+			GameElement prefabTemplate = GetElementType (editorArea,editorSubArea);
+
 			GameElement editorPrefabX = GetElementType (editorArea,editorSubArea);
 
 			if (editorPrefabX==null) {
@@ -2381,7 +2387,8 @@ public class LevelEditor : MonoBehaviour {
 			UpdateElementVisual(arg);
 
 			// tool: add randomness
-			if (flagTool) {
+			// Debug.Log("LevelEditor.HandleMouseDown() // "+prefabTemplate.editorRandom);
+			if (prefabTemplate.editorRandom) {
 				float factorSize = UnityEngine.Random.Range(5,15)/10.0f;
 				float factorRotation = UnityEngine.Random.Range(0,360);
 				arg.size = arg.size * factorSize;		
@@ -3019,7 +3026,7 @@ public class LevelEditor : MonoBehaviour {
 			toolsXTmp = toolsXTmp + 62;
 
 			// clear
-			if (GUI.Button (new Rect (toolsXTmp , toolsYTmp, 58, 20), "CLEAR", editorButtonActiveStyle)) {
+			if (GUI.Button (new Rect (toolsXTmp , toolsYTmp, 58, 20), "CLEAR", editorButtonStyle)) {
 				ClearLevel ();  
 				// NewLevel();
 				DefaultElements();
@@ -3281,6 +3288,35 @@ public class LevelEditor : MonoBehaviour {
 			// RASTER & ROTATE
 			if (editorTool.Equals("CREATE")) {
 
+				// tools?
+				int county = 0;
+				GameElement gelement;
+				for (int a=0; a<arrGameElementTypes.Count; a++) {
+					gelement = (GameElement)arrGameElementTypes [a];
+					GUIStyle gox = editorButtonStyle;
+					if (gelement.subtype.Substring(0,1).Equals("+")) {
+						if (editorSelected!=null) {
+							if (gelement.type.Equals(editorSelected.type)&&gelement.subtype.Equals(editorSelected.subtype)) {
+								gox = editorButtonActiveStyle;
+							}
+						}
+						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,68,20),""+gelement.subtype,gox)) {
+							SetEditorArea (gelement.type); SetSubEditorArea (gelement.subtype);
+						}
+						inspectorXTmp = inspectorXTmp + 70;
+						county ++;
+						if (inspectorXTmp>maxXToWrap) {
+							inspectorYTmp = inspectorYTmp + 22;
+							inspectorXTmp = 10;
+						}
+				    }
+				}
+
+				inspectorYTmp = inspectorYTmp + 10;
+
+				inspectorXTmp = 10;
+				inspectorYTmp = inspectorYTmp + 22;
+
 				// name
 				GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,160,20),"NAME: ",guiEvaluation);
 				createName=GUI.TextField (new Rect(inspectorXTmp+120,inspectorYTmp,200,20),createName);
@@ -3289,6 +3325,9 @@ public class LevelEditor : MonoBehaviour {
 				inspectorYTmp = inspectorYTmp + 22;
 
 				inspectorYTmp = inspectorYTmp + 10;
+
+
+
 
 				// rasters
 				GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 58, 20), "RASTER", editorButtonStyle);
@@ -3478,8 +3517,7 @@ public class LevelEditor : MonoBehaviour {
 
 				inspectorYTmp = inspectorYTmp + 22;
 
-				// wrap
-				int maxXToWrap = 450 - 60;
+
 
 				string selectedEditorArea=""+editorArea;
 
@@ -3552,7 +3590,7 @@ public class LevelEditor : MonoBehaviour {
 					if (buttonClicked) {
 						// do it ...
 						if (editorTool.Equals ("CREATE")) {  
-							Debug.Log("element selected: "+Time.time);
+							// Debug.Log("element selected: "+Time.time);
 							SetSubEditorArea (gelement.subtype); 
 							if (gelement.editorTileSize!=0.0f) {
 								editorRaster = GetRasterIndexFor(gelement.editorTileSize);

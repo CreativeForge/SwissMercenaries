@@ -28,6 +28,8 @@ public class GameElement {
 
 	public int index = 0; // index of the gameelement ... 
 
+	public bool editorRandom = false;
+
 	// condition
 	// todo: use relatedto, condition etc just only one parameter!
 	// public string argumentsub
@@ -120,6 +122,7 @@ public class GameElement {
 		copyX.guiDescription = guiDescription;
 		copyX.guiLabel = guiLabel;
 
+		copyX.editorRandom = editorRandom;
 		copyX.editorDisplaySize = editorDisplaySize;
 		copyX.skyBoxMaterial = skyBoxMaterial;
 		copyX.prefabGameObject = prefabGameObject;
@@ -142,6 +145,7 @@ public class GameElement {
 		guiLabel = template.guiLabel;
 
 		editorDisplaySize = template.editorDisplaySize;
+		editorRandom = template.editorRandom;
 
 		skyBoxMaterial = template.skyBoxMaterial;
 		prefabGameObject = template.prefabGameObject;

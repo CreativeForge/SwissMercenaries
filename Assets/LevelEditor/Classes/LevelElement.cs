@@ -29,6 +29,8 @@ public class LevelElement {
 
 	public int editorIndex = 1;
 
+	public bool editorRandom = false;
+
 	public LevelElement (  ) {
 	
 	}
