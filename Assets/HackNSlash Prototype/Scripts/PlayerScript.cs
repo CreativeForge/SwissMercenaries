@@ -370,6 +370,11 @@ public class PlayerScript : MonoBehaviour {
 		EndHolyRage();
 		InGameController.i.PlayerDies();
 	}
+
+	void OnDestroy(){
+		GameObject trailGO = GameObject.Find("_XWeaponTrailMesh: X-WeaponTrail Sword");
+		if(trailGO) Destroy(trailGO);
+	}
 }
 
 
