@@ -4184,8 +4184,8 @@ public class LevelEditor : MonoBehaviour {
 
 			// NOTIFICATIONS
 			if (notificationDialog) {
-				notificationDialogX = (int) (Screen.width * 0.2f);
-				notificationDialogY = (int) (Screen.height * 0.2f);
+				notificationDialogX = (int) (Screen.width * 0.6f);
+				notificationDialogY = (int) (Screen.height * 0.3f);
 				notificationVisual.x = notificationDialogX;
 				notificationVisual.y = notificationDialogY;
 				notificationVisual.width = 150;
