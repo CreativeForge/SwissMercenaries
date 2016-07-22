@@ -201,6 +201,28 @@ public class InGameController : MonoBehaviour {
 		StartCoroutine(WaitNRestartLevel(5));
 	}
 
+	public void TeleportPlayer(Vector3 inPos){
+		TeleportPlayer(inPos, playerS.transform.rotation);
+	}
+
+	public void TeleportPlayer(Vector3 inPos, Quaternion inRot){
+		playerS.transform.position = inPos+Vector3.up;
+	}
+	public void TeleportPlayerAndNPCs(Vector3 inPos){
+		TeleportPlayerAndNPCs(inPos, playerS.transform.rotation);
+	}
+	public void TeleportPlayerAndNPCs(Vector3 inPos, Quaternion inRot){
+		TeleportPlayer(inPos, inRot);
+		NPCScript[] allNPCs = GameObject.FindObjectsOfType<NPCScript>();
+		int i = 1;
+		foreach(NPCScript npc in allNPCs){
+			if(!npc.isEnemy && !npc.dS.IsDead){
+				npc.transform.position = inPos - playerS.transform.right*2*i;
+				i++;
+			}
+		}
+	}
+
 	IEnumerator WaitNRestartLevel(float inTime){
 		yield return new WaitForSeconds(inTime);
 		ReloadLevel();
