@@ -14,6 +14,7 @@ namespace GameLab.NotficationCenter {
 		public string targetName = "";
 
 		public string argument = ""; // for example the audioclip
+		public string argumentsub = ""; // for example the audioclip
 
 		// recursive ?
 		ArrayList arrAttachedNotifications = new ArrayList();
@@ -45,6 +46,7 @@ namespace GameLab.NotficationCenter {
 			copyX.type = type;
 			copyX.subtype = subtype;
 			copyX.argument = argument;
+			copyX.argumentsub = argumentsub;
 
 			copyX.timed = timed;
 

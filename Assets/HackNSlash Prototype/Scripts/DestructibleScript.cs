@@ -12,7 +12,7 @@ public class DestructibleScript : MonoBehaviour {
 	public GameObject colliderAlive;
 	public GameObject colliderDead;
 	public GameObject appearanceAlive;
-	public Renderer[] appearanceAliveAllRenderers;
+	Renderer[] appearanceAliveAllRenderers;
 	public GameObject appearanceDead;
 	public Transform ragdollCenter;
 
@@ -25,7 +25,7 @@ public class DestructibleScript : MonoBehaviour {
 	public bool hasLoot = true;
 
 	PlayerScript pS;
-	EnemyScript eS;
+	public NPCScript eS;
 	HitterScript hS;
 
 	public Animator anim;
@@ -50,7 +50,7 @@ public class DestructibleScript : MonoBehaviour {
 		bloodParticlesGO.transform.parent = transform;
 		bloodParticlesGO.SetActive(false);
 		pS = GetComponent<PlayerScript>();
-		eS = GetComponent<EnemyScript>();
+		eS = GetComponent<NPCScript>();
 		hS = GetComponent<HitterScript>();
 
 		// player should store its values globally

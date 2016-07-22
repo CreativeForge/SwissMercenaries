@@ -70,7 +70,9 @@ namespace UnityStandardAssets.Cameras
             if (m_Target == null) return;
             // Move the rig towards target position.
 			float tBulletMod = 1;
+			try {
 			if(InGameController.i.isBulletTime)tBulletMod = 5;
+			} catch { Debug.Log("MyFree .FollowTarget() ERROR"); }
 			transform.position = Vector3.Lerp(transform.position, m_Target.position, deltaTime*m_MoveSpeed*tBulletMod);
         }
 

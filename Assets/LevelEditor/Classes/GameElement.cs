@@ -28,6 +28,8 @@ public class GameElement {
 
 	public int index = 0; // index of the gameelement ... 
 
+	public bool editorRandom = false;
+
 	// condition
 	// todo: use relatedto, condition etc just only one parameter!
 	// public string argumentsub
@@ -102,7 +104,6 @@ public class GameElement {
 		copyX.argumentInputTypeSelect = argumentInputTypeSelect;
 
 		copyX.argumentsub = argumentsub;
-		copyX.argumentsub = argumentsub;
 
 		copyX.strevent = strevent;
 		copyX.target = target;
@@ -121,10 +122,9 @@ public class GameElement {
 		copyX.guiDescription = guiDescription;
 		copyX.guiLabel = guiLabel;
 
+		copyX.editorRandom = editorRandom;
 		copyX.editorDisplaySize = editorDisplaySize;
-
 		copyX.skyBoxMaterial = skyBoxMaterial;
-
 		copyX.prefabGameObject = prefabGameObject;
 		copyX.prefabEditorDummyGameObject = prefabEditorDummyGameObject;
 
@@ -134,7 +134,25 @@ public class GameElement {
 		return copyX;
 	}
 
-	// UpdateTo - 
+	// UpdateTo (On Change Type)
+	public void ChangeTypeInEditMode( GameElement template ) {
+
+		guiBoolArgument = template.guiBoolArgument;
+		size = template.size;
+
+		guiBoolArgument = template.guiBoolArgument;
+		guiDescription = template.guiDescription;
+		guiLabel = template.guiLabel;
+
+		editorDisplaySize = template.editorDisplaySize;
+		editorRandom = template.editorRandom;
+
+		skyBoxMaterial = template.skyBoxMaterial;
+		prefabGameObject = template.prefabGameObject;
+		prefabEditorDummyGameObject = template.prefabEditorDummyGameObject;
+
+			
+	}
 	
 	// representations
 	// material

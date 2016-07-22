@@ -1,3 +1,4 @@
+<<<<<<< HEAD:Assets/HackNSlash Prototype/Assets/Pig/Animal Forest_Boar/Sources/Fbx/Materials.meta
 fileFormatVersion: 2
 guid: 9d866a86bbceb457da5e4c2b906608c2
 folderAsset: yes
@@ -7,3 +8,14 @@ DefaultImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+=======
+fileFormatVersion: 2
+guid: 94a175085430e4a5caa875e1cecdf8a2
+folderAsset: yes
+timeCreated: 1469110952
+licenseType: Free
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+>>>>>>> 0062a3e50b96f54a3297dc7ee4af58ef5c85cca9:Assets/Prefabs.meta

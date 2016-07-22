@@ -14,12 +14,12 @@ public class TriggerNotification : TriggerBase {
 	public override void OnActivateTrigger( PlayerScript PlayerScript, Collider col ) {
 
 		if (gameElement!=null) {
-			Debug.Log("TriggerNotification().OnActivateTrigger() // TriggerType: "+triggerType+"/timed: "+gameElement.timed+"/target: "+gameElement.target+"/argument: "+gameElement.argument);
+			// Debug.Log("TriggerNotification().OnActivateTrigger() // TriggerType: "+triggerType+"/timed: "+gameElement.timed+"/target: "+gameElement.target+"/argument: "+gameElement.argument+"/argumentsub: "+gameElement.argumentsub);
 			string notifications = gameElement.argument;
 			string[] arrNotifications = notifications.Split(',');
 			for (int x=0;x<arrNotifications.Length;x++) {
 				string notifcationTypeSubType = arrNotifications[x];
-				AddNotification( notifcationTypeSubType, gameElement.target, gameElement.timed, "" );
+				AddNotification( notifcationTypeSubType, gameElement.target, gameElement.timed, gameElement.argumentsub );
 			}
 		}
 

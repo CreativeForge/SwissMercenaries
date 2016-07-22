@@ -3,6 +3,7 @@ using System.Collections;
 
 public class HitterScript : MonoBehaviour {
 
+	public bool notDangerous = false;
 	public bool alwaysDangerous = false;
 	public bool hitsOnlyPlayer = true;
 	public bool isShooter = false;
@@ -21,12 +22,14 @@ public class HitterScript : MonoBehaviour {
 	public Quaternion originalRotHitBox2;
 	float lastHitTime = 0;
 	public PlayerScript pS;
-	public EnemyScript eS;
+	public NPCScript eS;
 	public float hitIntervalTime = 2;
 	public float hitIntervalTimeRandomRange = 1;
 	public float hitFastDuration = 0.1f;
 	public float hitSlowDuration = 0.5f;
 	public Animator anim;
+	public GameObject[] weaponAppearances;
+	public bool hideAllWeapons = false;
 
 	bool isBackJumping;
 	float startBackJumpTime = 0;
@@ -62,6 +65,8 @@ public class HitterScript : MonoBehaviour {
 		rB = GetComponent<Rigidbody>();
 
 		if(hitBox2)hitBox2.SetActive(false);
+
+		if(hideAllWeapons)ShowAllWeapons(false);
 	}
 
 	IEnumerator WaitNSetWeaponTrail(){
@@ -78,6 +83,12 @@ public class HitterScript : MonoBehaviour {
 			//weaponTrailHolyGO.SetActive(false);
 			//if(weaponTrailHalberdGO)weaponTrailHalberdGO.SetActive(false);
 			//weaponTrailCurrentGO = weaponTrailNormalGO;
+		}
+	}
+
+	public void ShowAllWeapons(bool inShow){
+		foreach(GameObject tGO in weaponAppearances){
+			tGO.SetActive(inShow);
 		}
 	}
 
@@ -142,7 +153,7 @@ public class HitterScript : MonoBehaviour {
 
 	void HandleFighting(){
 
-		if (alwaysDangerous) return;
+		if (alwaysDangerous || notDangerous) return;
 
 		if(shooting && lastHitTime+hitFastDuration<Time.time){
 			DoShoot();
@@ -244,14 +255,16 @@ public class HitterScript : MonoBehaviour {
 
 			lastHitTime = Time.time;
 				
-			if(anim)
-				anim.SetTrigger("Attack01RunTrigger");
-			else{
-				
-				if(hitBox1)hitBox1.SetActive(true);
-				lastHitTime = Time.time;
-				isHittingFast = true;
-				
+			if(eS.isEnemy || (!eS.isEnemy && eS.attackTargetT != InGameController.i.playerS.transform)){
+				if(anim)
+					anim.SetTrigger("Attack01RunTrigger");
+				else{
+					
+					if(hitBox1)hitBox1.SetActive(true);
+					lastHitTime = Time.time;
+					isHittingFast = true;
+					
+				}
 			}
 		}
 	}
@@ -310,12 +323,18 @@ public class HitterScript : MonoBehaviour {
 				tHitForce = hitStrongForce;
 			inDS.IsHitted(tHitForce);
 			return true;
-		}else{ // enemy hits something
+		}else if(eS && eS.isEnemy){ // enemy hits something
 			if(inDS == InGameController.i.playerS.dS){ // enemy hits player
 				inDS.IsHitted(hitForce);
 				if(alwaysDangerous) InGameController.i.playerS.Push((InGameController.i.playerS.transform.position-transform.position)*300);
 				return true;
-			}else if(!hitsOnlyPlayer){ // enemy hits not-player
+			}else if(!inDS.eS.isEnemy || !hitsOnlyPlayer){ 
+				// enemy hits npc OR enemy hits enemy if !hitsOnlyPlayer
+				inDS.IsHitted(hitForce);
+				return true;
+			}
+		}else if(eS && !eS.isEnemy){ // NPC hits something
+			if(inDS != InGameController.i.playerS.dS && inDS.eS.isEnemy){ // npc hits enemy
 				inDS.IsHitted(hitForce);
 				return true;
 			}

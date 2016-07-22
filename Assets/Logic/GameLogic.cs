@@ -27,11 +27,11 @@ using System.Collections;
 public class GameLogic : MonoBehaviour {
 
 	// versions
-	private float versionGame = 0.05f; // versioning
+	private float versionGame = 0.1f; // versioning
 	public float GetVersionGame() {
 		return versionGame;
 	}
-	private float versionEditor = 0.1f; // versioning
+	private float versionEditor = 0.4f; // versioning
 	public float GetVersionEditor() {
 		return versionEditor;
 	}
@@ -61,7 +61,9 @@ public class GameLogic : MonoBehaviour {
 	public PlayerStorage Store { get; set; }
 
 	public void Start() {
-
+		int lastEditedLevel = PlayerPrefs.GetInt("LastEditedLevel");
+		if(lastEditedLevel>0)level = lastEditedLevel;
+			
 		// Camera
 		SetGameCamera( GameObject.Find("Main Camera") );
 		SetEditorCamera( GameObject.Find("editorcamera") );
@@ -123,9 +125,15 @@ public class GameLogic : MonoBehaviour {
 
 	public void SetGameLevel( int ilevel ) {
 
+		PlayerPrefs.SetInt("LastEditedLevel", ilevel);
 		level = ilevel;
 		LoadGameLevel (level);
 
+	}
+
+	public void LoadNextLevel() {
+		level++;
+		SetGameLevel(level);
 	}
 
 	public void LoadActualLevel(  ) {

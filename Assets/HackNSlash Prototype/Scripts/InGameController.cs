@@ -29,7 +29,7 @@ public class InGameController : MonoBehaviour {
 
 	public bool inEditorUsed = true;
 
-	NotificationCenterPrototype notificationC;
+	public NotificationCenterPrototype notificationC;
 
 	// Use this for initialization
 	void Awake () {
@@ -39,6 +39,15 @@ public class InGameController : MonoBehaviour {
 
 		playerS = FindObjectOfType<PlayerScript>();
 		notificationC = GetComponent<NotificationCenterPrototype>();
+
+		// register in leveleditor
+		GameObject le = GameObject.Find ("_LevelEditor");
+		if (le!=null) {
+			LevelEditor levelEditor = le.GetComponent<LevelEditor>();
+			if (levelEditor!=null) {
+				levelEditor.SetIngameController(this);
+			}
+		}
 
 		ReloadCamera();
 
@@ -190,6 +199,28 @@ public class InGameController : MonoBehaviour {
 
 	public void PlayerDies(){
 		StartCoroutine(WaitNRestartLevel(5));
+	}
+
+	public void TeleportPlayer(Vector3 inPos){
+		TeleportPlayer(inPos, playerS.transform.rotation);
+	}
+
+	public void TeleportPlayer(Vector3 inPos, Quaternion inRot){
+		playerS.transform.position = inPos+Vector3.up;
+	}
+	public void TeleportPlayerAndNPCs(Vector3 inPos){
+		TeleportPlayerAndNPCs(inPos, playerS.transform.rotation);
+	}
+	public void TeleportPlayerAndNPCs(Vector3 inPos, Quaternion inRot){
+		TeleportPlayer(inPos, inRot);
+		NPCScript[] allNPCs = GameObject.FindObjectsOfType<NPCScript>();
+		int i = 1;
+		foreach(NPCScript npc in allNPCs){
+			if(!npc.isEnemy && !npc.dS.IsDead){
+				npc.transform.position = inPos - playerS.transform.right*2*i;
+				i++;
+			}
+		}
 	}
 
 	IEnumerator WaitNRestartLevel(float inTime){

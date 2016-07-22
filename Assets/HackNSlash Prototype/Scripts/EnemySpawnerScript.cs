@@ -11,17 +11,17 @@ public class EnemySpawnerScript : MonoBehaviour {
 	public Transform spawnPosT;
 	private float nextSpawnTime;
 	DestructibleScript dS;
-	EnemyScript eS;
+	NPCScript eS;
 
 	void Awake() {
 		nextSpawnTime = Time.time + Random.Range(minTimeInterval, maxTimeInterval);
-		eS = GetComponent<EnemyScript>();
+		eS = GetComponent<NPCScript>();
 		dS = GetComponent<DestructibleScript>();
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (!spawnerEnabled || !eS.playerHasEnteredTrigger || (dS && dS.IsDead)) {
+		if (!spawnerEnabled || !eS.playerIsInTrigger || (dS && dS.IsDead)) {
 			return;
 		}
 

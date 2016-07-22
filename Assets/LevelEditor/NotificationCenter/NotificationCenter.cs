@@ -31,15 +31,26 @@ namespace GameLab.NotficationCenter
 			return gameLogic;
 		}
 
+		// notifcation center prototype (ingame notification center)
+		/*
+		 * NotificationCenterPrototype notificationIngame = null;
+		public void 
+		NotificationCenterPrototype GetNotificationCenterIngame() {
+			
+		}
+		*/
+
 		// types
 		ArrayList arrNotifcationTypes = new ArrayList();
 
 		public NotificationType[] Sound = { };
 		public NotificationType[] Visual= { };
+		public NotificationType[] Messages= { };
 		public NotificationType[] ObjectManipulation = { };
 		public NotificationType[] PlayerTypes = { };
 		public NotificationType[] SoundGUI = { };
 		public NotificationType[] VisualGUI = { };
+		public NotificationType[] Level = { };
 
 		// pipeline .. 
 		public ArrayList arrNotificationPipline = new ArrayList();
@@ -49,8 +60,10 @@ namespace GameLab.NotficationCenter
 
 			RegisterNotificationTypes( "sound", Sound );
 			RegisterNotificationTypes( "visual", Visual );
+			RegisterNotificationTypes( "message", Messages );
 			RegisterNotificationTypes( "object", ObjectManipulation );
 			RegisterNotificationTypes( "player", PlayerTypes );
+			RegisterNotificationTypes( "level", Level );
 			RegisterNotificationTypes( "soundgui", SoundGUI );
 			RegisterNotificationTypes( "visualgui", VisualGUI );
 
@@ -126,6 +139,9 @@ namespace GameLab.NotficationCenter
 
 		}
 
+		// dont' forget to register in unity3d editor ...
+
+
 		// ProcessNotification
 		void ProcessNotification( Notification nt ) {
 
@@ -133,6 +149,8 @@ namespace GameLab.NotficationCenter
 			bool parsed = false;
 			if (nt.type.Equals("visual")) { ProcessVisual( nt ); parsed = true;}
 			if (nt.type.Equals("object")) { ProcessObject( nt ); parsed = true; }
+			if (nt.type.Equals("message")) { ProcessMessage( nt ); parsed = true; }
+			if (nt.type.Equals("level")) { ProcessLevel( nt ); parsed = true; }
 
 			if (!parsed) {
 				CreatePrefabsFor( nt );
@@ -170,9 +188,12 @@ namespace GameLab.NotficationCenter
 			if (nt.prefabGameObject!=null) {
 				// Debug.Log("NotificationCenter.CreateInstantiatePrefab() // Prefab existing");
 				GameObject go=Instantiate(nt.prefabGameObject, position, new Quaternion()) as GameObject;
+				go.name = "NotFound.Notification10";
 			}
 
 		}
+
+// dont' forget to register in unity3d editor ...
 
 		// Process visual
 		void ProcessVisual( Notification nt ) {
@@ -180,6 +201,9 @@ namespace GameLab.NotficationCenter
 			CreatePrefabsFor( nt );
 
 		}
+
+// dont' forget to register in unity3d editor ...
+
 
 		// Process Object
 		void ProcessObject( Notification nt ) {
@@ -192,6 +216,7 @@ namespace GameLab.NotficationCenter
 
 				// object/remove
 				if (nt.subtype.Equals("activate")) {
+					ge.release = "";
 					gameLogic.levelEditor.AddElement(ge);
 				}
 
@@ -207,6 +232,41 @@ namespace GameLab.NotficationCenter
 					}
 				}
 
+			}
+		}
+
+// dont' forget to register in unity3d editor ...
+
+		// Process Message
+		void ProcessMessage( Notification nt ) {
+			// create prefab
+			// ingameNotificationCenter
+			// Debug.Log("NotificationCenter.ProcessMessage() // "+nt.type+"/"+nt.subtype+"/"+nt.argument+"/");
+			if (gameLogic.levelEditor.ingameNotificationCenter!=null) {
+				if (nt.subtype.Equals("show")) {
+					gameLogic.levelEditor.ingameNotificationCenter.ShowInGameMessage(""+nt.argument,true,4.0f);
+				}
+				if (nt.subtype.Equals("notify")) {
+					gameLogic.levelEditor.ingameNotificationCenter.ShowInGameMessage(""+nt.argument,false,4.0f);
+				}
+				if (nt.subtype.Equals("confirm")) {
+					gameLogic.levelEditor.ingameNotificationCenter.ShowInGameMessage(""+nt.argument,true,4.0f);
+				}
+			}
+		}
+
+		// Process Object
+		void ProcessLevel( Notification nt ) {
+			// gameLogics
+			print("ProcessLevel()"+nt.argument);
+			if (nt.subtype.Equals("next")) {
+				// gameLogic.levelEditor.
+				gameLogic.LoadNextLevel();
+			}
+			// take argument
+			if (nt.subtype.Equals("load")) {
+				int levelx = Int32.Parse(nt.argument);
+				gameLogic.LoadGameLevel(levelx);
 			}
 		}
 
