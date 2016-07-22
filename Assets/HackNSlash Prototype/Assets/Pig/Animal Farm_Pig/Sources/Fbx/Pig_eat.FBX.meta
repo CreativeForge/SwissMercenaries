@@ -1,0 +1,263 @@
+fileFormatVersion: 2
+guid: 59b9e04880acf914a882072b1f5d8728
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Cochonhead
+    100002: Cochonjaw
+    100004: CochonLear
+    100006: CochonlearBone001
+    100008: CochonLeye
+    100010: CochonLeyelidDown
+    100012: CochonLeyelidUp
+    100014: CochonLLeg1
+    100016: CochonLLeg1Back
+    100018: CochonLLeg2
+    100020: CochonLLeg2Back
+    100022: CochonLLegAnkle
+    100024: CochonLLegAnkleBack
+    100026: CochonLLegDigit11
+    100028: CochonLLegDigit11Back
+    100030: CochonNeck1
+    100032: CochonNeck2
+    100034: CochonNose
+    100036: CochonNoseBone001
+    100038: CochonPelvis
+    100040: Cochonpelvis02
+    100042: CochonRear
+    100044: CochonRearBone001
+    100046: CochonReye
+    100048: CochonReyelidDown
+    100050: CochonReyelidUp
+    100052: CochonRibs
+    100054: CochonRLeg1
+    100056: CochonRLeg1Back
+    100058: CochonRLeg2
+    100060: CochonRLeg2Back
+    100062: CochonRLegAnkle
+    100064: CochonRLegAnkleBack
+    100066: CochonRLegDigit11
+    100068: CochonRLegDigit11Back
+    100070: CochonSpine1
+    100072: CochonSpine2
+    100074: CochonSpine3
+    100076: CochonTail1
+    100078: CochonTail2
+    100080: CochonTail3
+    100082: Cochontongue
+    100084: CochontongueBone001
+    100086: //RootNode
+    400000: Cochonhead
+    400002: Cochonjaw
+    400004: CochonLear
+    400006: CochonlearBone001
+    400008: CochonLeye
+    400010: CochonLeyelidDown
+    400012: CochonLeyelidUp
+    400014: CochonLLeg1
+    400016: CochonLLeg1Back
+    400018: CochonLLeg2
+    400020: CochonLLeg2Back
+    400022: CochonLLegAnkle
+    400024: CochonLLegAnkleBack
+    400026: CochonLLegDigit11
+    400028: CochonLLegDigit11Back
+    400030: CochonNeck1
+    400032: CochonNeck2
+    400034: CochonNose
+    400036: CochonNoseBone001
+    400038: CochonPelvis
+    400040: Cochonpelvis02
+    400042: CochonRear
+    400044: CochonRearBone001
+    400046: CochonReye
+    400048: CochonReyelidDown
+    400050: CochonReyelidUp
+    400052: CochonRibs
+    400054: CochonRLeg1
+    400056: CochonRLeg1Back
+    400058: CochonRLeg2
+    400060: CochonRLeg2Back
+    400062: CochonRLegAnkle
+    400064: CochonRLegAnkleBack
+    400066: CochonRLegDigit11
+    400068: CochonRLegDigit11Back
+    400070: CochonSpine1
+    400072: CochonSpine2
+    400074: CochonSpine3
+    400076: CochonTail1
+    400078: CochonTail2
+    400080: CochonTail3
+    400082: Cochontongue
+    400084: CochontongueBone001
+    400086: //RootNode
+    7400000: Pig_Eat
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Pig_Eat
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 235
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: CochonPelvis
+        weight: 1
+      - path: CochonPelvis/CochonLLeg1Back
+        weight: 1
+      - path: CochonPelvis/CochonLLeg1Back/CochonLLeg2Back
+        weight: 1
+      - path: CochonPelvis/CochonLLeg1Back/CochonLLeg2Back/CochonLLegAnkleBack
+        weight: 1
+      - path: CochonPelvis/CochonLLeg1Back/CochonLLeg2Back/CochonLLegAnkleBack/CochonLLegDigit11Back
+        weight: 1
+      - path: CochonPelvis/CochonRLeg1Back
+        weight: 1
+      - path: CochonPelvis/CochonRLeg1Back/CochonRLeg2Back
+        weight: 1
+      - path: CochonPelvis/CochonRLeg1Back/CochonRLeg2Back/CochonRLegAnkleBack
+        weight: 1
+      - path: CochonPelvis/CochonRLeg1Back/CochonRLeg2Back/CochonRLegAnkleBack/CochonRLegDigit11Back
+        weight: 1
+      - path: CochonPelvis/CochonSpine1
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonLLeg1
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonLLeg1/CochonLLeg2
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonLLeg1/CochonLLeg2/CochonLLegAnkle
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonLLeg1/CochonLLeg2/CochonLLegAnkle/CochonLLegDigit11
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/Cochonjaw
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/Cochonjaw/Cochontongue
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/Cochonjaw/Cochontongue/CochontongueBone001
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonLear
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonLear/CochonlearBone001
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonLeye
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonLeyelidDown
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonLeyelidUp
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonNose
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonNose/CochonNoseBone001
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonRear
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonRear/CochonRearBone001
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonReye
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonReyelidDown
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonNeck1/CochonNeck2/Cochonhead/CochonReyelidUp
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonRibs
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonRLeg1
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonRLeg1/CochonRLeg2
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonRLeg1/CochonRLeg2/CochonRLegAnkle
+        weight: 1
+      - path: CochonPelvis/CochonSpine1/CochonSpine2/CochonSpine3/Cochonpelvis02/CochonRLeg1/CochonRLeg2/CochonRLegAnkle/CochonRLegDigit11
+        weight: 1
+      - path: CochonPelvis/CochonTail1
+        weight: 1
+      - path: CochonPelvis/CochonTail1/CochonTail2
+        weight: 1
+      - path: CochonPelvis/CochonTail1/CochonTail2/CochonTail3
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

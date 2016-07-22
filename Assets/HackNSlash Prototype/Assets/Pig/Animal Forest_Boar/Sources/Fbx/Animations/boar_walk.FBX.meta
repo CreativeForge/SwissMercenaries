@@ -1,0 +1,323 @@
+fileFormatVersion: 2
+guid: 3bbe7c68b42cc9146b84686e2260fb21
+timeCreated: 1438852259
+licenseType: Store
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Boarhead
+    100004: Boarjaw
+    100006: BoarLear
+    100008: BoarlearBone001
+    100010: BoarLeye
+    100012: BoarLeyelidDown
+    100014: BoarLeyelidUp
+    100016: BoarLLeg1
+    100018: BoarLLeg2
+    100020: BoarLLegAnkle
+    100022: BoarLLegBack1
+    100024: BoarLLegBack2
+    100026: BoarLLegBackAnkleBack
+    100028: BoarLLegBackDigit1Back1
+    100030: BoarLLegDigit11
+    100032: BoarNose
+    100034: BoarNoseBone001
+    100036: BoarPelvis
+    100038: Boarpelvis02
+    100040: BoarRear
+    100042: BoarRearBone001
+    100044: BoarReye
+    100046: BoarReyelidDown
+    100048: BoarReyelidUp
+    100050: BoarRibs
+    100052: BoarRLeg1
+    100054: BoarRLeg2
+    100056: BoarRLegAnkle
+    100058: BoarRLegBack1
+    100060: BoarRLegBack2
+    100062: BoarRLegBackAnkleBack
+    100064: BoarRLegBackDigit1Back   1
+    100066: BoarRLegDigit11
+    100068: BoarSpine1
+    100070: BoarSpine1 1
+    100072: BoarSpine2
+    100074: BoarSpine2 1
+    100076: BoarSpine3
+    100078: BoarTail1
+    100080: BoarTail2
+    100082: Boartongue
+    100084: BoartongueBone001
+    100086: Low_Boar
+    100088: Low_dents_inf
+    100090: Low_dents_sup
+    100092: Low_EyeD
+    100094: Low_EyeG
+    100096: Low_Tongue
+    400000: //RootNode
+    400002: Boarhead
+    400004: Boarjaw
+    400006: BoarLear
+    400008: BoarlearBone001
+    400010: BoarLeye
+    400012: BoarLeyelidDown
+    400014: BoarLeyelidUp
+    400016: BoarLLeg1
+    400018: BoarLLeg2
+    400020: BoarLLegAnkle
+    400022: BoarLLegBack1
+    400024: BoarLLegBack2
+    400026: BoarLLegBackAnkleBack
+    400028: BoarLLegBackDigit1Back1
+    400030: BoarLLegDigit11
+    400032: BoarNose
+    400034: BoarNoseBone001
+    400036: BoarPelvis
+    400038: Boarpelvis02
+    400040: BoarRear
+    400042: BoarRearBone001
+    400044: BoarReye
+    400046: BoarReyelidDown
+    400048: BoarReyelidUp
+    400050: BoarRibs
+    400052: BoarRLeg1
+    400054: BoarRLeg2
+    400056: BoarRLegAnkle
+    400058: BoarRLegBack1
+    400060: BoarRLegBack2
+    400062: BoarRLegBackAnkleBack
+    400064: BoarRLegBackDigit1Back   1
+    400066: BoarRLegDigit11
+    400068: BoarSpine1
+    400070: BoarSpine1 1
+    400072: BoarSpine2
+    400074: BoarSpine2 1
+    400076: BoarSpine3
+    400078: BoarTail1
+    400080: BoarTail2
+    400082: Boartongue
+    400084: BoartongueBone001
+    400086: Low_Boar
+    400088: Low_dents_inf
+    400090: Low_dents_sup
+    400092: Low_EyeD
+    400094: Low_EyeG
+    400096: Low_Tongue
+    4300000: Low_dents_sup
+    4300002: Low_Boar
+    4300004: Low_Tongue
+    4300006: Low_dents_inf
+    4300008: Low_EyeG
+    4300010: Low_EyeD
+    7400000: Walk
+    9500000: //RootNode
+    13700000: Low_Boar
+    13700002: Low_dents_inf
+    13700004: Low_dents_sup
+    13700006: Low_EyeD
+    13700008: Low_EyeG
+    13700010: Low_Tongue
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Walk
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: BoarPelvis
+        weight: 1
+      - path: BoarPelvis/BoarLLegBack1
+        weight: 1
+      - path: BoarPelvis/BoarLLegBack1/BoarLLegBack2
+        weight: 1
+      - path: BoarPelvis/BoarLLegBack1/BoarLLegBack2/BoarLLegBackAnkleBack
+        weight: 1
+      - path: BoarPelvis/BoarLLegBack1/BoarLLegBack2/BoarLLegBackAnkleBack/BoarLLegBackDigit1Back1
+        weight: 1
+      - path: BoarPelvis/BoarRLegBack1
+        weight: 1
+      - path: BoarPelvis/BoarRLegBack1/BoarRLegBack2
+        weight: 1
+      - path: BoarPelvis/BoarRLegBack1/BoarRLegBack2/BoarRLegBackAnkleBack
+        weight: 1
+      - path: BoarPelvis/BoarRLegBack1/BoarRLegBack2/BoarRLegBackAnkleBack/BoarRLegBackDigit1Back   1
+        weight: 1
+      - path: BoarPelvis/BoarSpine1
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarLLeg1
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarLLeg1/BoarLLeg2
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarLLeg1/BoarLLeg2/BoarLLegAnkle
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarLLeg1/BoarLLeg2/BoarLLegAnkle/BoarLLegDigit11
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarRibs
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarRLeg1
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarRLeg1/BoarRLeg2
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarRLeg1/BoarRLeg2/BoarRLegAnkle
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarRLeg1/BoarRLeg2/BoarRLegAnkle/BoarRLegDigit11
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/Boarjaw
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/Boarjaw/Boartongue
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/Boarjaw/Boartongue/BoartongueBone001
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarLear
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarLear/BoarlearBone001
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarLeye
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarLeyelidDown
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarLeyelidUp
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarNose
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarNose/BoarNoseBone001
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarRear
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarRear/BoarRearBone001
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarReye
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarReyelidDown
+        weight: 1
+      - path: BoarPelvis/BoarSpine1/BoarSpine2/BoarSpine3/Boarpelvis02/BoarSpine1
+          1/BoarSpine2 1/Boarhead/BoarReyelidUp
+        weight: 1
+      - path: BoarPelvis/BoarTail1
+        weight: 1
+      - path: BoarPelvis/BoarTail1/BoarTail2
+        weight: 1
+      - path: Low_Boar
+        weight: 1
+      - path: Low_dents_inf
+        weight: 1
+      - path: Low_dents_sup
+        weight: 1
+      - path: Low_EyeD
+        weight: 1
+      - path: Low_EyeG
+        weight: 1
+      - path: Low_Tongue
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
