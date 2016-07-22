@@ -21,7 +21,7 @@ public class EnemySpawnerScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (!spawnerEnabled || !eS.playerHasEnteredTrigger || (dS && dS.IsDead)) {
+		if (!spawnerEnabled || !eS.playerIsInTrigger || (dS && dS.IsDead)) {
 			return;
 		}
 

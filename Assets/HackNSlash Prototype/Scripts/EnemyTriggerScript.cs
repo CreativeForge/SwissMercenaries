@@ -13,11 +13,17 @@ public class EnemyTriggerScript : MonoBehaviour {
 	
 	}
 	
-	// Update is called once per frame
 	void OnTriggerEnter (Collider inC) {
 		if(InGameController.i.playerS.transform == inC.transform){
 			parentEnemyS.PlayerEnteredTrigger();
-			Destroy(gameObject);
+			//Destroy(gameObject);
+		}
+	}
+
+	void OnTriggerExit (Collider inC) {
+		if(InGameController.i.playerS.transform == inC.transform){
+			parentEnemyS.PlayerLeftTrigger();
+			//Destroy(gameObject);
 		}
 	}
 }

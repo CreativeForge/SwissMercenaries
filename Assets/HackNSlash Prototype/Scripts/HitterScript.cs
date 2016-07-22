@@ -3,6 +3,7 @@ using System.Collections;
 
 public class HitterScript : MonoBehaviour {
 
+	public bool notDangerous = false;
 	public bool alwaysDangerous = false;
 	public bool hitsOnlyPlayer = true;
 	public bool isShooter = false;
@@ -142,7 +143,7 @@ public class HitterScript : MonoBehaviour {
 
 	void HandleFighting(){
 
-		if (alwaysDangerous) return;
+		if (alwaysDangerous || notDangerous) return;
 
 		if(shooting && lastHitTime+hitFastDuration<Time.time){
 			DoShoot();

@@ -12,7 +12,7 @@ public class DestructibleScript : MonoBehaviour {
 	public GameObject colliderAlive;
 	public GameObject colliderDead;
 	public GameObject appearanceAlive;
-	public Renderer[] appearanceAliveAllRenderers;
+	Renderer[] appearanceAliveAllRenderers;
 	public GameObject appearanceDead;
 	public Transform ragdollCenter;
 
