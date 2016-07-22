@@ -1715,7 +1715,8 @@ public class LevelEditor : MonoBehaviour {
 				prefabObj = editorPrefab.prefabGameObject;
 			}
 			SetEditorPreviewToPrefab( prefabObj, sizeIt);
-			SetEditorCursorPreviewToPrefab( prefabObj, editorPrefab.size);
+
+			if(editorTool.Equals("CREATE")) SetEditorCursorPreviewToPrefab( prefabObj, editorPrefab.size);
 		} else {
 			Debug.LogError("SetSubEditorArea() Could correct");
 		}
