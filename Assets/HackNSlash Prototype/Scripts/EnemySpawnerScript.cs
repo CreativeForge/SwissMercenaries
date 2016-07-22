@@ -11,11 +11,11 @@ public class EnemySpawnerScript : MonoBehaviour {
 	public Transform spawnPosT;
 	private float nextSpawnTime;
 	DestructibleScript dS;
-	EnemyScript eS;
+	NPCScript eS;
 
 	void Awake() {
 		nextSpawnTime = Time.time + Random.Range(minTimeInterval, maxTimeInterval);
-		eS = GetComponent<EnemyScript>();
+		eS = GetComponent<NPCScript>();
 		dS = GetComponent<DestructibleScript>();
 	}
 
