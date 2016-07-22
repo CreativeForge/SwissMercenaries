@@ -28,6 +28,8 @@ public class HitterScript : MonoBehaviour {
 	public float hitFastDuration = 0.1f;
 	public float hitSlowDuration = 0.5f;
 	public Animator anim;
+	public GameObject[] weaponAppearances;
+	public bool hideAllWeapons = false;
 
 	bool isBackJumping;
 	float startBackJumpTime = 0;
@@ -63,6 +65,8 @@ public class HitterScript : MonoBehaviour {
 		rB = GetComponent<Rigidbody>();
 
 		if(hitBox2)hitBox2.SetActive(false);
+
+		if(hideAllWeapons)ShowAllWeapons(false);
 	}
 
 	IEnumerator WaitNSetWeaponTrail(){
@@ -79,6 +83,12 @@ public class HitterScript : MonoBehaviour {
 			//weaponTrailHolyGO.SetActive(false);
 			//if(weaponTrailHalberdGO)weaponTrailHalberdGO.SetActive(false);
 			//weaponTrailCurrentGO = weaponTrailNormalGO;
+		}
+	}
+
+	public void ShowAllWeapons(bool inShow){
+		foreach(GameObject tGO in weaponAppearances){
+			tGO.SetActive(inShow);
 		}
 	}
 
