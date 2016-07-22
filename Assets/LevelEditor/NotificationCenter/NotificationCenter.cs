@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using DarkTonic.MasterAudio;
+// using DarkTonic.MasterAudio;
 // using GameLab.HackAndSlashFramework;
 
 
@@ -48,9 +48,10 @@ namespace GameLab.NotficationCenter
 		public NotificationType[] Messages= { };
 		public NotificationType[] ObjectManipulation = { };
 		public NotificationType[] PlayerTypes = { };
+		public NotificationType[] Level = { };
+		public NotificationType[] InGame = { };
 		public NotificationType[] SoundGUI = { };
 		public NotificationType[] VisualGUI = { };
-		public NotificationType[] Level = { };
 
 		// pipeline .. 
 		public ArrayList arrNotificationPipline = new ArrayList();
@@ -64,6 +65,7 @@ namespace GameLab.NotficationCenter
 			RegisterNotificationTypes( "object", ObjectManipulation );
 			RegisterNotificationTypes( "player", PlayerTypes );
 			RegisterNotificationTypes( "level", Level );
+			RegisterNotificationTypes( "ingame", InGame );
 			RegisterNotificationTypes( "soundgui", SoundGUI );
 			RegisterNotificationTypes( "visualgui", VisualGUI );
 
@@ -150,7 +152,9 @@ namespace GameLab.NotficationCenter
 			if (nt.type.Equals("visual")) { ProcessVisual( nt ); parsed = true;}
 			if (nt.type.Equals("object")) { ProcessObject( nt ); parsed = true; }
 			if (nt.type.Equals("message")) { ProcessMessage( nt ); parsed = true; }
+			if (nt.type.Equals("player")) { ProcessPlayer( nt ); parsed = true; }
 			if (nt.type.Equals("level")) { ProcessLevel( nt ); parsed = true; }
+			if (nt.type.Equals("ingame")) { ProcessInGame( nt ); parsed = true; }
 
 			if (!parsed) {
 				CreatePrefabsFor( nt );
@@ -204,6 +208,30 @@ namespace GameLab.NotficationCenter
 
 // dont' forget to register in unity3d editor ...
 
+		// Process visual
+		void ProcessPlayer( Notification nt ) {
+			// create prefab
+			if (nt.subtype.Equals("teleport")) {
+				// at ... 
+				GameElement ge = GetGameElementByTargetName( nt.argument ); 
+				if (ge!=null) {
+					GameObject gameObj = ge.gameObject;
+					if (gameObj!=null) {
+						Debug.Log("NotificationCenter.ProcessPlayer() // teleport ");
+						gameLogic.levelEditor.ingameController.TeleportPlayerAndNPCs( new Vector3(gameObj.transform.position.x,gameObj.transform.position.y,gameObj.transform.position.z) );
+					}
+				}
+			}
+
+			if (nt.subtype.Equals("moremoney")) {
+				gameLogic.levelEditor.ingameController.playerS.Money += 100;
+			}
+
+			if (nt.subtype.Equals("lessmoney")) {
+				gameLogic.levelEditor.ingameController.playerS.Money -= 100;
+			}
+
+		}
 
 		// Process Object
 		void ProcessObject( Notification nt ) {
@@ -218,6 +246,8 @@ namespace GameLab.NotficationCenter
 				if (nt.subtype.Equals("activate")) {
 					ge.release = "";
 					gameLogic.levelEditor.AddElement(ge);
+
+					// start / ...
 				}
 
 				// object/remove
@@ -232,6 +262,13 @@ namespace GameLab.NotficationCenter
 					}
 				}
 
+			}
+		}
+
+		void ProcessInGame( Notification nt ) {
+			if (nt.subtype.Equals("plunder")) {
+				gameLogic.levelEditor.ingameController.GameMode=1	;	
+				// playerS.Money+= 100;
 			}
 		}
 
@@ -258,16 +295,25 @@ namespace GameLab.NotficationCenter
 		// Process Object
 		void ProcessLevel( Notification nt ) {
 			// gameLogics
-			print("ProcessLevel()"+nt.argument);
+			// Debug.Log("ProcessLevel()"+nt.argument);
 			if (nt.subtype.Equals("next")) {
 				// gameLogic.levelEditor.
 				gameLogic.LoadNextLevel();
 			}
 			// take argument
 			if (nt.subtype.Equals("load")) {
+				// Debug.Log("NotificationCenter.ProcessLevel() // "+nt.argument);
 				int levelx = Int32.Parse(nt.argument);
 				gameLogic.LoadGameLevel(levelx);
 			}
+		}
+
+		GameElement GetGameElementByTargetName( string targetName  ) {
+			ArrayList arr = gameLogic.levelEditor.GetGameElementsByName( targetName );
+			if (arr.Count>0) {
+				return (GameElement) arr[0];
+			}
+			return null;
 		}
 
 		ArrayList GetGameElementsByTargetName( string targetName  ) {
