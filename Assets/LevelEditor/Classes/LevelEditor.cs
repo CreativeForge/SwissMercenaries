@@ -719,6 +719,8 @@ public class LevelEditor : MonoBehaviour {
 	public LevelElement[] ActionElements = { new LevelElement ("notification") }; // green
 	public LevelElement[] EnvElements = { new LevelElement ("light") };
 
+	public LevelElement[] WeatherElements = { new LevelElement ("light") };
+
 	public LevelElement[] RemarkElements = { new LevelElement ("comment") }; // yellow
 	public LevelElement[] EvaluationElements = { new LevelElement ("death") }; // 
 
@@ -796,6 +798,9 @@ public class LevelEditor : MonoBehaviour {
 
 		RegisterLevelElements( "action", ActionElements );
 		RegisterLevelElements( "env", EnvElements );
+
+		RegisterLevelElements( "weather", WeatherElements );
+
 
 		RegisterLevelElements( "remark", RemarkElements );
 		RegisterLevelElements( "evaluation", EvaluationElements, false ); // mark this (user should no insert this manually)
