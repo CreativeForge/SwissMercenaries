@@ -309,11 +309,7 @@ namespace GameLab.NotficationCenter
 		}
 
 		GameElement GetGameElementByTargetName( string targetName  ) {
-			ArrayList arr = gameLogic.levelEditor.GetGameElementsByName( targetName );
-			if (arr.Count>0) {
-				return (GameElement) arr[0];
-			}
-			return null;
+			return gameLogic.levelEditor.GetGameElementByName( targetName );
 		}
 
 		ArrayList GetGameElementsByTargetName( string targetName  ) {

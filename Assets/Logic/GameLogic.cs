@@ -60,7 +60,14 @@ public class GameLogic : MonoBehaviour {
 	// player values
 	public PlayerStorage Store { get; set; }
 
+	public void Awake () {
+			GetLevelEditor();
+	}
+
 	public void Start() {
+
+		GetLevelEditor();
+
 		int lastEditedLevel = PlayerPrefs.GetInt("LastEditedLevel");
 		if(lastEditedLevel>0)level = lastEditedLevel;
 			
@@ -121,6 +128,12 @@ public class GameLogic : MonoBehaviour {
 
 	// Levels (Load etc.)
 	public LevelEditor levelEditor;
+	public void GetLevelEditor() {
+		if (levelEditor == null) {
+			GameObject levelEditorObject = GameObject.Find("_LevelEditor");
+			levelEditor = levelEditorObject.GetComponent<LevelEditor>();
+		}
+	}
 	public int level = 1;
 
 	public void SetGameLevel( int ilevel ) {
@@ -154,10 +167,8 @@ public class GameLogic : MonoBehaviour {
 
 		//try {
 
-			if (levelEditor == null) {
-				GameObject levelEditorObject = GameObject.Find("_LevelEditor");
-				levelEditor = levelEditorObject.GetComponent<LevelEditor>();
-			}
+			GetLevelEditor();
+
 			levelEditor.LoadGameLevel(level);
 
 		//}
@@ -229,6 +240,11 @@ public class GameLogic : MonoBehaviour {
 
 		return levelEditor.GetGameElementsByName( name );
 
+	}
+
+	public GameElement GetGameElementByName( string name ) {
+		GetLevelEditor();
+		return levelEditor.GetGameElementByName( name );
 	}
 
 	public void AddGameElements ( ArrayList arr ) {

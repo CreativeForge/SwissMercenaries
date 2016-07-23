@@ -1500,6 +1500,15 @@ public class LevelEditor : MonoBehaviour {
 									// Debug.Log ("ARGUMENT 2: "+trb.argument);
 								}
 
+								argument = elem.argument;
+								GameElementBased geb = go.GetComponent<GameElementBased>();
+								// Debug.Log ("---"+trb.ToString ());
+								if (geb!=null) {
+									geb.SetGameElement( elem );
+									// trb.SetGameElementArgument(argument);
+									// Debug.Log ("ARGUMENT 2: "+trb.argument);
+								}
+
 								// action notification
 								/*
 								ActionNotification acn = go.GetComponent<ActionNotification>();
@@ -1574,6 +1583,32 @@ public class LevelEditor : MonoBehaviour {
 			}
 		}
 
+		return arr;
+	}
+
+	public GameElement GetGameElementByName( String name ) {
+
+		for (int i=0; i<arrLevel.Count; i++) {
+			GameElement gx=(GameElement) arrLevel[i];
+			if (gx.name.Equals (name)) {
+				return gx;
+			}
+		}
+
+		return null;
+	}
+
+	// xyz,def,abc
+	public ArrayList GetGameElementsByString( string csvpath ) {
+		ArrayList arr = new ArrayList();
+		string[] arrNotifications = csvpath.Split(',');
+		for (int x=0;x<arrNotifications.Length;x++) {
+			string gamelementName = arrNotifications[x];
+			GameElement gae = GetGameElementByName( gamelementName );
+			if (gae!=null) {
+				arr.Add(gae);
+			}
+		}
 		return arr;
 	}
 
