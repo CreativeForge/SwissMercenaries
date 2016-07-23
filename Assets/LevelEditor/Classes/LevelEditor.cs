@@ -2771,6 +2771,8 @@ public class LevelEditor : MonoBehaviour {
 
 						if (editorTool.Equals ("MOVE")) {
 
+
+
 							if (!gaelement.type.Equals("base")) {
 								if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20, 20), editorMoveImage, editorIconGUI)) {
 									// SetSelectedElement(gaelement);
@@ -3513,6 +3515,7 @@ public class LevelEditor : MonoBehaviour {
 
 
 				// rasters
+				// attention double in code > MOVE & CREATE
 				GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 58, 20), "RASTER", editorButtonStyle);
 				inspectorXTmp = inspectorXTmp + 70;
 				for (int i=0; i<arrRasters.Length; i++) {
@@ -3530,6 +3533,7 @@ public class LevelEditor : MonoBehaviour {
 
 					inspectorXTmp = inspectorXTmp + 24;
 				}
+
 				// raster rotation
 				inspectorXTmp = 10;
 				inspectorYTmp = inspectorYTmp + 24;
@@ -4023,6 +4027,28 @@ public class LevelEditor : MonoBehaviour {
 				}
 			}
 			// if (editorTool.Equals ("MOVE")) { showElements=true; }
+
+			if (editorTool.Equals ("MOVE")) {
+
+				// attention double in code > MOVE & CREATE
+				GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 58, 20), "RASTER", editorButtonStyle);
+				inspectorXTmp = inspectorXTmp + 70;
+				for (int i=0; i<arrRasters.Length; i++) {
+					float raster = arrRasters [i];
+					string text = ""+raster;
+					GUIStyle gui = editorButtonStyle;
+					if (editorRaster==i) {
+						gui = editorButtonActiveStyle;
+						text = "" + text + "";
+					}
+					bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 22, 20), text, gui);
+					if (buttonClicked) {
+						SetRasterIndex ( i );
+					}
+
+					inspectorXTmp = inspectorXTmp + 24;
+				}
+			}
 
 			if (editorTool.Equals ("SPLIT")) { 
 
