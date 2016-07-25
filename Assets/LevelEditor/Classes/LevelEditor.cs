@@ -591,6 +591,8 @@ public class LevelEditor : MonoBehaviour {
 		return false;
 	}
 
+
+
 	// RemoveElementsType
 	public  void RemoveElementsType( string elementArea, string elementSubArea ) {
 		int startx=arrLevel.Count-1;
@@ -721,6 +723,8 @@ public class LevelEditor : MonoBehaviour {
 
 	public LevelElement[] WeatherElements = { new LevelElement ("light") };
 
+	public LevelElement[] CamCutElements = {  };
+
 	public LevelElement[] RemarkElements = { new LevelElement ("comment") }; // yellow
 	public LevelElement[] EvaluationElements = { new LevelElement ("death") }; // 
 
@@ -801,6 +805,7 @@ public class LevelEditor : MonoBehaviour {
 
 		RegisterLevelElements( "weather", WeatherElements );
 
+		RegisterLevelElements( "camcut", CamCutElements );
 
 		RegisterLevelElements( "remark", RemarkElements );
 		RegisterLevelElements( "evaluation", EvaluationElements, false ); // mark this (user should no insert this manually)
@@ -1536,6 +1541,16 @@ public class LevelEditor : MonoBehaviour {
 		
 	}
 
+	// only deactivate it!!
+	public void DeactivateElement( GameElement elem ) {
+			if (elem != null) {
+			elem.release = "wait";
+			if (elem.gameObject != null)
+				Destroy (elem.gameObject);
+		}
+	}
+
+	// destroy object
 	public void RemoveElement( GameElement elem ) {
 
 		if (elem != null) {
@@ -1686,6 +1701,15 @@ public class LevelEditor : MonoBehaviour {
 	void SetSelectedElement( GameElement ga ) {
 		// Debug.Log ("SetSelectedElement()");
 		editorSelected = ga;
+		if (ga==null) {
+			editorArea = "";
+			editorSubArea = "";
+			SetSubEditorArea( editorSubArea );
+
+			// disable preview!!!
+			// SetEditorCursorPreviewToPrefab(null, 1.0f);
+			EmptyEditorCursorPreview();
+		}
 		if (ga!=null) {
 			editorArea = ga.type;
 			SetSelectedElementToGUI ();
@@ -1769,12 +1793,14 @@ public class LevelEditor : MonoBehaviour {
 		// find preview
 		GameObject preview = GameObject.Find("editorpreview");
 
+		// delete old one 
+		foreach (Transform child in preview.transform) {
+			Destroy(child.gameObject);
+			break;
+		}
+
 		if (preview!=null) {
-			// delete old one 
-			foreach (Transform child in preview.transform) {
-				Destroy(child.gameObject);
-				break;
-			}
+			
 
 			// Debug.Log("SetEditorPreviewToPrefab(){ preFabFound = "+prefab+" }");
 
@@ -1793,6 +1819,18 @@ public class LevelEditor : MonoBehaviour {
 		}
 	}
 
+	public void EmptyEditorCursorPreview() {
+
+		// find preview
+		GameObject preview = GameObject.Find("editorcursorpreview");
+
+		// delete old one 
+		foreach (Transform child in preview.transform) {
+			Destroy(child.gameObject);
+		}
+
+	}
+
 	public void SetEditorCursorPreviewToPrefab( GameObject prefab , float scaling) {
 
 		// Debug.Log("SetEditorPreviewToPrefab()");
@@ -1800,11 +1838,11 @@ public class LevelEditor : MonoBehaviour {
 		// find preview
 		GameObject preview = GameObject.Find("editorcursorpreview");
 
+		// delete old one 
+		EmptyEditorCursorPreview();
+
 		if (preview!=null) {
-			// delete old one 
-			foreach (Transform child in preview.transform) {
-				Destroy(child.gameObject);
-			}
+			
 
 			// Debug.Log("SetEditorPreviewToPrefab(){ preFabFound = "+prefab+" }");
 
@@ -2496,7 +2534,10 @@ public class LevelEditor : MonoBehaviour {
 		}
 		if (GUI.Button (new Rect (Screen.width - 160, 0, 80, 20), "GAME", guixt)) {
 				ActivateCursorPreview(false);
-			gameLogic.SetGameState( GameLogic.GameLogicModal.Running );
+				// deactivate all items of the editor 
+				// for example: previews!
+				SetSelectedElement( null );
+				gameLogic.SetGameState( GameLogic.GameLogicModal.Running );
 
 		}
 
@@ -3701,7 +3742,10 @@ public class LevelEditor : MonoBehaviour {
 				inspectorXTmp = 10;
 
 				GUI.Label (new Rect (inspectorXTmp, inspectorYTmp, 120, 20), "TYPES/SUBTYPES: ", editorButtonStyle);
+				inspectorXTmp = inspectorXTmp + 124;
+				GUI.Label (new Rect (inspectorXTmp, inspectorYTmp, 120, 20), "SETTINGS:* (NIGHT,PLUNDER) ", editorButtonStyle);
 
+				inspectorXTmp = 10;
 				inspectorYTmp = inspectorYTmp + 22;
 
 

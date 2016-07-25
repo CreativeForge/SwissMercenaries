@@ -250,7 +250,15 @@ namespace GameLab.NotficationCenter
 					// start / ...
 				}
 
-				// object/remove
+				// just make out of an active element a [-] = on release
+				if (nt.subtype.Equals("deactivate")) {
+					gameLogic.levelEditor.DeactivateElement( ge );
+
+
+					// start / ...
+				}
+
+				// object/remove / destroy
 				if (nt.subtype.Equals("remove")) {
 					gameLogic.levelEditor.RemoveElement( ge );
 				}

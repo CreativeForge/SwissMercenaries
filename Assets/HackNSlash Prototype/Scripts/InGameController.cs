@@ -27,6 +27,10 @@ public class InGameController : MonoBehaviour {
 	public GameObject camGO;
 	public Camera cam;
 
+	// other camera
+	public bool useGameElementCamera = false;
+	public GameElement gameelementCamera = null;
+
 	public bool inEditorUsed = true;
 
 	public NotificationCenterPrototype notificationC;
@@ -76,6 +80,16 @@ public class InGameController : MonoBehaviour {
 				playerS.SetCamT(camGO.transform);
 			}
 		}
+	}
+
+	// CAMERAS
+	void SetCameraToGameELement( GameElement gcam ) {
+		// gcam ...
+
+		// deactivate active
+
+		// set to this camera ...
+
 	}
 
 	void Start(){
