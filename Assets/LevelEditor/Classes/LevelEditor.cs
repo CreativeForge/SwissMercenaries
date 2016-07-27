@@ -439,6 +439,16 @@ public class LevelEditor : MonoBehaviour {
 			// prefabY
 			GameElement editorPrefabY;
 
+		// title
+		editorPrefabY = AddGameElementAtName ("meta","title", new Vector3(0.0f,0.0f,0.0f), "TITLE" );
+
+		// desc
+		editorPrefabY = AddGameElementAtName ("meta","description", new Vector3(0.0f,0.0f,0.0f), "DESCRIPTION" );
+
+		// ground
+		// editorPrefabY = AddGameElementAtName ("meta","autor", new Vector3(0.0f,0.0f,0.0f), "AUTOR" );
+
+
 			// ground
 			editorPrefabY = AddGameElementAtName ("base","ground_box", new Vector3(0.0f,0.0f,0.0f), "GROUND" );
 	
@@ -703,11 +713,11 @@ public class LevelEditor : MonoBehaviour {
 	public LevelElement[] BaseLevelElements = { new LevelElement ("town"), new LevelElement ("country") , new LevelElement ("test")  };
 	public LevelElement[] LightLevelElements= {  new LevelElement ("light")   };
 	public LevelElement[] SkyLevelElements = {    };
-	public LevelElement[] GoalLevelElements= { new LevelElement ("survivetime"), new LevelElement ("killamount")   };
+	public LevelElement[] MetaLevelElements= {   };
 	public LevelElement[] ImmovablesLevelElements = { new LevelElement ("scheune"), new LevelElement ("city"),  new LevelElement ("fountain")    };
 	public LevelElement[] ColliderLevelElements = {    };
 	public LevelElement[] MovableLevelElements = { new LevelElement ("box")   };
-
+	public LevelElement[] FurnitureLevelElements = { } ;
 	public LevelElement[] PlayerLevelElements = { new LevelElement ("player1"), new LevelElement ("player2") };
 	public LevelElement[] SwissLevelSoldiersEleements = { new LevelElement ("small"), new LevelElement ("idiot") , new LevelElement ("cool")  };
 
@@ -783,8 +793,9 @@ public class LevelEditor : MonoBehaviour {
 		RegisterLevelElements( "light", LightLevelElements );
 		RegisterLevelElements( "sky", SkyLevelElements );
 
-		RegisterLevelElements( "goal", GoalLevelElements );
+		RegisterLevelElements( "meta", MetaLevelElements );
 		RegisterLevelElements( "immovable", ImmovablesLevelElements );
+		RegisterLevelElements( "furniture", FurnitureLevelElements );
 
 		RegisterLevelElements( "collider", ColliderLevelElements );
 
@@ -1782,7 +1793,7 @@ public class LevelEditor : MonoBehaviour {
 
 			if(editorTool.Equals("CREATE")) SetEditorCursorPreviewToPrefab( prefabObj, editorPrefab.size);
 		} else {
-			Debug.LogError("SetSubEditorArea() Could correct");
+			// Debug.LogError("SetSubEditorArea() Could not find object for this ...");
 		}
 	}
 
@@ -3814,7 +3825,10 @@ public class LevelEditor : MonoBehaviour {
 						text = ">" + text;
 					}
 					int count=CountElementsType( gelement.type, gelement.subtype );
-					if (count>0) { if (GUI.Button (new Rect (inspectorXTmpXTemp , inspectorYTmp, 6, 20), "x", guix)) { RemoveElementsType(gelement.type, gelement.subtype);} }
+					if (count>0) { if (GUI.Button (new Rect (inspectorXTmpXTemp , inspectorYTmp, 6, 20), "x", guix)) { 
+						RemoveElementsType(gelement.type, gelement.subtype);} 
+						AddToEditorHistory();
+					}
 					string strCount="";
 					if (count>0) strCount="("+count+")";
 					bool buttonClicked = GUI.Button (new Rect (inspectorXTmpXTemp+5, inspectorYTmp, 70, 20), text+strCount, guix);
@@ -3931,7 +3945,7 @@ public class LevelEditor : MonoBehaviour {
 					if (editorSelected!=null) {	
 						if (editorSelected.guiBoolArgument) {
 							GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,40,24),""+editorSelected.guiLabel+":");
-							editDetailArgument=GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),editDetailArgument);
+							editDetailArgument=GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,320,20),editDetailArgument);
 							bool changed=false;
 							if (editDetailArgument!=editorSelected.argument) {
 								changed=true;
@@ -3954,7 +3968,7 @@ public class LevelEditor : MonoBehaviour {
 						// argumentsub
 						if (editorSelected.guiBoolArgument) {
 							GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,40,24),"ARG:");
-							editDetailArgumentSub=GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),editDetailArgumentSub);
+							editDetailArgumentSub=GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,320,20),editDetailArgumentSub);
 							bool changed=false;
 							if (editDetailArgumentSub!=editorSelected.argumentsub) {
 								changed=true;

@@ -86,10 +86,11 @@ public class NPCScript : MonoBehaviour {
 
 		if(dS && dS.IsDead)return;
 
+		// if (InGameController!=null) {
 		HandleRotation(InGameController.i.playerS.transform);
 
 		HandleMovement(InGameController.i.playerS.transform);
-
+		//}
 	}
 
 	void HandleMovement(Transform inPlayerT){
