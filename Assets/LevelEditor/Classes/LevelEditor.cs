@@ -255,7 +255,8 @@ public class LevelEditor : MonoBehaviour {
 			}
 
 			if (strevent.Equals("up")) {
-				AddToEditorHistory();
+				MoveObjectAlongEditorCamera(bu.key);
+				AddToEditorHistory("up");
 			}
 		}
 
@@ -3551,7 +3552,7 @@ public class LevelEditor : MonoBehaviour {
 			if (enter) {  
 				// Debug.Log("RETURN!!!");
 				GUI.FocusControl(null);
-				AddToEditorHistory();
+				AddToEditorHistory("return");
 			}
 
 			// infos about the mouse point (for putting in 
@@ -4196,20 +4197,20 @@ public class LevelEditor : MonoBehaviour {
 						string add="";
 						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"STATE: ",editorButtonStyle)) {
 							editorSelected.release="";
-							AddToEditorHistory();
+							AddToEditorHistory("state");
 						}
 						inspectorXTmp= inspectorXTmp + 60;
 						if (release.Equals ("")) { add=">"; }
 						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"active",editorButtonStyle)) {
 							editorSelected.release="";
-							AddToEditorHistory();
+							AddToEditorHistory("active");
 						}
 						inspectorXTmp= inspectorXTmp + 60;
 						add = "";
 						if (release.Equals ("wait")) { add=">"; }
 						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"hidden",editorButtonStyle)) {
 							editorSelected.release="wait";
-							AddToEditorHistory();
+							AddToEditorHistory("wait");
 						}
 						inspectorXTmp= inspectorXTmp + 60;
 						inspectorYTmp = inspectorYTmp + 30; 
@@ -4312,7 +4313,7 @@ public class LevelEditor : MonoBehaviour {
 								// attention
 
 								UpdateElementVisual(editorSelected); 
-								AddToEditorHistory();
+								AddToEditorHistory("update selected");
 							}
 						}
 						// delete objects
@@ -4341,10 +4342,12 @@ public class LevelEditor : MonoBehaviour {
 						text = ">" + text;
 					}
 					int count=CountElementsType( gelement.type, gelement.subtype );
-					if (count>0) { if (GUI.Button (new Rect (inspectorXTmpXTemp , inspectorYTmp, 6, 20), "x", guix)) { 
-							RemoveElementsType(gelement.type, gelement.subtype);} 
-						AddToEditorHistory();
-					}
+					if (count>0) { 
+						if (GUI.Button (new Rect (inspectorXTmpXTemp , inspectorYTmp, 6, 20), "x", guix)) { 
+							RemoveElementsType(gelement.type, gelement.subtype);
+								AddToEditorHistory("Delete types");
+							} 
+						}
 					string strCount="";
 					if (count>0) strCount="("+count+")";
 					bool buttonClicked = GUI.Button (new Rect (inspectorXTmpXTemp+5, inspectorYTmp, 70, 20), text+strCount, guix);
@@ -4362,7 +4365,7 @@ public class LevelEditor : MonoBehaviour {
 							editorSelected.subtype=gelement.subtype;  
 							// showElementsSubTypeOnly
 							UpdateElementVisual(editorSelected); 
-							AddToEditorHistory();
+							AddToEditorHistory("edit");
 						}
 
 					}
@@ -4453,7 +4456,7 @@ public class LevelEditor : MonoBehaviour {
 						string strTimed =GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),""+editorSelected.timed);
 						if (!strTimed.Equals(""+editorSelected.timed)) {
 							editorSelected.timed  =   float.Parse( strTimed );
-							AddToEditorHistory()	;					
+							AddToEditorHistory("after")	;					
 						}
 						inspectorYTmp=inspectorYTmp+22;
 					}
@@ -4465,14 +4468,14 @@ public class LevelEditor : MonoBehaviour {
 							bool changed=false;
 							if (editDetailArgument!=editorSelected.argument) {
 								changed=true;
-								AddToEditorHistory();
+								AddToEditorHistory("editix");
 							}
 							editorSelected.argument=editDetailArgument;
 							inspectorYTmp=inspectorYTmp+22*1;
 							if (changed) {
 								UpdateElementVisual(editorSelected);
 								UpdateRelationVisualisationAndCheckError();
-								AddToEditorHistory();
+								AddToEditorHistory("argument");
 							}
 
 						}
@@ -4488,14 +4491,14 @@ public class LevelEditor : MonoBehaviour {
 							bool changed=false;
 							if (editDetailArgumentSub!=editorSelected.argumentsub) {
 								changed=true;
-								AddToEditorHistory();
+								AddToEditorHistory("arg");
 							}
 							editorSelected.argumentsub=editDetailArgumentSub;
 							inspectorYTmp=inspectorYTmp+22*1;
 							if (changed) {
 								UpdateElementVisual(editorSelected);
 								UpdateRelationVisualisationAndCheckError();
-								AddToEditorHistory();
+								AddToEditorHistory("arg");
 							}
 
 						}
@@ -5211,7 +5214,6 @@ public class LevelEditor : MonoBehaviour {
 
 				// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // SHIFT EDITOR ");
 
-
 				if (editorSelected!=null) {
 
 					if ((Input.GetKeyUp ("a"))||(Input.GetKeyUp ("left"))) {
@@ -5685,12 +5687,12 @@ public class LevelEditor : MonoBehaviour {
 						}
 						if ((Input.GetKey ("w"))||(Input.GetKey ("up"))) {
 							// editorSelected.position.z = editorSelected.position.z + vectorMove.z;
-							MoveObjectAlongEditorCamera("up");
+							MoveObjectAlongEditorCamera("forward");
 							UpdateElementVisual(editorSelected);
 						}
 						if ((Input.GetKey ("s"))||(Input.GetKey ("down"))) {
 							// editorSelected.position.z = editorSelected.position.z - vectorMove.z;
-							MoveObjectAlongEditorCamera("down");
+							MoveObjectAlongEditorCamera("backward");
 							UpdateElementVisual(editorSelected);
 						}
 
