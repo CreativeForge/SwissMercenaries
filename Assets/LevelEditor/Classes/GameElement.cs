@@ -8,6 +8,9 @@ public class GameElement {
 
 	// public string state = ""; // "": active-direct / "wait": wait > released
 
+	// 
+	public string id = "-1"; // id ... 
+
 	// default objects
 	public string name="";
 	public string genericName = "";
@@ -93,6 +96,7 @@ public class GameElement {
 	// copy - type > object (template to object)
 	public GameElement Copy() {
 		GameElement copyX = new GameElement ();
+		copyX.id = id;
 		copyX.name = name;
 		copyX.genericName = genericName;
 		copyX.type = type;
@@ -173,6 +177,7 @@ public class GameElement {
 		JSONObject jsonObj = new JSONObject(JSONObject.Type.OBJECT);
 
 		// jsonObj.AddField("state", "");
+		jsonObj.AddField("id", ""+id);
 		jsonObj.AddField("name", ""+name);
 		jsonObj.AddField("type", type);
 		jsonObj.AddField("subtype", subtype);
@@ -210,6 +215,7 @@ public class GameElement {
 			
 			// Debug.Log (" "+i+". "+key); 
 			// if (key.Equals ("state")) { 	state=jkeyObj.str; }
+			if (key.Equals ("id")) { 	id=jkeyObj.str; }
 			if (key.Equals ("name")) { 	name=jkeyObj.str; }
 			if (key.Equals ("type")) { 	type=jkeyObj.str;  }
 			if (key.Equals ("subtype")) { 	subtype=jkeyObj.str; }

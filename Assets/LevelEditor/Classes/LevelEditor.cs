@@ -3,20 +3,17 @@
  * ### Editor  ###
  * 
  * // Editor: deactivate all children top level
-  * 
+* 
 * LevelElement (Editor-CreateElementTypeAtInspector) > GameElement (InEditor)
-  * 
-  * Ideen: Polls Ingame (Time or triggers)
-  * 
-  * NextToDo: Umstrukturieren
-  * 
-  * Problem: CameraManager auf der Editorcamera!
-  * 
- * */
+* 
+* DirtyCode: No entry for heaven
+	* NextToDo: Refactoring
+	* 
+	* */
 
-// new LevelObjects > levelElements
+	// new LevelObjects > levelElements
 
-using UnityEngine;
+	using UnityEngine;
 using System.Collections;
 using System;
 using GameLab.LanguageCenter;
@@ -29,25 +26,25 @@ public class LevelEditor : MonoBehaviour {
 	// debugging
 	bool debugGameElements=false;
 	bool debugGameElementTypes=false;
-	
+
 	// game logic
 	GameLogic gameLogic;
 	GameLogic GetGameLogic( ) {
-		
+
 		if (gameLogic == null) {
-			
+
 			GameObject gl = GameObject.Find ("_GameLogic");
-					gameLogic = gl.GetComponent<GameLogic>();
-			
+			gameLogic = gl.GetComponent<GameLogic>();
+
 		}
-		
+
 		return gameLogic;
 	}
 
 	// NotificationCenter
 	public NotificationCenter notificationCenter;
 	NotificationCenter GetNotificationCenter() {
-			GameObject gl = GameObject.Find ("_NotificationCenter");
+		GameObject gl = GameObject.Find ("_NotificationCenter");
 		if (gl!=null) {
 			notificationCenter = gl.GetComponent<NotificationCenter>();
 			if (notificationCenter!=null) {
@@ -78,19 +75,19 @@ public class LevelEditor : MonoBehaviour {
 	string fieldArgument = "argument";
 
 
-		// state special editor ...
-		//string stateSpecialEditor=""; // '' > 'saved'
-		// float stateSpecialEditorScroll=0.0f;
-		// float stateSpecialEditorScrollY=0.0f;
+	// state special editor ...
+	//string stateSpecialEditor=""; // '' > 'saved'
+	// float stateSpecialEditorScroll=0.0f;
+	// float stateSpecialEditorScrollY=0.0f;
 
-		// overlay
-		bool cameraOverlayTypes = false;
+	// overlay
+	bool cameraOverlayTypes = false;
 
-		public GameObject dummyEditorPrefab;
+	public GameObject dummyEditorPrefab;
 
-		Vector3 editorCursorActualPoint=new Vector3();
+	Vector3 editorCursorActualPoint=new Vector3();
 
-		GameElement editorLastTouchedGameElement = null;
+	GameElement editorLastTouchedGameElement = null;
 
 	// load game level (used from GameLogic) 
 	public void LoadGameLevel( int newLevel ) {
@@ -143,8 +140,8 @@ public class LevelEditor : MonoBehaviour {
 					// Debug.Log("LevelEditor.AddToEditorHistory() // "+i+"---"+(arr.Count-1-i)+"--"+arr[arr.Count-1-i].GetType().Name);
 					LevelHistory lvx = (LevelHistory)  arr[arr.Count-1-i];
 					if (lvx!=null) {
-					// Debug.Log("LevelEditor.AddToEditorHistory() Remove // "+i+"---"+(arr.Count-1-i));
-					arrEditorHistory.Remove(lvx);
+						// Debug.Log("LevelEditor.AddToEditorHistory() Remove // "+i+"---"+(arr.Count-1-i));
+						arrEditorHistory.Remove(lvx);
 					}
 				}
 			}
@@ -233,7 +230,7 @@ public class LevelEditor : MonoBehaviour {
 			if (strdirect.Equals("rotateforward")) { direction =  new Vector3(0.0f,0.0f,0.0f); AddEditorMessage("Not implemented for objects!"); }
 			if (strdirect.Equals("rotatebackward")) { direction =  new Vector3(0.0f,0.0f,0.0f); AddEditorMessage("Not implemented for objects!"); }
 			if (strdirect.Equals("rotateleft")) { editorSelected.rotation = editorSelected.rotation - 5.0f; isMovement= false; }
-				if (strdirect.Equals("rotateright")) { editorSelected.rotation = editorSelected.rotation + 5.0f; isMovement= false; }
+			if (strdirect.Equals("rotateright")) { editorSelected.rotation = editorSelected.rotation + 5.0f; isMovement= false; }
 			if (isMovement) {
 				direction = direction * 0.5f;
 				// Debug.Log("LevelEditor.MoveObjectAlongEditorCamera() // " + direction);
@@ -252,7 +249,7 @@ public class LevelEditor : MonoBehaviour {
 		// Debug.Log("LevelEditor.DoSensButton("+strevent+")");
 
 		if (cursorObject) {
-			
+
 			if (strevent.Equals("down")) {
 				MoveObjectAlongEditorCamera(bu.key);
 			}
@@ -263,43 +260,43 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		if (!cursorObject) {
-		if (strevent.Equals("down")) {
-			// camera 
-			if (bu.key.Equals("left")) {
-				container.transform.Translate ( new Vector3(-speedCamera, 0.0f, 0.0f));
-			}
-			if (bu.key.Equals("right")) {
-				container.transform.Translate ( new Vector3( speedCamera, 0.0f, 0.0f));
-			}
-			if (bu.key.Equals("up")) {
-				container.transform.Translate ( new Vector3( 0.0f, speedCamera, 0.0f));
-			}
-			if (bu.key.Equals("down")) {
-				container.transform.Translate ( new Vector3( 0.0f, -speedCamera, 0.0f));
-			}
-			if (bu.key.Equals("forward")) {
-				container.transform.Translate ( new Vector3( 0.0f, 0.0f, speedCamera));
-			}
-			if (bu.key.Equals("backward")) {
-				container.transform.Translate ( new Vector3( 0.0f, 0.0f, -speedCamera));
-			}
-			// 	rotate left & right					
-			if (bu.key.Equals("rotateleft")) {
-				container.transform.Rotate ( new Vector3(0.0f, -2.0f, 0.0f));
-			}
-			if (bu.key.Equals("rotateright")) {
-				container.transform.Rotate ( new Vector3(0.0f, 2.0f, 0.0f));
-			}
-			// 	rotate left & right					
-			if (bu.key.Equals("rotateforward")) {
-				container.transform.Rotate ( new Vector3(-2.0f,0.0f, 0.0f));
-			}
-			if (bu.key.Equals("rotatebackward")) {
-				container.transform.Rotate ( new Vector3(2.0f,0.0f,  0.0f));
-			}
+			if (strevent.Equals("down")) {
+				// camera 
+				if (bu.key.Equals("left")) {
+					container.transform.Translate ( new Vector3(-speedCamera, 0.0f, 0.0f));
+				}
+				if (bu.key.Equals("right")) {
+					container.transform.Translate ( new Vector3( speedCamera, 0.0f, 0.0f));
+				}
+				if (bu.key.Equals("up")) {
+					container.transform.Translate ( new Vector3( 0.0f, speedCamera, 0.0f));
+				}
+				if (bu.key.Equals("down")) {
+					container.transform.Translate ( new Vector3( 0.0f, -speedCamera, 0.0f));
+				}
+				if (bu.key.Equals("forward")) {
+					container.transform.Translate ( new Vector3( 0.0f, 0.0f, speedCamera));
+				}
+				if (bu.key.Equals("backward")) {
+					container.transform.Translate ( new Vector3( 0.0f, 0.0f, -speedCamera));
+				}
+				// 	rotate left & right					
+				if (bu.key.Equals("rotateleft")) {
+					container.transform.Rotate ( new Vector3(0.0f, -2.0f, 0.0f));
+				}
+				if (bu.key.Equals("rotateright")) {
+					container.transform.Rotate ( new Vector3(0.0f, 2.0f, 0.0f));
+				}
+				// 	rotate left & right					
+				if (bu.key.Equals("rotateforward")) {
+					container.transform.Rotate ( new Vector3(-2.0f,0.0f, 0.0f));
+				}
+				if (bu.key.Equals("rotatebackward")) {
+					container.transform.Rotate ( new Vector3(2.0f,0.0f,  0.0f));
+				}
 
-			// object
-		}
+				// object
+			}
 		}
 
 	}
@@ -331,7 +328,7 @@ public class LevelEditor : MonoBehaviour {
 			historyIndexMinus = 0;
 			concreteIndex = arr.Count -1;
 			AddEditorMessage("Actual!");
-			
+
 		}
 		LevelHistory lvHist = (LevelHistory) arr[concreteIndex];
 		UndoTo(lvHist);
@@ -358,6 +355,309 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	// actual level
+	string leveltype = "local"; // type of level: [local/web/live]
+	void SetLevelType( string nleveltype ) {
+		leveltype = nleveltype;
+		// ok let's check ... 
+		LoadLevel( actualLevel );
+		// remoteSelection = true;
+	}
+
+	bool CheckLevelTypeWeb() { 
+
+		if (leveltype.Equals("web")) {
+			return true;
+		} 
+
+		return false;
+	}
+
+	/*
+	 *  REMOTE EDIT (web/live)
+	 * 
+	 * */
+	// remoteEditArea
+	string remoteAreaEdit = "";
+	string remoteAutorEdit = "";
+	void RemoteEdit() {
+		remoteSelection = false; 
+		// 		LoadLevel (actualLevel);
+		SetLevel(1);
+	}
+	void RemoteDownload() {
+		RemoteDownloadsDo();
+	}
+
+	string GetRemotePath() {
+		// remote
+		if (!Directory.Exists ("remote")) {
+			Directory.CreateDirectory("remote");
+		}
+		// remote
+		string areaPath = "remote"+Path.DirectorySeparatorChar+remoteAreaEdit;
+		if (!Directory.Exists (areaPath)) {
+			Directory.CreateDirectory(areaPath);
+		}
+		// remote
+		string autorPath = "remote"+Path.DirectorySeparatorChar+remoteAreaEdit+Path.DirectorySeparatorChar+remoteAutorEdit;
+		if (!Directory.Exists (autorPath)) {
+			Directory.CreateDirectory(autorPath);
+		}
+
+		return "remote"+Path.DirectorySeparatorChar+remoteAreaEdit+Path.DirectorySeparatorChar+remoteAutorEdit+Path.DirectorySeparatorChar;
+	}
+
+	// remote areas - selection!
+	bool remoteSelection = false;
+	string remoteArea = "";
+	string remoteAutor = "";
+	ArrayList arrRemoteAreas = new ArrayList();
+	ArrayList arrRemoteAreasAddOn = new ArrayList();
+	ArrayList arrRemoteAreaAutors = new ArrayList();
+	ArrayList arrRemoteAreaAutorsAddOn = new ArrayList();
+	//arrRemoteAreaAutorsAddOn
+	bool offline = false;
+	bool loading = false;
+	string loadingLabel = "";
+
+
+	/*
+	 * get 
+	 * 
+	 * */
+	void RemoteGetAreas() {
+		if (!Directory.Exists ("remote")) {
+			Directory.CreateDirectory("remote");
+		}
+		StartCoroutine(RemoteGetAreasGet());
+	}
+	private IEnumerator RemoteGetAreasGet() {
+		Debug.Log("LevelEditor.RemoteGetAreasGet() ");
+		loading = true;
+		loadingLabel = "LOADING AREAS ";
+		WWW w = new WWW("http://www.swissmercenariesgame.com/services.php?service=getareas");
+		yield return w;
+		offline = false;
+
+		if (w.error != null)
+		{
+			Debug.Log("Error .. " +w.error);
+			// for example, often 'Error .. 404 Not Found'
+			// tell error
+			AddEditorMessage("Sorry, are you connected to internet?");
+			offline = true;
+
+			// get ....
+			arrRemoteAreas = new ArrayList();
+			arrRemoteAreasAddOn = new ArrayList();
+			string [] subdirectoryEntries = Directory.GetDirectories("remote");
+			foreach(string subdirectory in subdirectoryEntries) {
+				// Debug.Log("remote/"+subdirectory);
+				string effective = subdirectory.Substring("remote/".Length);
+				arrRemoteAreasAddOn.Add("(local-offline)");
+				arrRemoteAreas.Add(""+effective);
+			}
+
+		}
+		else
+		{
+			// Debug.Log("Found ... ==>" +w.text +"<==");
+			Debug.Log("LevelEditor.RemoteGetAreasGet() // text = " +w.text +"<==");
+			arrRemoteAreas = new ArrayList();
+			arrRemoteAreasAddOn = new ArrayList();
+			string jsonText = ""+w.text;
+			JSONObject jsonArray = new JSONObject(jsonText);
+			for(int i = 0; i < jsonArray.list.Count; i++){
+				// string key = (string)jsonArray.keys[i];
+				JSONObject levelObj = jsonArray[i];
+				JSONObject areaObj =  levelObj.GetField("area");
+				string str = ""+areaObj.str;
+				// arrRemoteAreas
+				// local?
+				string addon = "";
+				if (Directory.Exists ("remote"+Path.DirectorySeparatorChar+str)) {
+					// Directory.CreateDirectory(""+folderName);
+					addon = "(local)";
+				}
+				arrRemoteAreasAddOn.Add(""+addon);
+				arrRemoteAreas.Add(""+str);
+			}
+		}
+
+		loading = false;
+
+	}
+	void RemoteGetAreaAutors() {
+		StartCoroutine(RemoteGetAreaAutorsGet());
+	}
+	private IEnumerator RemoteGetAreaAutorsGet() {
+		loading = true;
+		loadingLabel = "LOADING AUTORS FOR "+remoteArea;
+		string url = "http://www.swissmercenariesgame.com/services.php?service=getareaautors&area="+WWW.EscapeURL(remoteArea);
+		Debug.Log("LevelEditor.RemoteGetAreaAutorsGet() // url = "+url);
+		WWW w = new WWW( url );
+		yield return w;
+		if (w.error != null)
+		{
+			Debug.Log("Error .. " +w.error);
+			// for example, often 'Error .. 404 Not Found'
+			// tell error
+			AddEditorMessage("Sorry, are you connected to internet?");
+
+			// get ....
+			arrRemoteAreaAutors = new ArrayList();
+			arrRemoteAreaAutorsAddOn = new ArrayList();
+			string [] subdirectoryEntries = Directory.GetDirectories("remote"+Path.DirectorySeparatorChar+remoteArea);
+			foreach(string subdirectory in subdirectoryEntries) {
+				// Debug.Log("remote/"+subdirectory);
+				string effective = subdirectory.Substring(("remote"+Path.DirectorySeparatorChar+remoteArea+"/").Length);
+				arrRemoteAreaAutorsAddOn.Add("(local-offline)");
+				arrRemoteAreaAutors.Add(""+effective);
+			}
+
+		}
+		else
+		{
+			Debug.Log("LevelEditor.RemoteGetAreaAutorsGet() // text = " +w.text +"<==");
+			arrRemoteAreaAutors = new ArrayList();
+			arrRemoteAreaAutorsAddOn = new ArrayList();
+			string jsonText = ""+w.text;
+			JSONObject jsonArray = new JSONObject(jsonText);
+			for(int i = 0; i < jsonArray.list.Count; i++){
+				// string key = (string)jsonArray.keys[i];
+				JSONObject levelObj = jsonArray[i];
+				JSONObject areaObj =  levelObj.GetField("autor");
+				string str = "" + areaObj.str;
+				string localpath = ""+"remote"+Path.DirectorySeparatorChar+remoteArea+Path.DirectorySeparatorChar+str;
+				Debug.Log("LevelEditor.RemoteGetAreaAutorsGet() // localpath = "+localpath);
+				string addon = "";
+				if (Directory.Exists (localpath)) {
+					// Directory.CreateDirectory(""+folderName);
+					addon = "(local)";
+				}
+				arrRemoteAreaAutors.Add(""+str);
+				arrRemoteAreaAutorsAddOn.Add(""+addon);
+			}
+		}
+
+		loading = false;
+
+	}
+
+	// RemoteDownloadsDo
+	void RemoteDownloadsDo() {
+		StartCoroutine(RemoteDownloadsDoGet());
+	}
+	private IEnumerator RemoteDownloadsDoGet() {
+		loading = true;
+		loadingLabel = "DOWNLOADING LEVELS ";
+
+		for (int i=1;i<maxLevel;i++) {
+			loadingLabel = "DOWNLOADING LEVEL "+i+"/"+maxLevel;
+			string url = "http://www.swissmercenariesgame.com/services.php?service=get&area="+ WWW.EscapeURL(remoteAreaEdit)+"&autor="+WWW.EscapeURL(remoteAutorEdit)+"&level="+WWW.EscapeURL(""+i);
+			Debug.Log("LevelEditor.RemoteDownloadsDoGet() // url = "+url);
+			WWW w = new WWW(url);
+			yield return w;
+			if (w.error != null)
+			{
+				Debug.Log("Error .. " +w.error);
+				// for example, often 'Error .. 404 Not Found'
+				// tell error
+				AddEditorMessage("Sorry, are you connected to internet?");
+			}
+			else
+			{
+				Debug.Log("LevelEditor.RemoteDownloadsDoGet() // level = "+i+" text = " +w.text +"<==");
+				string jsontext = ""+w.text;
+				if (jsontext.Equals("")) jsontext = "[]";
+				// get path ...
+				string path = GetRemotePath()+"level"+i+".txt";
+				Debug.Log("LevelEditor.RemoteDownloadsDoGet() // "+ path);
+				System.IO.File.WriteAllText( path,""+w.text);
+
+			}
+		}
+
+		loading = false;
+		remoteSelection = false; 
+		SetLevel(1);
+	}
+
+	// remote upload
+	void RemoteUpload() {
+		StartCoroutine(RemoteUploadDo());
+	}
+	private IEnumerator RemoteUploadDo() {
+
+		loading = true;
+		loadingLabel = "UPLOADING LEVELS ";
+
+		for (int i=1;i<maxLevel;i++) {
+			loadingLabel = "UPLOADING LEVEL "+i+"/"+maxLevel;
+			string url = "http://www.swissmercenariesgame.com/services.php?service=set&area="+ WWW.EscapeURL(remoteAreaEdit)+"&autor="+WWW.EscapeURL(remoteAutorEdit)+"&level="+WWW.EscapeURL(""+i);
+			Debug.Log("LevelEditor.RemoteUploadGet() // url = "+url);
+
+			string path = GetRemotePath();
+			string jsonText = "[]";
+			/*
+			 * try {
+				jsonText = System.IO.File.ReadAllText( path + "level"+i+".txt");
+			} catch( Exception e ) {
+				Debug.LogWarning("LevelEditor.RemoteUploadGet() // error uploading "+i );
+			}
+			*/
+
+			// version 1
+			/*
+			WWW w = new WWW(url);
+			yield return w;
+			if (w.error != null)
+			{
+				Debug.Log("Error .. " +w.error);
+				// for example, often 'Error .. 404 Not Found'
+				// tell error
+				AddEditorMessage("Sorry, are you connected to internet?");
+			}
+			else
+			{
+
+				Debug.Log("LevelEditor.RemoteUploadDo() // level = "+i+" text = " +w.text +"<==");
+
+			}
+			*/ 
+			// version 2
+			WWWForm form = new WWWForm();
+			if (System.IO.File.Exists( path + "level"+i+".txt" )) {
+				jsonText = System.IO.File.ReadAllText( path + "level"+i+".txt");
+			}
+			form.AddField("argument",jsonText);
+			WWW w = new WWW(url,form);
+			yield return w;
+			if (w.error != null)
+			{
+				Debug.Log("Error .. " +w.error);
+				// for example, often 'Error .. 404 Not Found'
+				// tell error
+				AddEditorMessage("Sorry, are you connected to internet?");
+			}
+			else
+			{
+
+				Debug.Log("LevelEditor.RemoteUploadDo() // level = "+i+" text = " +w.text +"<==");
+
+			}
+		}
+
+		loading = false;
+		remoteSelection = false; 
+
+	}
+
+
+	/*
+	 * LevelEditor
+	 * 
+	 * */
 	int actualLevel=1;
 	int maxLevel=10;
 
@@ -377,7 +677,7 @@ public class LevelEditor : MonoBehaviour {
 
 	// inspector
 	int inspectorX = 10;
-	int inspectorY = 100;
+	int inspectorY = 140;
 	int inspectorWidth = 300;
 	int inspectorHeight = 200;
 	Rect inspectorRect = new Rect(0,0,200,100);
@@ -428,16 +728,16 @@ public class LevelEditor : MonoBehaviour {
 
 		// destroy them all
 		if (arrToClear.Count>0)
-		for (int i=arrToClear.Count-1;i>=0;i--) {
+			for (int i=arrToClear.Count-1;i>=0;i--) {
 				GameObject obj = (GameObject)  arrToClear[i] ;
 				Destroy( obj );
-		}
+			}
 
 	}
 
-		void DefaultElements() {
-			// prefabY
-			GameElement editorPrefabY;
+	void DefaultElements() {
+		// prefabY
+		GameElement editorPrefabY;
 
 		// title
 		editorPrefabY = AddGameElementAtName ("meta","title", new Vector3(0.0f,0.0f,0.0f), "TITLE" );
@@ -449,22 +749,22 @@ public class LevelEditor : MonoBehaviour {
 		// editorPrefabY = AddGameElementAtName ("meta","autor", new Vector3(0.0f,0.0f,0.0f), "AUTOR" );
 
 
-			// ground
-			editorPrefabY = AddGameElementAtName ("base","ground_box", new Vector3(0.0f,0.0f,0.0f), "GROUND" );
-	
-			// player
-			editorPrefabY = AddGameElementAtName ("player","player", new Vector3(1.0f,2.0f,1.0f), "PLAYER");
+		// ground
+		editorPrefabY = AddGameElementAtName ("base","ground_box", new Vector3(0.0f,0.0f,0.0f), "GROUND" );
 
-			// gamelogiccontroller
-			editorPrefabY = AddGameElementAtName ("base","ingamecontroller", new Vector3(2.0f,2.0f,2.0f), "INGAMECONTROLLER");
+		// player
+		editorPrefabY = AddGameElementAtName ("player","player", new Vector3(1.0f,2.0f,1.0f), "PLAYER");
 
-			// directlight
-			editorPrefabY = AddGameElementAtName ("light","directlight", new Vector3(3.0f,2.0f,3.0f), "DIRECTLIGHT");
+		// gamelogiccontroller
+		editorPrefabY = AddGameElementAtName ("base","ingamecontroller", new Vector3(2.0f,2.0f,2.0f), "INGAMECONTROLLER");
 
-			// sky
-			editorPrefabY = AddGameElementAtName ("sky","1200", new Vector3(4.0f,2.0f,4.0f), "SKY");
+		// directlight
+		editorPrefabY = AddGameElementAtName ("light","directlight", new Vector3(3.0f,2.0f,3.0f), "DIRECTLIGHT");
 
-		}
+		// sky
+		editorPrefabY = AddGameElementAtName ("sky","1200", new Vector3(4.0f,2.0f,4.0f), "SKY");
+
+	}
 
 	void SetLevel( int iactualLevel ) {
 
@@ -556,7 +856,7 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	public GameElement GetElementObject( GameObject gameObj ) {
-		
+
 		for (int a=0; a<arrLevel.Count; a++) {
 			GameElement gelement = (GameElement)arrLevel [a];
 			// Debug.Log ("---"+a+". "+gelement.type+"/"+gelement.subtype+"   searching for: "+gameObj.GetInstanceID());
@@ -565,12 +865,12 @@ public class LevelEditor : MonoBehaviour {
 				return gelement;
 			}
 		}
-		
+
 		return null;
 	}
 
 	// arrLevel
-	
+
 	public int CountElementsType( string elementArea, string elementSubArea ) {
 		int count = 0;
 		for (int a=0; a<arrLevel.Count; a++) {
@@ -583,7 +883,7 @@ public class LevelEditor : MonoBehaviour {
 
 		}
 		return count;
-		
+
 	}
 
 	// count elements
@@ -613,7 +913,7 @@ public class LevelEditor : MonoBehaviour {
 					RemoveElement (gelement);
 				}
 			}
-			
+
 		}
 	}
 
@@ -635,7 +935,7 @@ public class LevelEditor : MonoBehaviour {
 	// arrLevel
 
 	public GameElement GetElementType( string elementArea, string elementSubArea ) {
-		
+
 		for (int a=0; a<arrGameElementTypes.Count; a++) {
 			GameElement gelement = (GameElement)arrGameElementTypes [a];
 			if (gelement.type.Equals (elementArea)) {
@@ -646,9 +946,9 @@ public class LevelEditor : MonoBehaviour {
 				}
 			}
 		}
-		
+
 		return null;
-		
+
 	}
 
 	// create
@@ -673,9 +973,9 @@ public class LevelEditor : MonoBehaviour {
 
 	// get all types (not subtypes) background etc ..
 	public ArrayList GetElementTypesUnique(  ) {
-		
+
 		ArrayList arr = new ArrayList ();
-		
+
 		for (int a=0; a<arrGameElementTypes.Count; a++) {
 			GameElement gelement = (GameElement)arrGameElementTypes [a];
 			bool found=false;
@@ -689,9 +989,9 @@ public class LevelEditor : MonoBehaviour {
 				arr.Add (gelement);
 			}
 		}
-		
+
 		return arr;
-		
+
 	}
 
 
@@ -820,81 +1120,81 @@ public class LevelEditor : MonoBehaviour {
 
 		RegisterLevelElements( "remark", RemarkElements );
 		RegisterLevelElements( "evaluation", EvaluationElements, false ); // mark this (user should no insert this manually)
-		
+
 	}
 
-			// register levelelement arrays
-			void RegisterLevelElements( string prefix, LevelElement[] ilevelElements ) {
-				RegisterLevelElements (prefix, ilevelElements, true);
-			}
+	// register levelelement arrays
+	void RegisterLevelElements( string prefix, LevelElement[] ilevelElements ) {
+		RegisterLevelElements (prefix, ilevelElements, true);
+	}
 
-			// register levelelement arrays
-			void RegisterLevelElements( string prefix, LevelElement[] ilevelElements, bool visibleInEditor ) {
-				 
-				// Debug.Log ("RegisterLevelElements( "+ prefix + " )");
+	// register levelelement arrays
+	void RegisterLevelElements( string prefix, LevelElement[] ilevelElements, bool visibleInEditor ) {
 
-				// 1. sort: first sort for editorIndex
-				LevelElement a;
-				LevelElement b;
-				for (int i=0;i<ilevelElements.Length;i++) {
-					for (int ii=0;ii<ilevelElements.Length;ii++) {
-						a = ilevelElements[i];
-						b = ilevelElements[ii];
-						if (a.editorIndex<b.editorIndex) {
-							ilevelElements[i] = b;
-							ilevelElements[ii] = a;
-						}
-					}
+		// Debug.Log ("RegisterLevelElements( "+ prefix + " )");
+
+		// 1. sort: first sort for editorIndex
+		LevelElement a;
+		LevelElement b;
+		for (int i=0;i<ilevelElements.Length;i++) {
+			for (int ii=0;ii<ilevelElements.Length;ii++) {
+				a = ilevelElements[i];
+				b = ilevelElements[ii];
+				if (a.editorIndex<b.editorIndex) {
+					ilevelElements[i] = b;
+					ilevelElements[ii] = a;
 				}
+			}
+		}
 
-				// 2. add: by the order of the array
-				LevelElement el;
-				for (int i=0;i<ilevelElements.Length;i++) {
-					el = ilevelElements[i];
-					
-					// add elements
-					// if ( el.gameObject != null ) {
-						GameElement geType = AddElementType ();
-						geType.type = prefix; 
-						geType.subtype = el.typetypesub; 
-						geType.prefabGameObject = el.gameObject;
-						geType.skyBoxMaterial = el.skyBoxMaterial;
-						geType.prefabEditorDummyGameObject = el.editorPrefab; // dummy prefab
-						// copy and add all prefabs for arguments (evaluation.allover 2,1,0 etc
-						geType.prefabEditorDummyArguments = el.prefabEditorDummyArguments; // .Copy(); // all the same reference
-						geType.guiBoolArgument = el.argumentNeeded; 
-						geType.guiLabel = el.argumentLabel;	 
-						geType.guiDescription = el.argumentDescription;
+		// 2. add: by the order of the array
+		LevelElement el;
+		for (int i=0;i<ilevelElements.Length;i++) {
+			el = ilevelElements[i];
 
-						geType.argumentInputType = el.inputType;
-						geType.argumentInputTypeSelect = el.inputTypeSelect;
+			// add elements
+			// if ( el.gameObject != null ) {
+			GameElement geType = AddElementType ();
+			geType.type = prefix; 
+			geType.subtype = el.typetypesub; 
+			geType.prefabGameObject = el.gameObject;
+			geType.skyBoxMaterial = el.skyBoxMaterial;
+			geType.prefabEditorDummyGameObject = el.editorPrefab; // dummy prefab
+			// copy and add all prefabs for arguments (evaluation.allover 2,1,0 etc
+			geType.prefabEditorDummyArguments = el.prefabEditorDummyArguments; // .Copy(); // all the same reference
+			geType.guiBoolArgument = el.argumentNeeded; 
+			geType.guiLabel = el.argumentLabel;	 
+			geType.guiDescription = el.argumentDescription;
 
-//						geType.editorIndex = el.editorIndex;
+			geType.argumentInputType = el.inputType;
+			geType.argumentInputTypeSelect = el.inputTypeSelect;
 
-						geType.editorTileSize = el.editorTileSize;
-						geType.editorIsGround = el.isGround;
+			//						geType.editorIndex = el.editorIndex;
 
-						geType.guiShowInMenu = visibleInEditor;
+			geType.editorTileSize = el.editorTileSize;
+			geType.editorIsGround = el.isGround;
 
-						geType.editorDisplaySize = el.editorDisplaySize;
+			geType.guiShowInMenu = visibleInEditor;
 
-						geType.editorRandom = el.editorRandom;
+			geType.editorDisplaySize = el.editorDisplaySize;
+
+			geType.editorRandom = el.editorRandom;
 
 			// }
-				}
-				
-			}
+		}
+
+	}
 
 	// Evaluation INGAME
 	bool flagEvaluationAvailable = false; // is this availabe at all?
-		bool showEvaluationDialog = false;
+	bool showEvaluationDialog = false;
 
 	bool flagEvaluation = false;  // ingame will be evaluated!
 
-		// all over evaluation functions
-		// user "0" 
-		string evaluationUserAllOver = "0";
-		string evaluationUserComment="";
+	// all over evaluation functions
+	// user "0" 
+	string evaluationUserAllOver = "0";
+	string evaluationUserComment="";
 
 	bool flagSaveToWeb = true; // * save to web?
 	//bool flagEvaluateElementsPosition = true; // * log position change?
@@ -914,9 +1214,9 @@ public class LevelEditor : MonoBehaviour {
 
 	string evaluationFolder = "evaluation";
 
-		public bool CheckForEvaluate( Notification notifObj ) {
-			return true;
-		}
+	public bool CheckForEvaluate( Notification notifObj ) {
+		return true;
+	}
 
 	void StartUpEvaluationTools() {
 
@@ -934,7 +1234,7 @@ public class LevelEditor : MonoBehaviour {
 
 
 
-	
+
 		// is there a player set up?
 		string[] arr = GetExistingEvaluationPlayerFiles ();
 
@@ -954,7 +1254,7 @@ public class LevelEditor : MonoBehaviour {
 				Debug.Log (i+". "+filename);
 			}
 			*/
-		
+
 			evaluationPlayerId = GetPlayerIdFrom( filename );
 
 			// Debug.Log ("evaluationPlayerId: "+evaluationPlayerId);
@@ -971,90 +1271,90 @@ public class LevelEditor : MonoBehaviour {
 
 	}
 
-		string[] GetExistingEvaluationPlayerFiles() {
-			string[] filePaths = Directory.GetFiles(@""+evaluationFolder+Path.DirectorySeparatorChar, "player_*.txt");	
-			DateTime[] creationTimes = new DateTime[filePaths.Length];
-			for (int i = 0; i < filePaths.Length; i++)
+	string[] GetExistingEvaluationPlayerFiles() {
+		string[] filePaths = Directory.GetFiles(@""+evaluationFolder+Path.DirectorySeparatorChar, "player_*.txt");	
+		DateTime[] creationTimes = new DateTime[filePaths.Length];
+		for (int i = 0; i < filePaths.Length; i++)
 			creationTimes[i] = new FileInfo(filePaths[i]).CreationTime;
-			Array.Sort(creationTimes, filePaths);
-			Array.Reverse (filePaths);
-			return filePaths;
+		Array.Sort(creationTimes, filePaths);
+		Array.Reverse (filePaths);
+		return filePaths;
+	}
+
+	string GenerateNewPlayerId() {
+		string playId = "" + (int) UnityEngine.Random.Range (10000,90000);
+		return playId;
+	}
+
+	string GetPlayerIdFrom( string ifilename ) {
+
+		string filename = ""+ifilename;
+
+		string id = "";
+
+		int posP = filename.IndexOf ("player_");
+		filename = filename.Substring (posP);
+		filename = filename.Substring ("player_".Length);
+		int pos = filename.IndexOf (".");
+		if (pos != -1) {
+			id = filename.Substring (0,pos);
 		}
 
-		string GenerateNewPlayerId() {
-			string playId = "" + (int) UnityEngine.Random.Range (10000,90000);
-			return playId;
-		}
+		return id;
+	}
 
-		string GetPlayerIdFrom( string ifilename ) {
+	void CreateNewEvaluationPlayer( ) {
 
-			string filename = ""+ifilename;
+		evaluationPlayer = new EvaluationPlayer();
+		evaluationPlayerId = GenerateNewPlayerId();
+		// Debug.Log ("[EVALUATION] new PlayerId: "+evaluationPlayerId);
+		evaluationPlayer.playerId = evaluationPlayerId;
+		evaluationPlayer.name = "Heinzer"+(int) UnityEngine.Random.Range (10.0f, 30.0f);
+		SaveEvaluationPlayer( evaluationPlayer  );
 
-			string id = "";
-
-			int posP = filename.IndexOf ("player_");
-			filename = filename.Substring (posP);
-			filename = filename.Substring ("player_".Length);
-			int pos = filename.IndexOf (".");
-			if (pos != -1) {
-				id = filename.Substring (0,pos);
-			}
-			
-			return id;
-		}
-
-		void CreateNewEvaluationPlayer( ) {
-			
-			evaluationPlayer = new EvaluationPlayer();
-			evaluationPlayerId = GenerateNewPlayerId();
-			// Debug.Log ("[EVALUATION] new PlayerId: "+evaluationPlayerId);
-			evaluationPlayer.playerId = evaluationPlayerId;
-			evaluationPlayer.name = "Heinzer"+(int) UnityEngine.Random.Range (10.0f, 30.0f);
-			SaveEvaluationPlayer( evaluationPlayer  );
-			
-		}
+	}
 
 
-		void NewSession( EvaluationPlayer playerObj ) {
-			playerObj.sessionId++;
-			SaveEvaluationPlayer (playerObj);
-		}
+	void NewSession( EvaluationPlayer playerObj ) {
+		playerObj.sessionId++;
+		SaveEvaluationPlayer (playerObj);
+	}
 
-		EvaluationPlayer LoadEvaluationPlayer( string iplayerId ) {
+	EvaluationPlayer LoadEvaluationPlayer( string iplayerId ) {
 
-			EvaluationPlayer ep = new EvaluationPlayer ();
+		EvaluationPlayer ep = new EvaluationPlayer ();
 
-			string jsonText = System.IO.File.ReadAllText( evaluationFolder+Path.DirectorySeparatorChar + "player_"+iplayerId+".txt");
-			// Debug.Log (jsonText);
-			JSONObject jsonObj = new JSONObject(jsonText);
-			
-			ep.GetObjectFromJSON (jsonObj);
+		string jsonText = System.IO.File.ReadAllText( evaluationFolder+Path.DirectorySeparatorChar + "player_"+iplayerId+".txt");
+		// Debug.Log (jsonText);
+		JSONObject jsonObj = new JSONObject(jsonText);
 
-			return ep;
-		}
+		ep.GetObjectFromJSON (jsonObj);
 
-		void SaveEvaluationPlayer( EvaluationPlayer playerObj ) {
-			
-			string encodedString = playerObj.GetJSONObject().Print();
-			System.IO.File.WriteAllText( evaluationFolder + Path.DirectorySeparatorChar +"player_"+playerObj.playerId+".txt",""+encodedString);
-			
-		}
+		return ep;
+	}
+
+	void SaveEvaluationPlayer( EvaluationPlayer playerObj ) {
+
+		string encodedString = playerObj.GetJSONObject().Print();
+		System.IO.File.WriteAllText( evaluationFolder + Path.DirectorySeparatorChar +"player_"+playerObj.playerId+".txt",""+encodedString);
+
+	}
 
 
-		// level evaluations
-		string[] GetExistingEvaluationLevelFiles( int level ) {
-			string[] filePaths = Directory.GetFiles(@""+evaluationFolder+Path.DirectorySeparatorChar, "level"+level+"_*.txt");	
-			DateTime[] creationTimes = new DateTime[filePaths.Length];
-			for (int i = 0; i < filePaths.Length; i++)
+	// level evaluations
+	string[] GetExistingEvaluationLevelFiles( int level ) {
+		string[] filePaths = Directory.GetFiles(@""+evaluationFolder+Path.DirectorySeparatorChar, "level"+level+"_*.txt");	
+		DateTime[] creationTimes = new DateTime[filePaths.Length];
+		for (int i = 0; i < filePaths.Length; i++)
 			creationTimes[i] = new FileInfo(filePaths[i]).CreationTime;
-			Array.Sort(creationTimes, filePaths);
-			Array.Reverse (filePaths);
-			return filePaths;
-		}
+		Array.Sort(creationTimes, filePaths);
+		Array.Reverse (filePaths);
+		return filePaths;
+	}
 
 
-		// Evaluation Editor
-		/*
+	// Evaluation Editor
+	/*
 			 evaluation/notification > argument
 
 			 evaluation/comment > argument
@@ -1092,225 +1392,225 @@ public class LevelEditor : MonoBehaviour {
 
 
 
-		/*
-		 *  GameLogic 
-		 **/
+	/*
+	*  GameLogic 
+	**/
 
 
 
-		void AddEvaluationNotification( string strNotification, string argument, Vector3 pos ) {
+	void AddEvaluationNotification( string strNotification, string argument, Vector3 pos ) {
 
-			// is notification on...
-			bool addThis = false;
+		// is notification on...
+		bool addThis = false;
+		if (flagEvaluation) {
+			// log?
+			addThis = true;
+		}
+		if (addThis) {
+			AddEvaluationElement(  strNotification,  argument,  pos );
+		}
+	}
+
+	// update ..
+	float timeToGo = 0.0f;
+	float timeInterval = 2.0f;
+	void UpdateEvaluationTimed() {
+
+		if (Time.time > timeToGo) {
+			timeToGo = Time.time + timeInterval;
 			if (flagEvaluation) {
-				// log?
-				addThis = true;
-			}
-			if (addThis) {
-				AddEvaluationElement(  strNotification,  argument,  pos );
+				DoTimedEvaluation();
 			}
 		}
 
-		// update ..
-		float timeToGo = 0.0f;
-		float timeInterval = 2.0f;
-		void UpdateEvaluationTimed() {
-			
-			if (Time.time > timeToGo) {
-				timeToGo = Time.time + timeInterval;
-				if (flagEvaluation) {
-					DoTimedEvaluation();
-				}
-			}
+	}
+	// DoTimedEvaluation
+	void DoTimedEvaluation() {
 
-		}
-			// DoTimedEvaluation
-			void DoTimedEvaluation() {
+		// Debug.Log ("DoTimedEvaluation() "+Time.time);
 
-				// Debug.Log ("DoTimedEvaluation() "+Time.time);
-				
-				// player position
-/*				GameObject playerObj = GetFirstPlayerObject ();
+		// player position
+		/*				GameObject playerObj = GetFirstPlayerObject ();
 				if (playerObj != null) {
 					AddEvaluationElement ("player.position", "", playerObj.transform.position);
 					
 				}
 */
 
-				GameObject playerObj = GetFirstPlayerObject ();
-				if (playerObj != null) {
-					AddEvaluationElement ("player.position", "", playerObj.transform.position);
+		GameObject playerObj = GetFirstPlayerObject ();
+		if (playerObj != null) {
+			AddEvaluationElement ("player.position", "", playerObj.transform.position);
 
+		}
+
+	}
+
+
+
+	// add evaluation elements
+	void AddEvaluationElement( string evalTypeSub, string evalArgument, Vector3 pos ) {
+
+		GameElement evalElem = new GameElement();
+
+		evalElem.subtype = "" + evalTypeSub;
+		evalElem.argument = "" + evalArgument;
+		evalElem.position = new Vector3(pos.x,pos.y,pos.z);
+
+
+		AddEvaluationElement( evalElem );
+
+	}
+
+	void AddEvaluationElement( GameElement ge ) {
+
+		// Debug.Log("AddEvaluationElement() "+ge.type+"/"+ge.subtype+" ["+ge.argument+"]");
+
+		ge.evaluationPlayerId = evaluationPlayer.playerId;
+		ge.evaluationSessionId = evaluationPlayer.sessionId;
+		ge.evaluationPlayTime = Time.time;
+
+		ge.type = "evaluation";
+
+		AddElement( ge );
+
+		// save evaluation now .. 
+		SaveLevel( actualLevel, true ); 
+
+	}
+
+	ArrayList GetEvaluationSessionElements( GameElement el ) {
+		ArrayList arr = new ArrayList ();
+
+		for (int a=0; a<arrLevel.Count; a++) {
+			GameElement gelement = (GameElement)arrLevel [a];
+			if (gelement.evaluationSessionId == el.evaluationSessionId) {
+				if (gelement.evaluationPlayerId == el.evaluationPlayerId) {
+					arr.Add(gelement);					
 				}
-
 			}
-
-		
-
-		// add evaluation elements
-		void AddEvaluationElement( string evalTypeSub, string evalArgument, Vector3 pos ) {
-
-			GameElement evalElem = new GameElement();
-			
-			evalElem.subtype = "" + evalTypeSub;
-			evalElem.argument = "" + evalArgument;
-			evalElem.position = new Vector3(pos.x,pos.y,pos.z);
-
-
-			AddEvaluationElement( evalElem );
-
 		}
 
-		void AddEvaluationElement( GameElement ge ) {
+		return arr;
+	}
 
-			// Debug.Log("AddEvaluationElement() "+ge.type+"/"+ge.subtype+" ["+ge.argument+"]");
+	// Dialogs
+	bool showEvaluationDialogEdit = false;
+	string showEvaluationDialogEditType = "";
+	void EditEvaluationPlayerStart( string ishowEvaluationDialogType ) {
+		showEvaluationDialogEdit = true;
+		showEvaluationDialogEditType = ishowEvaluationDialogType;
+	}
+	void EditEvaluationPlayerStop() {
+		showEvaluationDialogEdit = false;		
+	}
 
-			ge.evaluationPlayerId = evaluationPlayer.playerId;
-			ge.evaluationSessionId = evaluationPlayer.sessionId;
-			ge.evaluationPlayTime = Time.time;
 
-			ge.type = "evaluation";
 
-			AddElement( ge );
+	// Evaluation Data (Editor visual)
+	bool editorShowEvaluationData = false; // editorShowEvaluationData 
+	string editorEvaluationFilter = "all"; // filter
+	// ArrayList arrPlayers = ArrayList();
 
-			// save evaluation now .. 
-			SaveLevel( actualLevel, true ); 
+	string editorEvaluationPlayerId = "";
+	string editorEvaluationSessionId = "";
 
-		}
+	string[] arrEvaluationPlayers; //  = GetExistingEvaluationPlayerFiles ();
+	EvaluationPlayer[] arrEvaluationPlayersObj;
+	ArrayList arrEvaluationSessions = new ArrayList(); //  = GetExistingEvaluationPlayerFiles ();
 
-		ArrayList GetEvaluationSessionElements( GameElement el ) {
-			ArrayList arr = new ArrayList ();
-			
-			for (int a=0; a<arrLevel.Count; a++) {
-				GameElement gelement = (GameElement)arrLevel [a];
-				if (gelement.evaluationSessionId == el.evaluationSessionId) {
-					if (gelement.evaluationPlayerId == el.evaluationPlayerId) {
-						arr.Add(gelement);					
-					}
-				}
+	void ToggleShowEvaluationData() {
+		editorShowEvaluationData = !editorShowEvaluationData;
+
+		// update now
+		UpdateShowEvaluationData ();
+
+	}
+
+	// 
+	void UpdateShowEvaluationData () {
+
+		// players
+
+		arrEvaluationPlayers = GetExistingEvaluationPlayerFiles ();
+
+		// Debug.Log ("arrEvaluationPlayers " + arrEvaluationPlayers.Length);
+
+		// load the objects
+		if (arrEvaluationPlayers.Length > 0) {
+			arrEvaluationPlayersObj = new EvaluationPlayer[arrEvaluationPlayers.Length];
+			for (int i=0; i<arrEvaluationPlayers.Length; i++) {
+				EvaluationPlayer pl = LoadEvaluationPlayer (GetPlayerIdFrom (arrEvaluationPlayers [i]));
+				arrEvaluationPlayersObj [i] = pl; 
 			}
-			
-			return arr;
 		}
-		
-		// Dialogs
-		bool showEvaluationDialogEdit = false;
-		string showEvaluationDialogEditType = "";
-		void EditEvaluationPlayerStart( string ishowEvaluationDialogType ) {
-			showEvaluationDialogEdit = true;
-			showEvaluationDialogEditType = ishowEvaluationDialogType;
+
+		// sessions
+		// arrEvaluationSessions
+		arrEvaluationSessions = new ArrayList ();
+
+		string[] arrLevelFiles = GetExistingEvaluationLevelFiles (actualLevel);
+		for (int i = 0; i < arrLevelFiles.Length; i++) {
+			string fileN = arrLevelFiles [i];
+			Match match = Regex.Match (fileN, @"level" + actualLevel + "_(\\d+)_(\\d+).", RegexOptions.IgnoreCase);
+			if (match.Success) {
+				string playerId = match.Groups [1].Value;
+				string sessionId = match.Groups [2].Value;
+				GameElement ge = new GameElement();
+				ge.evaluationPlayerId = playerId;
+				ge.evaluationSessionId = Int32.Parse(sessionId);
+				arrEvaluationSessions.Add(ge);					}
 		}
-		void EditEvaluationPlayerStop() {
-			showEvaluationDialogEdit = false;		
-		}
-	
 
+		// default?
+		RemoveAllEvaluationGameElements();
 
-		// Evaluation Data (Editor visual)
-		bool editorShowEvaluationData = false; // editorShowEvaluationData 
-		string editorEvaluationFilter = "all"; // filter
-		// ArrayList arrPlayers = ArrayList();
+		// updateand check
 
-		string editorEvaluationPlayerId = "";
-		string editorEvaluationSessionId = "";
+		// load data
+		if (editorShowEvaluationData) {
 
-		string[] arrEvaluationPlayers; //  = GetExistingEvaluationPlayerFiles ();
-		EvaluationPlayer[] arrEvaluationPlayersObj;
-		ArrayList arrEvaluationSessions = new ArrayList(); //  = GetExistingEvaluationPlayerFiles ();
-		
-		void ToggleShowEvaluationData() {
-			editorShowEvaluationData = !editorShowEvaluationData;
+			// editorEvaluationFilter = "all" | "selected"
 
-			// update now
-			UpdateShowEvaluationData ();
+			// load evaluations
+			LoadEvaluationLevels( );
+
 
 		}
-			
-			// 
-			void UpdateShowEvaluationData () {
 
-				// players
+		UpdateRelationVisualisationAndCheckError ();
 
-				arrEvaluationPlayers = GetExistingEvaluationPlayerFiles ();
 
-				// Debug.Log ("arrEvaluationPlayers " + arrEvaluationPlayers.Length);
+	}
 
-				// load the objects
-				if (arrEvaluationPlayers.Length > 0) {
-					arrEvaluationPlayersObj = new EvaluationPlayer[arrEvaluationPlayers.Length];
-					for (int i=0; i<arrEvaluationPlayers.Length; i++) {
-						EvaluationPlayer pl = LoadEvaluationPlayer (GetPlayerIdFrom (arrEvaluationPlayers [i]));
-						arrEvaluationPlayersObj [i] = pl; 
-					}
-				}
+	void RemoveAllEvaluationGameElements() {
 
-				// sessions
-				// arrEvaluationSessions
-				arrEvaluationSessions = new ArrayList ();
-				
-				string[] arrLevelFiles = GetExistingEvaluationLevelFiles (actualLevel);
-				for (int i = 0; i < arrLevelFiles.Length; i++) {
-					string fileN = arrLevelFiles [i];
-					Match match = Regex.Match (fileN, @"level" + actualLevel + "_(\\d+)_(\\d+).", RegexOptions.IgnoreCase);
-					if (match.Success) {
-						string playerId = match.Groups [1].Value;
-						string sessionId = match.Groups [2].Value;
-						GameElement ge = new GameElement();
-						ge.evaluationPlayerId = playerId;
-						ge.evaluationSessionId = Int32.Parse(sessionId);
-						arrEvaluationSessions.Add(ge);					}
-				}
-
-				// default?
-				RemoveAllEvaluationGameElements();
-
-				// updateand check
-
-				// load data
-				if (editorShowEvaluationData) {
-		
-					// editorEvaluationFilter = "all" | "selected"
-					
-					// load evaluations
-					LoadEvaluationLevels( );
-					
-				
-				}
-
-				UpdateRelationVisualisationAndCheckError ();
-
-				
+		for (int a=arrLevel.Count-1;a>=0;a--) {
+			GameElement gelement=(GameElement)arrLevel[a];
+			if (gelement.type.Equals ("evaluation")) { 
+				RemoveElement(gelement);
 			}
+		}
 
-			void RemoveAllEvaluationGameElements() {
-				
-				for (int a=arrLevel.Count-1;a>=0;a--) {
-					GameElement gelement=(GameElement)arrLevel[a];
-					if (gelement.type.Equals ("evaluation")) { 
-						RemoveElement(gelement);
-					}
-				}
+	}
 
+	// arrEvaluationSessions
+	ArrayList GetSessionsByPlayerId( string playerId ) {
+
+		// Debug.Log("GetSessionsByPlayerId( "+ playerId +" )");
+
+		ArrayList arrList = new ArrayList ();
+
+		GameElement el;
+		for (int i=0;i<arrEvaluationSessions.Count;i++) {
+			el = (GameElement) arrEvaluationSessions[i];
+			if (el.evaluationPlayerId.Equals(playerId)) {
+				arrList.Add(el);
+				// Debug.Log(i+". "+el.evaluationSessionId+" added ");
 			}
+		}
 
-			// arrEvaluationSessions
-			ArrayList GetSessionsByPlayerId( string playerId ) {
-				
-				// Debug.Log("GetSessionsByPlayerId( "+ playerId +" )");
-
-				ArrayList arrList = new ArrayList ();
-				
-				GameElement el;
-				for (int i=0;i<arrEvaluationSessions.Count;i++) {
-					el = (GameElement) arrEvaluationSessions[i];
-					if (el.evaluationPlayerId.Equals(playerId)) {
-						arrList.Add(el);
-						// Debug.Log(i+". "+el.evaluationSessionId+" added ");
-					}
-				}
-
-				return arrList;
-			}
+		return arrList;
+	}
 
 	// Level ... 
 
@@ -1319,8 +1619,8 @@ public class LevelEditor : MonoBehaviour {
 
 	public GameElement AddElement(GameElement elem) {
 
-			// get prefab for this element
-			UpdateElementVisual (elem);
+		// get prefab for this element
+		UpdateElementVisual (elem);
 
 		arrLevel.Add (elem);
 		// update here..
@@ -1328,27 +1628,27 @@ public class LevelEditor : MonoBehaviour {
 		return elem;
 	}
 
-		void UpdateElementVisual( GameElement elem ) {
-			
-			GameObject levelObject = GameObject.Find ("level");
+	void UpdateElementVisual( GameElement elem ) {
 
-			if (levelObject == null) {
-				levelObject = new GameObject();
-				levelObject.name="level";
+		GameObject levelObject = GameObject.Find ("level");
+
+		if (levelObject == null) {
+			levelObject = new GameObject();
+			levelObject.name="level";
+		}
+
+		// is there one? remove it ..
+		if (elem != null) {
+			if (elem.gameObject != null) {
+				Destroy (elem.gameObject);
 			}
-
-			// is there one? remove it ..
-			if (elem != null) {
-				if (elem.gameObject != null) {
-					Destroy (elem.gameObject);
-				}
 
 			GameElement elPrefab = GetElementType (elem.type,elem.subtype);
 			if (elPrefab==null) { Debug.Log("Error: Could not find Type("+elem.type+"/"+elem.subtype+")"); return; } 
-				if (elPrefab!=null) { 
-					// Debug.LogError("Could find Type("+elem.type+"/"+elem.subtype+")");
-					// elPrefab.prefabGameObject=
-					// create gameobject
+			if (elPrefab!=null) { 
+				// Debug.LogError("Could find Type("+elem.type+"/"+elem.subtype+")");
+				// elPrefab.prefabGameObject=
+				// create gameobject
 
 				/*
 				 * if (elPrefab.type.Equals ("base")) {
@@ -1356,18 +1656,109 @@ public class LevelEditor : MonoBehaviour {
 					}
 				*/
 
-					// rotation 
-					Quaternion re = new Quaternion();
-					if (elem.rotation!=0.0f) {
-						re = Quaternion.Euler(0, elem.rotation, 0);
+				// rotation 
+				Quaternion re = new Quaternion();
+				if (elem.rotation!=0.0f) {
+					re = Quaternion.Euler(0, elem.rotation, 0);
+				}
+
+				// elPrefab.prefabGameObject // .prefabEditor
+				if (elPrefab.prefabGameObject==null) {
+					// take the dummy object
+					if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor ) {
+						GameObject go=Instantiate(dummyEditorPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+						go.name = "NotFound7";
+						// size
+						if (elem.size!=1.0f) {
+							go.transform.localScale = elem.size * go.transform.localScale;
+						}
+						elem.gameObject=go;
+						if (!elem.name.Equals("")) { go.name=""+elem.name; }
+						go.transform.parent = levelObject.transform; 
+					}
+				}
+
+				// if (elPrefab.prefabGameObject!=null) {
+				if (true) {
+
+					// skyBoxMaterial
+					if (elem.skyBoxMaterial!=null) {
+						// if there is a skybox
+						// Debug.Log("LevelEditor.UpdateElementVisual().AddSkybox");
+						Camera cam = Camera.main;
+						if (cam!=null) {
+							Skybox skyBox = cam.GetComponent<Skybox>();
+							if (skyBox!=null) {
+								skyBox.material = 	elem.skyBoxMaterial	;						
+								RenderSettings.skybox = elem.skyBoxMaterial;
+							}
+						} else {
+							Debug.Log("No cam found!")	;
+						}
+
+						// ambient light in argument
+						RenderSettings.ambientIntensity = 1.0f;
+						if (!elem.argument.Equals("")) {
+							float ambient = float.Parse(elem.argument);
+							RenderSettings.ambientIntensity = ambient;
+						}
+
+
 					}
 
-// elPrefab.prefabGameObject // .prefabEditor
-					if (elPrefab.prefabGameObject==null) {
-						// take the dummy object
-						if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor ) {
-						   GameObject go=Instantiate(dummyEditorPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-							go.name = "NotFound7";
+
+					// special - only in editor?
+					if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor ) {
+
+
+						GameObject go = new GameObject();
+						if (elPrefab.prefabEditorDummyGameObject!=null) {
+
+							//	if (elem.prefabEditorDummyArguments==null) Debug.Log(". LeveLElementOption NULL"+elem.prefabEditorDummyArguments);
+							// else Debug.Log(". LeveLElementOption FOUND!"+elem.prefabEditorDummyArguments);
+
+							// Debug.Log(". LeveLElementOption ??? "+elem.type+" / "+elem.subtype+"  "+elem.argument);
+
+							// argument?
+							// no alternative elements for argument
+							if (elem.prefabEditorDummyArguments==null) {
+								go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+								go.name = "NotFound8";
+
+							} else {
+								// Debug.Log(". LeveLElementOption FOUND! "+elem.argument+" "+elem.prefabEditorDummyArguments);
+
+								bool found=false;
+								LevelElementOption leo;
+								for (int ix = 0; ix < elem.prefabEditorDummyArguments.Length; ix ++) {
+									leo = elem.prefabEditorDummyArguments[ix];
+									// Debug.Log(ix+". LeveLElementOption "+leo.argument+" vs "+elem.argument);
+									if (leo.argument.Equals(elem.argument)) {
+										if (leo.editorPrefab!=null) {
+											found=true;
+											go=Instantiate(leo.editorPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+											go.name = "NotFound9";
+
+										}
+									}
+								} 
+								if (!found) {
+									go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+									go.name = "NotFound";
+								}
+							}
+
+							// size
+							if (elem.size!=1.0f) {
+								go.transform.localScale = elem.size * go.transform.localScale;
+							}
+							elem.gameObject=go;
+							if (!elem.name.Equals("")) { go.name=""+elem.name; }
+							go.transform.parent = levelObject.transform; 
+						} else {
+							go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+							go.name = "NotFoundXYZ";
+
 							// size
 							if (elem.size!=1.0f) {
 								go.transform.localScale = elem.size * go.transform.localScale;
@@ -1376,162 +1767,71 @@ public class LevelEditor : MonoBehaviour {
 							if (!elem.name.Equals("")) { go.name=""+elem.name; }
 							go.transform.parent = levelObject.transform; 
 						}
+
+
+
 					}
-					
-					// if (elPrefab.prefabGameObject!=null) {
-					if (true) {
 
-						// skyBoxMaterial
-						if (elem.skyBoxMaterial!=null) {
-							// if there is a skybox
-							// Debug.Log("LevelEditor.UpdateElementVisual().AddSkybox");
-							Camera cam = Camera.main;
-							if (cam!=null) {
-							Skybox skyBox = cam.GetComponent<Skybox>();
-							if (skyBox!=null) {
-								skyBox.material = 	elem.skyBoxMaterial	;						
-								RenderSettings.skybox = elem.skyBoxMaterial;
-							}
-							} else {
-								Debug.Log("No cam found!")	;
-							}
+					// game ...
 
-							// ambient light in argument
-							RenderSettings.ambientIntensity = 1.0f;
-							if (!elem.argument.Equals("")) {
-								float ambient = float.Parse(elem.argument);
-								RenderSettings.ambientIntensity = ambient;
+					// Debug.Log("Could find Type("+elem.type+"/"+elem.subtype+") has prefab!");
+					if (gameLogic !=null && gameLogic.modal!=GameLogic.GameLogicModal.Editor ) {
+						// Debug.Log("PREFAB");			
+						// Debug.Log ("[LevelEditor] CREATE["+elem.name+"/"+elem.type+"."+elem.subtype+"/"+elem.release+"]");
+
+						// only instiante pure releases (no waits)
+						if (elem.release.Equals ("")) {
+							GameObject go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+							// go.name = "NotFound2";
+
+							// size
+							if (elem.size!=1.0f) {
+								go.transform.localScale = elem.size * go.transform.localScale;
+							}
+							// rotation
+							if (elem.rotation!=0.0f) {
+								//									go.transform.Rotate ();
 							}
 
-							
-						}
-						
+							elem.gameObject=go;
+							go.transform.parent = levelObject.transform; 
+							if (!elem.name.Equals("")) { go.name=""+elem.name; }
 
-						// special - only in editor?
-						if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor ) {
-
-
-							GameObject go = new GameObject();
-							if (elPrefab.prefabEditorDummyGameObject!=null) {
-								
-						 	//	if (elem.prefabEditorDummyArguments==null) Debug.Log(". LeveLElementOption NULL"+elem.prefabEditorDummyArguments);
-							// else Debug.Log(". LeveLElementOption FOUND!"+elem.prefabEditorDummyArguments);
-
-							// Debug.Log(". LeveLElementOption ??? "+elem.type+" / "+elem.subtype+"  "+elem.argument);
-
-								// argument?
-								// no alternative elements for argument
-								if (elem.prefabEditorDummyArguments==null) {
-									go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-									go.name = "NotFound8";
-
-								} else {
-								// Debug.Log(". LeveLElementOption FOUND! "+elem.argument+" "+elem.prefabEditorDummyArguments);
-
-									bool found=false;
-									LevelElementOption leo;
-									for (int ix = 0; ix < elem.prefabEditorDummyArguments.Length; ix ++) {
-										leo = elem.prefabEditorDummyArguments[ix];
-										// Debug.Log(ix+". LeveLElementOption "+leo.argument+" vs "+elem.argument);
-										if (leo.argument.Equals(elem.argument)) {
-											if (leo.editorPrefab!=null) {
-												found=true;
-												go=Instantiate(leo.editorPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-												go.name = "NotFound9";
-
-											}
-										}
-									} 
-									if (!found) {
-										go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-										go.name = "NotFound";
-									}
-								}
-
-								// size
-								if (elem.size!=1.0f) {
-									go.transform.localScale = elem.size * go.transform.localScale;
-								}
-								elem.gameObject=go;
-								if (!elem.name.Equals("")) { go.name=""+elem.name; }
-								go.transform.parent = levelObject.transform; 
-							} else {
-								go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-								go.name = "NotFoundXYZ";
-	
-								// size
-								if (elem.size!=1.0f) {
-									go.transform.localScale = elem.size * go.transform.localScale;
-								}
-								elem.gameObject=go;
-								if (!elem.name.Equals("")) { go.name=""+elem.name; }
-								go.transform.parent = levelObject.transform; 
-							}
-
-
-
-						}
-						
-						// game ...
-						
-						// Debug.Log("Could find Type("+elem.type+"/"+elem.subtype+") has prefab!");
-						if (gameLogic !=null && gameLogic.modal!=GameLogic.GameLogicModal.Editor ) {
-// Debug.Log("PREFAB");			
-							// Debug.Log ("[LevelEditor] CREATE["+elem.name+"/"+elem.type+"."+elem.subtype+"/"+elem.release+"]");
-						
-							// only instiante pure releases (no waits)
-							if (elem.release.Equals ("")) {
-								GameObject go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-								// go.name = "NotFound2";
-
-								// size
-								if (elem.size!=1.0f) {
-									go.transform.localScale = elem.size * go.transform.localScale;
-								}
-								// rotation
-								if (elem.rotation!=0.0f) {
-//									go.transform.Rotate ();
-								}
-
-								elem.gameObject=go;
-								go.transform.parent = levelObject.transform; 
-								if (!elem.name.Equals("")) { go.name=""+elem.name; }
-
-/*
+							/*
 								// register if type is player
-								// player1/player2
-								if (elem.subtype.Equals ("player1")) {
-									if (go!=null) {
-										gameLogic.RegisterPlayerForRunning(go,1);
-									}
+							// player1/player2
+							if (elem.subtype.Equals ("player1")) {
+								if (go!=null) {
+									gameLogic.RegisterPlayerForRunning(go,1);
 								}
-								if (elem.subtype.Equals ("player2")) {
-									if (go!=null) {
-										gameLogic.RegisterPlayerForRunning(go,2);
-									}
+							}
+							if (elem.subtype.Equals ("player2")) {
+								if (go!=null) {
+									gameLogic.RegisterPlayerForRunning(go,2);
 								}
-*/
-								// specials arguments
-								string argument = elem.argument;
-								TriggerBase trb = go.GetComponent<TriggerBase>();
-								// Debug.Log ("---"+trb.ToString ());
-								if (trb!=null) {
-									trb.SetGameElement( elem );
-									// trb.SetGameElementArgument(argument);
-									// Debug.Log ("ARGUMENT 2: "+trb.argument);
-								}
+							}
+							*/
+							// specials arguments
+							string argument = elem.argument;
+							TriggerBase trb = go.GetComponent<TriggerBase>();
+							// Debug.Log ("---"+trb.ToString ());
+							if (trb!=null) {
+								trb.SetGameElement( elem );
+								// trb.SetGameElementArgument(argument);
+								// Debug.Log ("ARGUMENT 2: "+trb.argument);
+							}
 
-								argument = elem.argument;
-								GameElementBased geb = go.GetComponent<GameElementBased>();
-								// Debug.Log ("---"+trb.ToString ());
-								if (geb!=null) {
-									geb.SetGameElement( elem );
-									// trb.SetGameElementArgument(argument);
-									// Debug.Log ("ARGUMENT 2: "+trb.argument);
-								}
+							argument = elem.argument;
+							GameElementBased geb = go.GetComponent<GameElementBased>();
+							// Debug.Log ("---"+trb.ToString ());
+							if (geb!=null) {
+								geb.SetGameElement( elem );
+								// trb.SetGameElementArgument(argument);
+								// Debug.Log ("ARGUMENT 2: "+trb.argument);
+							}
 
-								// action notification
-								/*
+							// action notification
+							/*
 								ActionNotification acn = go.GetComponent<ActionNotification>();
 								if (acn!=null) {
 									if (!argument.Equals ("")) {
@@ -1542,19 +1842,19 @@ public class LevelEditor : MonoBehaviour {
 								}
 								*/
 
-								// Debug.Log("Could find Type("+elem.type+"/"+elem.subtype+").AddedAt("+elem.position.x+","+elem.position.y+","+elem.position.z+")");
-							}
+							// Debug.Log("Could find Type("+elem.type+"/"+elem.subtype+").AddedAt("+elem.position.x+","+elem.position.y+","+elem.position.z+")");
 						}
 					}
 				}
 			}
+		}
 
-		
+
 	}
 
 	// only deactivate it!!
 	public void DeactivateElement( GameElement elem ) {
-			if (elem != null) {
+		if (elem != null) {
 			elem.release = "wait";
 			if (elem.gameObject != null)
 				Destroy (elem.gameObject);
@@ -1732,19 +2032,19 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 	}
-		// update to 
-		void SetSelectedElementToGUI() {
-			//editDetailX = ""+ editorSelected.position.x;
-			//editDetailY = ""+ editorSelected.position.y;
-			editDetailName = ""+ editorSelected.name;
-			editDetailArgument = ""+ editorSelected.argument;
-			editDetailArgumentSub = "" + editorSelected.argumentsub;
-		}
+	// update to 
+	void SetSelectedElementToGUI() {
+		//editDetailX = ""+ editorSelected.position.x;
+		//editDetailY = ""+ editorSelected.position.y;
+		editDetailName = ""+ editorSelected.name;
+		editDetailArgument = ""+ editorSelected.argument;
+		editDetailArgumentSub = "" + editorSelected.argumentsub;
+	}
 	void StoreSelectedElement(  ) {
 		SetSelectedElementFromGUI ();
 	}
-		// update to 
-		void SetSelectedElementFromGUI() {
+	// update to 
+	void SetSelectedElementFromGUI() {
 		//		editDetailSelected.position.x=editDetailX;
 		// editorDetailSelected.position.x=editDetailY;
 		editorSelected.name=editDetailName;
@@ -1753,7 +2053,7 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	// special tools: edit
-  /*
+	/*
 	string editDetailX="";
 	string editDetailY="";
   */
@@ -1762,7 +2062,7 @@ public class LevelEditor : MonoBehaviour {
 	string editDetailName="";
 	string editDetailArgument="";
 	string editDetailArgumentSub = "";
-	
+
 	// special tools: move
 	string editorToolMove="";
 
@@ -1811,7 +2111,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		if (preview!=null) {
-			
+
 
 			// Debug.Log("SetEditorPreviewToPrefab(){ preFabFound = "+prefab+" }");
 
@@ -1853,7 +2153,7 @@ public class LevelEditor : MonoBehaviour {
 		EmptyEditorCursorPreview();
 
 		if (preview!=null) {
-			
+
 
 			// Debug.Log("SetEditorPreviewToPrefab(){ preFabFound = "+prefab+" }");
 
@@ -1895,35 +2195,35 @@ public class LevelEditor : MonoBehaviour {
 	public GUIStyle editorBackground;
 	public GUIStyle editorInspectorBackground;
 
-	    public GUIStyle editorButtonStyle;
-		public GUIStyle editorButtonStyleBig;
-		public GUIStyle editorButtonStyleNotActive;
-		public GUIStyle editorButtonActiveStyle;
+	public GUIStyle editorButtonStyle;
+	public GUIStyle editorButtonStyleBig;
+	public GUIStyle editorButtonStyleNotActive;
+	public GUIStyle editorButtonActiveStyle;
 
-		public GUIStyle editorSwitchButtonStyle;
-		public GUIStyle editorSwitchButtonStyleActive;
+	public GUIStyle editorSwitchButtonStyle;
+	public GUIStyle editorSwitchButtonStyleActive;
 
-		public GUIStyle editorButtonTypeStyle;
-		public GUIStyle editorButtonTypeStyleNotActive;
-		public GUIStyle editorButtonTypeSubStyle;
-		public GUIStyle editorButtonTypeSubStyleNotActive;
+	public GUIStyle editorButtonTypeStyle;
+	public GUIStyle editorButtonTypeStyleNotActive;
+	public GUIStyle editorButtonTypeSubStyle;
+	public GUIStyle editorButtonTypeSubStyleNotActive;
 
-		
+
 	//	public GUIStyle editorDeleteStyle;
-		public GUIStyle editorComment;
+	public GUIStyle editorComment;
 
-		public GUIStyle editorIconGUI;
+	public GUIStyle editorIconGUI;
 
-		public GUIStyle editorElementType;
+	public GUIStyle editorElementType;
 
-		public GUIStyle guiEvaluation;
-		
-		public Texture2D editorEditImage;
-		public Texture2D editorSelectedImage;
-		public Texture2D editorMoveImage;
-		public Texture2D editorDeleteImage;
+	public GUIStyle guiEvaluation;
 
-		public Texture2D editorAffectedImage;
+	public Texture2D editorEditImage;
+	public Texture2D editorSelectedImage;
+	public Texture2D editorMoveImage;
+	public Texture2D editorDeleteImage;
+
+	public Texture2D editorAffectedImage;
 
 
 	// Insert & delete line
@@ -1933,11 +2233,11 @@ public class LevelEditor : MonoBehaviour {
 
 	void UpdateVerticalLinePos() {
 
-			// linePos=scroll-3.0f+lineWidth;
-			linePos = editorCursorActualPoint.x;
-			linePosZ = editorCursorActualPoint.z;
+		// linePos=scroll-3.0f+lineWidth;
+		linePos = editorCursorActualPoint.x;
+		linePosZ = editorCursorActualPoint.z;
 
-		}
+	}
 
 	void InsertVerticalLine() {
 		UpdateVerticalLinePos ();
@@ -2004,21 +2304,23 @@ public class LevelEditor : MonoBehaviour {
 
 	void LoadLevel( int level  ) {
 
-			SetSelectedElement(null);
+		SetSelectedElement(null);
 
-			LoadLevel(level, "", "" ); // load a level raw
+		ClearLevel();
 
-			historyIndexMinus = 0;
+		LoadLevel(level, "", "" ); // load a level raw
 
-			SetSelectedElement(null);
+		historyIndexMinus = 0;
 
-			// update 
-			UpdateShowEvaluationData ();
+		SetSelectedElement(null);
 
-			Debug.Log("gameLogic: "+gameLogic);
-			if (gameLogic && gameLogic.modal == GameLogic.GameLogicModal.Editor) {
-				AddToEditorHistory("LoadLevel");
-			}
+		// update 
+		UpdateShowEvaluationData ();
+
+		Debug.Log("gameLogic: "+gameLogic);
+		if (gameLogic && gameLogic.modal == GameLogic.GameLogicModal.Editor) {
+			AddToEditorHistory("LoadLevel");
+		}
 	}
 
 	void LoadEvaluationLevels( ) {
@@ -2045,10 +2347,10 @@ public class LevelEditor : MonoBehaviour {
 
 				// editorEvaluationSessionId
 				if (editorEvaluationFilter.Equals("player.session")) {
-					
+
 					// Debug.Log("editorEvaluationPlayerId: player.session "+editorEvaluationPlayerId);
 					match = Regex.Match(fileN, @"level"+actualLevel+"_("+editorEvaluationPlayerId+")_("+editorEvaluationSessionId+").", RegexOptions.IgnoreCase);
-					
+
 				}
 
 			}
@@ -2056,18 +2358,18 @@ public class LevelEditor : MonoBehaviour {
 			// Here we check the Match instance.
 			if (match.Success)
 			{
-			    // Finally, we get the Group value and display it.
-			    string playerId = match.Groups[1].Value;
-			    string sessionId = match.Groups[2].Value;
-			    // Debug.Log("-"+i+". FOUND: ("+playerId+"/"+sessionId+")");
+				// Finally, we get the Group value and display it.
+				string playerId = match.Groups[1].Value;
+				string sessionId = match.Groups[2].Value;
+				// Debug.Log("-"+i+". FOUND: ("+playerId+"/"+sessionId+")");
 
-			    LoadLevel ( actualLevel, playerId, sessionId );
+				LoadLevel ( actualLevel, playerId, sessionId );
 			}
 		}
 
 		// search web
 
-		
+
 	}
 
 	// playerId, sessionId
@@ -2081,48 +2383,52 @@ public class LevelEditor : MonoBehaviour {
 		editorLogText = ""+DateTime.Now.ToString("LOADED: HH:mm:ss");
 
 		// add evaluation 
- 		string addEvaluationsFolder = ""; // all 
+		string addEvaluationsFolder = ""; // all 
 		string addFileNameAddOn = "";		
 		if (flagEvaluationTemp) {
 			addEvaluationsFolder = evaluationFolder+Path.DirectorySeparatorChar; 
 			addFileNameAddOn = "_"+playerId+"_"+sessionId;
 		}
 
-	//	try {
-			
-			string jsonText = System.IO.File.ReadAllText( addEvaluationsFolder+ "level"+level+addFileNameAddOn+".txt");
+		try {
+
+			string remoteAddOnPath = "";
+			if (CheckLevelTypeWeb()) {
+				remoteAddOnPath = GetRemotePath();
+			}
+			string jsonText = System.IO.File.ReadAllText( remoteAddOnPath+addEvaluationsFolder+ "level"+level+addFileNameAddOn+".txt");
 			JSONObject jsonObj = new JSONObject(jsonText);
 			// array
 			// Debug.Log ("Load().Size="+jsonObj.list.Count);
 			foreach(JSONObject listObj in jsonObj.list){
 				GameElement ge=new GameElement();
-					// get the default members
-					GameElement typege=new GameElement();
-								typege.GetObjectFromJSON(listObj);
+				// get the default members
+				GameElement typege=new GameElement();
+				typege.GetObjectFromJSON(listObj);
 
-					// ingame 
-					GameElement gaType = GetElementType ( typege.type, typege.subtype );
-					if (gaType != null) {
-						ge = gaType.Copy ();
-						ge.GetObjectFromJSON(listObj);
-					}
-					
+				// ingame 
+				GameElement gaType = GetElementType ( typege.type, typege.subtype );
+				if (gaType != null) {
+					ge = gaType.Copy ();
+					ge.GetObjectFromJSON(listObj);
+				}
+
 				// add it
 				bool flagAdd = false;
 				if (!flagEvaluationTemp) { if (!ge.type.Equals ("evaluation")) { flagAdd=true; } }
 				if (flagEvaluationTemp) { if (ge.type.Equals ("evaluation")) { flagAdd=true; } } 
 				if (flagAdd) {
-						AddElement (ge);
+					AddElement (ge);
 				}
 			}
 
 			// save it now ... 
 			SaveLevel ( 2001 );
 
-	//	} catch( Exception e ) {
-	//		Debug.LogWarning("_LevelEditor.LoadGameLevel() // CouldNotLoadLevel "+level );
-		//	}
-		
+		} catch( Exception e ) {
+			Debug.LogWarning("_LevelEditor.LoadGameLevel() // CouldNotLoadLevel "+level );
+		}
+
 		// update visualisation
 		UpdateRelationVisualisationAndCheckError ();
 	}
@@ -2149,7 +2455,7 @@ public class LevelEditor : MonoBehaviour {
 
 					// version 1.0
 					// flagSave=true; 
-				
+
 					if (gelement.evaluationPlayerId.Equals(evaluationPlayer.playerId)) {
 						if (gelement.evaluationSessionId==evaluationPlayer.sessionId) {
 							flagSave=true; 
@@ -2157,8 +2463,8 @@ public class LevelEditor : MonoBehaviour {
 					}
 
 				} 
-			
-			
+
+
 			} 
 			if (flagSave) {
 				JSONObject gelementJSON=gelement.GetJSONObject();
@@ -2185,7 +2491,16 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		// write
-		System.IO.File.WriteAllText(evaluationFolderAddOn+"level"+level+fileEvaluationAddOn+".txt",""+encodedString);
+
+		// add on for web
+		// remoteAreaEdit+"/"+remoteAutorEdit
+		string remoteAddOnPath = "";
+		if (CheckLevelTypeWeb()) {
+			remoteAddOnPath = GetRemotePath();
+		}
+		System.IO.File.WriteAllText(remoteAddOnPath+evaluationFolderAddOn+"level"+level+fileEvaluationAddOn+".txt",""+encodedString);
+
+
 
 		// save to file ...
 		if (!iflagEvaluation) {
@@ -2225,7 +2540,7 @@ public class LevelEditor : MonoBehaviour {
 
 
 		}
-		
+
 	}
 
 	// camera
@@ -2254,7 +2569,7 @@ public class LevelEditor : MonoBehaviour {
 
 	Vector3 positionReset;
 	Quaternion rotationReset;
-	
+
 	// Use this for initialization
 	void Start () {
 
@@ -2338,13 +2653,13 @@ public class LevelEditor : MonoBehaviour {
 		if ((mouseX>filterTypeVisual.x)&&(mouseX<(filterTypeVisual.x+filterTypeVisual.width))
 			&&
 			(mouseY>filterTypeVisual.y)&&(mouseY<(filterTypeVisual.y+filterTypeVisual.height))) {
-				return true;
+			return true;
 		}
 		if ((mouseX>filterTypeSubVisual.x)&&(mouseX<(filterTypeSubVisual.x+filterTypeSubVisual.width))
 			&&
-				(mouseY>filterTypeSubVisual.y)&&(mouseY<(filterTypeSubVisual.y+filterTypeSubVisual.height))) {
-				return true;
-			}
+			(mouseY>filterTypeSubVisual.y)&&(mouseY<(filterTypeSubVisual.y+filterTypeSubVisual.height))) {
+			return true;
+		}
 
 		if ((mouseX>selectionDialogeVisual.x)&&(mouseX<(selectionDialogeVisual.x+selectionDialogeVisual.width))
 			&&
@@ -2529,7 +2844,7 @@ public class LevelEditor : MonoBehaviour {
 			HandleMouseDownToCreate();
 		}
 
-		
+
 		// SWITCH BETWEEN EDITOR/GAME
 		GUIStyle guixt = editorSwitchButtonStyle;
 
@@ -2540,142 +2855,118 @@ public class LevelEditor : MonoBehaviour {
 
 		// GAME
 		if (gameLogic!=null) {
-		if (gameLogic.modal == GameLogic.GameLogicModal.Running) {
-			guixt = editorSwitchButtonStyleActive ;
-		}
-		if (GUI.Button (new Rect (Screen.width - 160, 0, 80, 20), "GAME", guixt)) {
+			if (gameLogic.modal == GameLogic.GameLogicModal.Running) {
+				guixt = editorSwitchButtonStyleActive ;
+			}
+			if (GUI.Button (new Rect (Screen.width - 160, 0, 80, 20), "GAME", guixt)) {
 				ActivateCursorPreview(false);
 				// deactivate all items of the editor 
 				// for example: previews!
 				SetSelectedElement( null );
 				gameLogic.SetGameState( GameLogic.GameLogicModal.Running );
 
-		}
-
-		// EDITOR
-		guixt = editorSwitchButtonStyle;
-		if (gameLogic.modal == GameLogic.GameLogicModal.Editor) {
-			guixt = editorSwitchButtonStyleActive ;
-
-			// default?
-			if (!CountElementsTypeIndexOf("directlight")) { 
-				GUI.Label (new Rect (10, Screen.height*0.5f-24, 500, 20), "1. NO DIRECT LIGHT IN SCENE! USE DEFAULT >> ADD ONE UNDER /ENV/ ", guixt);
 			}
 
-			// default?
-			if (!CountElementsTypeIndexOf("player")) { 
-				GUI.Label (new Rect (10, Screen.height*0.5f, 500, 20), "2. NO PLAYER > ADD ONE > /PLAYER/. ", guixt);
-			}
+			// EDITOR
+			guixt = editorSwitchButtonStyle;
+			if (gameLogic.modal == GameLogic.GameLogicModal.Editor) {
+				guixt = editorSwitchButtonStyleActive ;
 
-			// default?
-			if (!CountElementsTypeIndexOf("ingamecontroller")) { 
-				GUI.Label (new Rect (10, Screen.height*0.5f+24, 500, 20), "3. NO GAMELOGIC CONTROLLER > ADD ONE > /BASE/GAME... ", guixt);
-			}
+				// default?
+				if (!CountElementsTypeIndexOf("directlight")) { 
+					GUI.Label (new Rect (10, Screen.height*0.5f-24, 500, 20), "1. NO DIRECT LIGHT IN SCENE! USE DEFAULT >> ADD ONE UNDER /ENV/ ", guixt);
+				}
 
-			// messages
-			for (int a=0; a<arrEditorMessages.Count; a++) {
+				// default?
+				if (!CountElementsTypeIndexOf("player")) { 
+					GUI.Label (new Rect (10, Screen.height*0.5f, 500, 20), "2. NO PLAYER > ADD ONE > /PLAYER/. ", guixt);
+				}
+
+				// default?
+				if (!CountElementsTypeIndexOf("ingamecontroller")) { 
+					GUI.Label (new Rect (10, Screen.height*0.5f+24, 500, 20), "3. NO GAMELOGIC CONTROLLER > ADD ONE > /BASE/GAME... ", guixt);
+				}
+
+				// messages
+				for (int a=0; a<arrEditorMessages.Count; a++) {
 					LevelEditorMessage msgObj = (LevelEditorMessage)arrEditorMessages [a];
 					GUI.Label (new Rect (10, Screen.height*0.5f+60+a*22, 500, 20), ""+msgObj.message, guixt);
-						
-			}
 
-			// check for ..
-			// msgx.timeToStayTill 
-			if (arrEditorMessages.Count>0)
-			for (int a=arrEditorMessages.Count-1;a>=0; a--) {
-				LevelEditorMessage msgObj = (LevelEditorMessage)arrEditorMessages [a];
-				if (msgObj.timeToStayTill<Time.time) {
-					arrEditorMessages.Remove(msgObj);
 				}
+
+				// check for ..
+				// msgx.timeToStayTill 
+				if (arrEditorMessages.Count>0)
+					for (int a=arrEditorMessages.Count-1;a>=0; a--) {
+						LevelEditorMessage msgObj = (LevelEditorMessage)arrEditorMessages [a];
+						if (msgObj.timeToStayTill<Time.time) {
+							arrEditorMessages.Remove(msgObj);
+						}
+					}
+
+			}
+			if (GUI.Button (new Rect (Screen.width -160 + 80, 0, 80, 20), "EDITOR", guixt)) {
+				gameLogic.SetGameState( GameLogic.GameLogicModal.Editor );
+				ActivateCursorPreview(true);
 			}
 
-		}
-		if (GUI.Button (new Rect (Screen.width -160 + 80, 0, 80, 20), "EDITOR", guixt)) {
-			gameLogic.SetGameState( GameLogic.GameLogicModal.Editor );
-			ActivateCursorPreview(true);
-		}
-	
-		
-		// get latest
-		// version
+
+			// get latest
+			// version
 			float ver = gameLogic.GetVersionGame();
 			if (gameLogic.modal == GameLogic.GameLogicModal.Editor) ver = gameLogic.GetVersionEditor();
-		if (GUI.Button (new Rect (Screen.width - 260, 0, 80, 20), " v."+ver, editorSwitchButtonStyle)) {
-			
-		}
+			if (GUI.Button (new Rect (Screen.width - 260, 0, 80, 20), " v."+ver, editorSwitchButtonStyle)) {
 
-		/*
+			}
+
+			/*
 		 *  NOTIFICATION CENTER
 		 * 
 		 * */
-		// NOTIFICATIONS
-		if (notificationDialog) {
-			notificationDialogX = (int) (Screen.width * 0.6f);
-			notificationDialogY = (int) (Screen.height * 0.3f);
-			notificationVisual.x = notificationDialogX;
-			notificationVisual.y = notificationDialogY;
-			notificationVisual.width = 150;
-			// notificationVisual.height = 50;
-			GUI.Label ( new Rect(notificationVisual.x-5,notificationVisual.y-5,notificationVisual.width+10,notificationVisual.height+10), "", editorBackground);
+			// NOTIFICATIONS
+			if (notificationDialog) {
+				notificationDialogX = (int) (Screen.width * 0.6f);
+				notificationDialogY = (int) (Screen.height * 0.3f);
+				notificationVisual.x = notificationDialogX;
+				notificationVisual.y = notificationDialogY;
+				notificationVisual.width = 150;
+				// notificationVisual.height = 50;
+				GUI.Label ( new Rect(notificationVisual.x-5,notificationVisual.y-5,notificationVisual.width+10,notificationVisual.height+10), "", editorBackground);
 
-			int notificationDialogXTmp = notificationDialogX;
-			int notificationDialogYTmp = notificationDialogY;
+				int notificationDialogXTmp = notificationDialogX;
+				int notificationDialogYTmp = notificationDialogY;
 
-			ArrayList arr = notificationCenter.GetNotificationTypesUnique();
+				ArrayList arr = notificationCenter.GetNotificationTypesUnique();
 
-			if (GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), "ALL NOTIFICATIONS *.* ", editorButtonActiveStyle)) {
-				notificationArea = "";
-			}
-			notificationDialogYTmp = notificationDialogYTmp + 22;
-
-			strNotification = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+strNotification, editorButtonActiveStyle) ;
-			notificationDialogYTmp = notificationDialogYTmp + 22;
-
-			notificationDialogYTmp = notificationDialogYTmp + 3;
-
-			if (arr.Count>0)
-				for (int i=0;i<arr.Count; i++) {
-					Notification nt = (Notification)arr [i];
-					string text = "" + nt.type+".*";
-					GUIStyle guix = editorButtonStyleNotActive;
-					// if (editorSelected==gae) guix = editorButtonActiveStyle;
-					bool flagShow = true;
-					if (!notificationArea.Equals("")) {
-						if (!notificationArea.Equals(nt.type)) {
-							flagShow = false;
-						} else {
-							guix = editorButtonActiveStyle;			
-						}
-					}
-					if (flagShow) {
-						bool buttonClicked = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+text+"", guix);
-						if (buttonClicked) {
-							notificationArea = nt.type;
-							notificationAreaSub = "";
-							strNotification = notificationArea+"."+notificationAreaSub;
-						}
-						notificationDialogYTmp = notificationDialogYTmp + 22;
-					}
-
-					// counter++;
-					// if (counter>5) break;
+				if (GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), "ALL NOTIFICATIONS *.* ", editorButtonActiveStyle)) {
+					notificationArea = "";
 				}
+				notificationDialogYTmp = notificationDialogYTmp + 22;
 
-			notificationDialogYTmp = notificationDialogYTmp + 5;
+				strNotification = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+strNotification, editorButtonActiveStyle) ;
+				notificationDialogYTmp = notificationDialogYTmp + 22;
 
-			if (!notificationArea.Equals("")) {
-				ArrayList arrxy = notificationCenter.GetNotificationTypes(notificationArea);
-				if (arrxy.Count>0)
-					for (int i=0;i<arrxy.Count; i++) {
-						Notification nt = (Notification)arrxy [i];
-						string text = "" + nt.type+"."+nt.subtype;
+				notificationDialogYTmp = notificationDialogYTmp + 3;
+
+				if (arr.Count>0)
+					for (int i=0;i<arr.Count; i++) {
+						Notification nt = (Notification)arr [i];
+						string text = "" + nt.type+".*";
 						GUIStyle guix = editorButtonStyleNotActive;
+						// if (editorSelected==gae) guix = editorButtonActiveStyle;
 						bool flagShow = true;
-						if (nt.subtype.Equals(notificationAreaSub)) guix = editorButtonActiveStyle;			
+						if (!notificationArea.Equals("")) {
+							if (!notificationArea.Equals(nt.type)) {
+								flagShow = false;
+							} else {
+								guix = editorButtonActiveStyle;			
+							}
+						}
 						if (flagShow) {
-							bool buttonClicked = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), " "+text+"", guix);
+							bool buttonClicked = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+text+"", guix);
 							if (buttonClicked) {
-								notificationAreaSub = nt.subtype;
+								notificationArea = nt.type;
+								notificationAreaSub = "";
 								strNotification = notificationArea+"."+notificationAreaSub;
 							}
 							notificationDialogYTmp = notificationDialogYTmp + 22;
@@ -2684,398 +2975,422 @@ public class LevelEditor : MonoBehaviour {
 						// counter++;
 						// if (counter>5) break;
 					}
-			}
 
-			notificationVisual.height = notificationDialogYTmp - notificationDialogY;
+				notificationDialogYTmp = notificationDialogYTmp + 5;
 
-			// NOTIFICATION TESTER
+				if (!notificationArea.Equals("")) {
+					ArrayList arrxy = notificationCenter.GetNotificationTypes(notificationArea);
+					if (arrxy.Count>0)
+						for (int i=0;i<arrxy.Count; i++) {
+							Notification nt = (Notification)arrxy [i];
+							string text = "" + nt.type+"."+nt.subtype;
+							GUIStyle guix = editorButtonStyleNotActive;
+							bool flagShow = true;
+							if (nt.subtype.Equals(notificationAreaSub)) guix = editorButtonActiveStyle;			
+							if (flagShow) {
+								bool buttonClicked = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), " "+text+"", guix);
+								if (buttonClicked) {
+									notificationAreaSub = nt.subtype;
+									strNotification = notificationArea+"."+notificationAreaSub;
+								}
+								notificationDialogYTmp = notificationDialogYTmp + 22;
+							}
 
-			notificationDialogX = (int) (Screen.width * 0.2f) + 220;
-			notificationDialogY = (int) (Screen.height * 0.2f);
-			// GUI.Label ( new Rect(notificationVisual.x-5,notificationVisual.y-5,notificationVisual.width+10,notificationVisual.height+10), "", editorBackground);
-			notificationDialogXTmp = notificationDialogX;
-			notificationDialogYTmp = notificationDialogY;
-
-			if (notificationTesterAndHistory) {
-				bool buttonClickedX = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), "ADD NOTIFICATION", editorButtonActiveStyle);
-				if (buttonClickedX) {
-					float timed = float.Parse( fieldTimed );
-					notificationCenter.AddNotification(fieldType,fieldTypeSub,fieldTarget,timed,fieldArgument, new Vector3());
+							// counter++;
+							// if (counter>5) break;
+						}
 				}
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-				fieldType = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldType, editorButtonStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-				fieldTypeSub = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTypeSub, editorButtonStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-				fieldTarget = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTarget, editorButtonStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-				fieldTimed = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTimed, editorButtonStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
-				fieldArgument = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldArgument, editorButtonStyle) ;
-				notificationDialogYTmp = notificationDialogYTmp + 22;
 
-				// add history ...
-				// Debug.Log("LevelEditor.OnGUI(); // "+notificationCenter.arrNotificationPipline.Count);
-				notificationDialogYTmp = notificationDialogYTmp + 22;
+				notificationVisual.height = notificationDialogYTmp - notificationDialogY;
 
-				if (notificationCenter.arrNotificationPipline.Count>0) {
-					for (int i=(notificationCenter.arrNotificationPipline.Count-1);i>=0;i--) {
-						Notification nt = (Notification)notificationCenter.arrNotificationPipline [i];
-						string text = "[" + nt.state+"] "+nt.type+"/"+nt.subtype+" {>"+nt.targetName+"} "+nt.argument+" ("+nt.timed+")";
-						GUIStyle guix = editorButtonStyleNotActive;
-						GUI.Label (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width*2, 20), " "+text+"", guix);
-						notificationDialogYTmp = notificationDialogYTmp + 22;
+				// NOTIFICATION TESTER
+
+				notificationDialogX = (int) (Screen.width * 0.2f) + 220;
+				notificationDialogY = (int) (Screen.height * 0.2f);
+				// GUI.Label ( new Rect(notificationVisual.x-5,notificationVisual.y-5,notificationVisual.width+10,notificationVisual.height+10), "", editorBackground);
+				notificationDialogXTmp = notificationDialogX;
+				notificationDialogYTmp = notificationDialogY;
+
+				if (notificationTesterAndHistory) {
+					bool buttonClickedX = GUI.Button (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), "ADD NOTIFICATION", editorButtonActiveStyle);
+					if (buttonClickedX) {
+						float timed = float.Parse( fieldTimed );
+						notificationCenter.AddNotification(fieldType,fieldTypeSub,fieldTarget,timed,fieldArgument, new Vector3());
+					}
+					notificationDialogYTmp = notificationDialogYTmp + 22;
+					fieldType = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldType, editorButtonStyle) ;
+					notificationDialogYTmp = notificationDialogYTmp + 22;
+					fieldTypeSub = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTypeSub, editorButtonStyle) ;
+					notificationDialogYTmp = notificationDialogYTmp + 22;
+					fieldTarget = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTarget, editorButtonStyle) ;
+					notificationDialogYTmp = notificationDialogYTmp + 22;
+					fieldTimed = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldTimed, editorButtonStyle) ;
+					notificationDialogYTmp = notificationDialogYTmp + 22;
+					fieldArgument = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+fieldArgument, editorButtonStyle) ;
+					notificationDialogYTmp = notificationDialogYTmp + 22;
+
+					// add history ...
+					// Debug.Log("LevelEditor.OnGUI(); // "+notificationCenter.arrNotificationPipline.Count);
+					notificationDialogYTmp = notificationDialogYTmp + 22;
+
+					if (notificationCenter.arrNotificationPipline.Count>0) {
+						for (int i=(notificationCenter.arrNotificationPipline.Count-1);i>=0;i--) {
+							Notification nt = (Notification)notificationCenter.arrNotificationPipline [i];
+							string text = "[" + nt.state+"] "+nt.type+"/"+nt.subtype+" {>"+nt.targetName+"} "+nt.argument+" ("+nt.timed+")";
+							GUIStyle guix = editorButtonStyleNotActive;
+							GUI.Label (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width*2, 20), " "+text+"", guix);
+							notificationDialogYTmp = notificationDialogYTmp + 22;
+						}
 					}
 				}
-			}
 
-		}
+			}
 
 			/*
 			 *  SCENE RENDERING (ICONS ETC.)
 			 * 
 			 * */
 
-		if (gameLogic.modal == GameLogic.GameLogicModal.Editor) {
-				
-			// visualize the objects with no gameobject
-			float mouseX=Input.mousePosition.x;
-			float mouseY=Screen.height-Input.mousePosition.y;
+			if (gameLogic.modal == GameLogic.GameLogicModal.Editor) {
 
-			if (arrLevel.Count>0)
-				for (int i=0; i<arrLevel.Count; i++) {
-					GameElement gaelement = (GameElement)arrLevel [i];
+				// visualize the objects with no gameobject
+				float mouseX=Input.mousePosition.x;
+				float mouseY=Screen.height-Input.mousePosition.y;
 
-					if (Camera.main==null) {
-						Debug.Log("No Main Camera!");
-						break;
-					}
+				if (arrLevel.Count>0)
+					for (int i=0; i<arrLevel.Count; i++) {
+						GameElement gaelement = (GameElement)arrLevel [i];
 
-					// display or not? filters
-					if (!filterType.Equals("*")) {
-						if (!gaelement.type.Equals(filterType)) {
-							continue;
-						}	
-						if (!filterTypeSub.Equals("*")) {
-							if (!gaelement.subtype.Equals(filterTypeSub)) {
+						if (Camera.main==null) {
+							Debug.Log("No Main Camera!");
+							break;
+						}
+
+						// display or not? filters
+						if (!filterType.Equals("*")) {
+							if (!gaelement.type.Equals(filterType)) {
 								continue;
 							}	
-						}
-					}
-
-					// screen pos
-					Camera cam  = Camera.main;
-					cam = GameObject.Find ("editorcamera").GetComponent<Camera>();
-					Vector3 screenPos = cam.WorldToScreenPoint (gaelement.position);
-
-					// visible?
-					// if (!GameElementInEditor(screenPos.x,screenPos.y))
-					if ((screenPos.x > 0) && (screenPos.x < Screen.width)) 
-					if ((screenPos.y > 0) && (screenPos.y < Screen.height)) 
-					{
-
-
-						// default infos 
-						// like name & argument
-						bool showInfo=false;
-						string textInfo="";
-						if (!gaelement.name.Equals ("")) { showInfo=true; textInfo=textInfo+"#"+gaelement.name+""; } 
-						if (!gaelement.argument.Equals ("")) { showInfo=true; if (!textInfo.Equals ("")) textInfo=textInfo+" "; /* textInfo=textInfo+"{"+gaelement.argument+"}"; */ } 
-
-						// info here 
-						string waiting ="";
-						if (gaelement.release.Equals ("wait")) {
-							waiting = waiting+"[-]";
-						}
-						string strType="";
-						if (cameraOverlayTypes) {
-							// strType = ""+gaelement.type+"\n -"+gaelement.subtype;
-							strType = ""+gaelement.subtype;
-						}
-						if (!showInfo) {
-							GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y , 200, 80),""+waiting+" "+strType,editorElementType );
-						}
-						if (showInfo) {
-							// GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y, 200, 80),+"        "+strType,editorElementType );
-							string str = textInfo;
-							if (str.Equals("")) {
-								str = strType;
+							if (!filterTypeSub.Equals("*")) {
+								if (!gaelement.subtype.Equals(filterTypeSub)) {
+									continue;
+								}	
 							}
-							GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y, 200, 80),waiting+""+str);
 						}
 
-						// edit ?
-						if (editorTool.Equals ("EDIT")) {
-							if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20, 20), editorEditImage, editorIconGUI)) {
-								if (!CheckMouseInEditor()) {
-									SetSelectedElement(gaelement);
-								}
+						// screen pos
+						Camera cam  = Camera.main;
+						cam = GameObject.Find ("editorcamera").GetComponent<Camera>();
+						Vector3 screenPos = cam.WorldToScreenPoint (gaelement.position);
+
+						// visible?
+						// if (!GameElementInEditor(screenPos.x,screenPos.y))
+						if ((screenPos.x > 0) && (screenPos.x < Screen.width)) 
+						if ((screenPos.y > 0) && (screenPos.y < Screen.height)) 
+						{
+
+
+							// default infos 
+							// like name & argument
+							bool showInfo=false;
+							string textInfo="";
+							if (!gaelement.name.Equals ("")) { showInfo=true; textInfo=textInfo+"#"+gaelement.name+""; } 
+							if (!gaelement.argument.Equals ("")) { showInfo=true; if (!textInfo.Equals ("")) textInfo=textInfo+" "; /* textInfo=textInfo+"{"+gaelement.argument+"}"; */ } 
+
+							// info here 
+							string waiting ="";
+							if (gaelement.release.Equals ("wait")) {
+								waiting = waiting+"[-]";
 							}
-							if (editorSelected==gaelement) {
-								GUI.Label (new Rect (screenPos.x-10, Screen.height - screenPos.y-10, 40, 40), editorSelectedImage, editorIconGUI);
-								nearbyX = (int ) (screenPos.x - 125);
-								nearbyY = (int) (Screen.height - screenPos.y);
-							} 
-						}
-
-						// move ?
-						// version 1.0
-
-						if (editorTool.Equals ("MOVE")) {
-
-
-
-							if (!gaelement.type.Equals("base")) {
-								if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20, 20), editorMoveImage, editorIconGUI)) {
-									// SetSelectedElement(gaelement);
-									//		Debug.Log("Move Pressed");
-
+							string strType="";
+							if (cameraOverlayTypes) {
+								// strType = ""+gaelement.type+"\n -"+gaelement.subtype;
+								strType = ""+gaelement.subtype;
+							}
+							if (!showInfo) {
+								GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y , 200, 80),""+waiting+" "+strType,editorElementType );
+							}
+							if (showInfo) {
+								// GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y, 200, 80),+"        "+strType,editorElementType );
+								string str = textInfo;
+								if (str.Equals("")) {
+									str = strType;
 								}
-							} else {
+								GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y, 200, 80),waiting+""+str);
+							}
+
+							// edit ?
+							if (editorTool.Equals ("EDIT")) {
 								if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20, 20), editorEditImage, editorIconGUI)) {
-									SetSelectedElement(gaelement);
-									SetTool("EDIT");
-								}
-							}
-							if (editorSelected==gaelement) {
-								GUI.Label (new Rect (screenPos.x-10, Screen.height - screenPos.y-10, 40, 40), editorSelectedImage, editorIconGUI);
-							} 
-						}
-
-						// version 2.0
-						if (editorTool.Equals ("MOVE")) {
-
-							float buttonX=screenPos.x;
-							float buttonY=Screen.height-screenPos.y;
-							float buttonWidth=20.0f;
-
-							if (!gaelement.type.Equals("base"))
-							if (
-								(mouseX>buttonX)&&(mouseX<(buttonX+buttonWidth)) 
-								&&
-								(mouseY>buttonY)&&(mouseY<(buttonY+buttonWidth)) 
-							)
-							{
-								if (Input.GetMouseButtonDown(0)) {
-									if (editorToolMove.Equals ("")) {
-										// move
+									if (!CheckMouseInEditor()) {
 										SetSelectedElement(gaelement);
-										editorToolMove="drag";
 									}
 								}
-
-
+								if (editorSelected==gaelement) {
+									GUI.Label (new Rect (screenPos.x-10, Screen.height - screenPos.y-10, 40, 40), editorSelectedImage, editorIconGUI);
+									nearbyX = (int ) (screenPos.x - 125);
+									nearbyY = (int) (Screen.height - screenPos.y);
+								} 
 							}
-							// dragging
-							if (Input.GetMouseButton(0)) {
-								if (gaelement==editorSelected) {
-									// move
-									if (editorToolMove.Equals ("drag")) {
-										// Debug.Log("Moving "+mouseX);
-										UpdateGameElementToPosition(gaelement,Input.mousePosition);
 
-										editorLastTouchedGameElement = editorSelected;
+							// move ?
+							// version 1.0
+
+							if (editorTool.Equals ("MOVE")) {
+
+
+
+								if (!gaelement.type.Equals("base")) {
+									if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20, 20), editorMoveImage, editorIconGUI)) {
+										// SetSelectedElement(gaelement);
+										//		Debug.Log("Move Pressed");
+
+									}
+								} else {
+									if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20, 20), editorEditImage, editorIconGUI)) {
+										SetSelectedElement(gaelement);
+										SetTool("EDIT");
 									}
 								}
+								if (editorSelected==gaelement) {
+									GUI.Label (new Rect (screenPos.x-10, Screen.height - screenPos.y-10, 40, 40), editorSelectedImage, editorIconGUI);
+								} 
 							}
 
-							// mouse up
-							if (Input.GetMouseButtonUp(0)) {
+							// version 2.0
+							if (editorTool.Equals ("MOVE")) {
 
-								if (editorSelected!=null) {
+								float buttonX=screenPos.x;
+								float buttonY=Screen.height-screenPos.y;
+								float buttonWidth=20.0f;
 
-									// Debug.Log("LevelEditor.OnGUI() // MouseButtonUp(0)");
-
-									float raster=GetRaster();
-									// Debug.Log ("raster: "+raster);
-									if (raster!=0.0f) {
-										if (editorSelected!=null) {
-											// Debug.Log ("Selected: "+editorSelected.position.x+"/"+editorSelected.position.y);
-
-
-
-											float offsetX=0.25f;
-											float offsetY=0.25f;
-
-											// editorSelected.position.x=((int)((editorSelected.position.x+offsetX)/raster))*raster;
-											// editorSelected.position.y=((int)((editorSelected.position.y+offsetY)/raster))*raster;
-
-											editorSelected.position.x=(Mathf.Floor((editorSelected.position.x+offsetX)/raster))*raster;
-											editorSelected.position.z=(Mathf.Floor((editorSelected.position.z+offsetY)/raster))*raster;
-
-											UpdateElementVisual(editorSelected);
-
-
+								if (!gaelement.type.Equals("base"))
+								if (
+									(mouseX>buttonX)&&(mouseX<(buttonX+buttonWidth)) 
+									&&
+									(mouseY>buttonY)&&(mouseY<(buttonY+buttonWidth)) 
+								)
+								{
+									if (Input.GetMouseButtonDown(0)) {
+										if (editorToolMove.Equals ("")) {
+											// move
+											SetSelectedElement(gaelement);
+											editorToolMove="drag";
 										}
 									}
 
-									AddToEditorHistory("[GUI][OBJECT][MOVE]");
 
-									// move
-									editorSelected=null;
-									editorToolMove="";
+								}
+								// dragging
+								if (Input.GetMouseButton(0)) {
+									if (gaelement==editorSelected) {
+										// move
+										if (editorToolMove.Equals ("drag")) {
+											// Debug.Log("Moving "+mouseX);
+											UpdateGameElementToPosition(gaelement,Input.mousePosition);
+
+											editorLastTouchedGameElement = editorSelected;
+										}
+									}
+								}
+
+								// mouse up
+								if (Input.GetMouseButtonUp(0)) {
+
+									if (editorSelected!=null) {
+
+										// Debug.Log("LevelEditor.OnGUI() // MouseButtonUp(0)");
+
+										float raster=GetRaster();
+										// Debug.Log ("raster: "+raster);
+										if (raster!=0.0f) {
+											if (editorSelected!=null) {
+												// Debug.Log ("Selected: "+editorSelected.position.x+"/"+editorSelected.position.y);
+
+
+
+												float offsetX=0.25f;
+												float offsetY=0.25f;
+
+												// editorSelected.position.x=((int)((editorSelected.position.x+offsetX)/raster))*raster;
+												// editorSelected.position.y=((int)((editorSelected.position.y+offsetY)/raster))*raster;
+
+												editorSelected.position.x=(Mathf.Floor((editorSelected.position.x+offsetX)/raster))*raster;
+												editorSelected.position.z=(Mathf.Floor((editorSelected.position.z+offsetY)/raster))*raster;
+
+												UpdateElementVisual(editorSelected);
+
+
+											}
+										}
+
+										AddToEditorHistory("[GUI][OBJECT][MOVE]");
+
+										// move
+										editorSelected=null;
+										editorToolMove="";
+
+									}
+								}
+
+							}
+
+							// delete ?
+							if (editorTool.Equals ("DELETE")) {
+								if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20, 20), editorDeleteImage, editorIconGUI)) {
+									// delete it now ..
+									RemoveElement (gaelement);
+
+									// add to editor history
+									AddToEditorHistory("[GUI][OBJECT][DELETE]");
+
+
 
 								}
 							}
 
-						}
+							// check if possible!
+							GameElement gelem=GetElementType(gaelement.type, gaelement.subtype);
+							if (gelem==null) {
+								GUI.Label (new Rect (screenPos.x, Screen.height - screenPos.y+20, 300, 20), "[NOTFOUND:" + gaelement.type + "/" + gaelement.subtype+"]");
+							}
+							else {					
 
-						// delete ?
-						if (editorTool.Equals ("DELETE")) {
-							if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20, 20), editorDeleteImage, editorIconGUI)) {
-								// delete it now ..
-								RemoveElement (gaelement);
-
-								// add to editor history
-								AddToEditorHistory("[GUI][OBJECT][DELETE]");
-
-
+								GameObject rep = gaelement.gameObject;
+								if (rep == null) {
+									GUI.Label (new Rect (screenPos.x, Screen.height - screenPos.y+20, 100, 20), "(" /* + gaelement.type + "/" */ + gaelement.subtype+")");
+								}
 
 							}
-						}
 
-						// check if possible!
-						GameElement gelem=GetElementType(gaelement.type, gaelement.subtype);
-						if (gelem==null) {
-							GUI.Label (new Rect (screenPos.x, Screen.height - screenPos.y+20, 300, 20), "[NOTFOUND:" + gaelement.type + "/" + gaelement.subtype+"]");
-						}
-						else {					
 
-							GameObject rep = gaelement.gameObject;
-							if (rep == null) {
-								GUI.Label (new Rect (screenPos.x, Screen.height - screenPos.y+20, 100, 20), "(" /* + gaelement.type + "/" */ + gaelement.subtype+")");
-							}
 
 						}
 
 
-
-					}
-
-
-				} // element	
+					} // element	
 
 
 
 
-		}
+			}
 		}
 
 		// EVALUATION SYSTEM
 		if (flagEvaluationAvailable) {
 
 			if (gameLogic!=null) {
-				
-			if (gameLogic.modal == GameLogic.GameLogicModal.Running ) {
-				if (GUI.Button (new Rect (Screen.width -160 , 24, 160, 20), "EVALUATION", editorSwitchButtonStyleActive)) {
-					// gameLogic.SetGameState( GameLogic.GameLogicModal.Editor );
-					showEvaluationDialog=!showEvaluationDialog;
-					UpdateRelationVisualisationAndCheckError();
-				}
-			}
 
-			// show user evaluation 
-			if (showEvaluationDialog) {
-				if (flagEvaluation)
 				if (gameLogic.modal == GameLogic.GameLogicModal.Running ) {
-
-					int edX = Screen.width - 760;
-
-					if (GUI.Button (new Rect (edX , 0, 78, 20), "EVALUATE! ", guiEvaluation)) {
+					if (GUI.Button (new Rect (Screen.width -160 , 24, 160, 20), "EVALUATION", editorSwitchButtonStyleActive)) {
+						// gameLogic.SetGameState( GameLogic.GameLogicModal.Editor );
+						showEvaluationDialog=!showEvaluationDialog;
+						UpdateRelationVisualisationAndCheckError();
 					}
-					edX = edX + 80;
+				}
 
-					string[] names = { "++","+"," ","-","--" };
-					string[] values = { "2","1","0","-1","-2" };
+				// show user evaluation 
+				if (showEvaluationDialog) {
+					if (flagEvaluation)
+					if (gameLogic.modal == GameLogic.GameLogicModal.Running ) {
 
-					// evaluationUserAllOver = "0";
+						int edX = Screen.width - 760;
 
-					for (int i=0;i<names.Length;i++) {
-						string allover = "";
-						if (evaluationUserAllOver.Equals(""+values[i])) {
-							allover = ">";
+						if (GUI.Button (new Rect (edX , 0, 78, 20), "EVALUATE! ", guiEvaluation)) {
 						}
-						if (GUI.Button (new Rect (edX , 0, 38, 20), allover+""+names[i], guiEvaluation)) {
-							evaluationUserAllOver = ""+values[i]; 
+						edX = edX + 80;
+
+						string[] names = { "++","+"," ","-","--" };
+						string[] values = { "2","1","0","-1","-2" };
+
+						// evaluationUserAllOver = "0";
+
+						for (int i=0;i<names.Length;i++) {
+							string allover = "";
+							if (evaluationUserAllOver.Equals(""+values[i])) {
+								allover = ">";
+							}
+							if (GUI.Button (new Rect (edX , 0, 38, 20), allover+""+names[i], guiEvaluation)) {
+								evaluationUserAllOver = ""+values[i]; 
+								GameObject firstPlayer = GetFirstPlayerObject();
+								Vector3 pos = firstPlayer.transform.position;
+								AddEvaluationElement( "allover", ""+values[i],  pos );
+							}
+							edX = edX + 40;
+						}
+
+						// comments
+						evaluationUserComment=GUI.TextField (new Rect(edX,0,100,20),evaluationUserComment);
+						edX = edX + 100;
+						if (GUI.Button (new Rect (edX , 0, 78, 20), "COMMENT", guiEvaluation)) {
 							GameObject firstPlayer = GetFirstPlayerObject();
 							Vector3 pos = firstPlayer.transform.position;
-							AddEvaluationElement( "allover", ""+values[i],  pos );
+							AddEvaluationElement( "comment", ""+evaluationUserComment,  pos );
+							evaluationUserComment = "";
 						}
-						edX = edX + 40;
+						edX = edX + 80;
 					}
-
-					// comments
-					evaluationUserComment=GUI.TextField (new Rect(edX,0,100,20),evaluationUserComment);
-					edX = edX + 100;
-					if (GUI.Button (new Rect (edX , 0, 78, 20), "COMMENT", guiEvaluation)) {
-						GameObject firstPlayer = GetFirstPlayerObject();
-						Vector3 pos = firstPlayer.transform.position;
-						AddEvaluationElement( "comment", ""+evaluationUserComment,  pos );
-						evaluationUserComment = "";
-					}
-					edX = edX + 80;
 				}
-			}
 
-			// show evaluation dialog 
-			if (showEvaluationDialog) {
-			
-				int evaluationY=46;
+				// show evaluation dialog 
+				if (showEvaluationDialog) {
 
-				// INGAME MODE!
-				if (gameLogic.modal == GameLogic.GameLogicModal.Running ) {
-					string flagEval = "ON";
-					if (!flagEvaluation) flagEval = "OFF";
-					if (GUI.Button (new Rect (Screen.width -160 , evaluationY, 160, 20), ""+flagEval, guiEvaluation)) {
-						flagEvaluation=!flagEvaluation;
-					}
-					evaluationY = evaluationY+ 22;
+					int evaluationY=46;
 
-
-
-
-					// only config
-					if (flagEvaluation) {
-
-
-						string str = "NOT DEFINED";  // evaluationPlayer.playerId
-						if (evaluationPlayer!=null) { 
-							str = ""+evaluationPlayer.name+"" + "("+ evaluationPlayer.playerId +")";
+					// INGAME MODE!
+					if (gameLogic.modal == GameLogic.GameLogicModal.Running ) {
+						string flagEval = "ON";
+						if (!flagEvaluation) flagEval = "OFF";
+						if (GUI.Button (new Rect (Screen.width -160 , evaluationY, 160, 20), ""+flagEval, guiEvaluation)) {
+							flagEvaluation=!flagEvaluation;
 						}
-						if (GUI.Button (new Rect (Screen.width -160 , evaluationY, 160, 20), "[EDIT: "+str +"]", guiEvaluation)) {
-							// create new user
-							// show dialog ...
-							// Debug.Log ("EDIT");
-							if (showEvaluationDialogEdit) {
-								showEvaluationDialogEdit = false; 
-							} else {
-								EditEvaluationPlayerStart( "player" );
+						evaluationY = evaluationY+ 22;
+
+
+
+
+						// only config
+						if (flagEvaluation) {
+
+
+							string str = "NOT DEFINED";  // evaluationPlayer.playerId
+							if (evaluationPlayer!=null) { 
+								str = ""+evaluationPlayer.name+"" + "("+ evaluationPlayer.playerId +")";
 							}
-						
-						}
-						evaluationY = evaluationY+ 22;
+							if (GUI.Button (new Rect (Screen.width -160 , evaluationY, 160, 20), "[EDIT: "+str +"]", guiEvaluation)) {
+								// create new user
+								// show dialog ...
+								// Debug.Log ("EDIT");
+								if (showEvaluationDialogEdit) {
+									showEvaluationDialogEdit = false; 
+								} else {
+									EditEvaluationPlayerStart( "player" );
+								}
 
-						// flagSaveToWeb
-						string saveTo = "SAVING LOCAL";
-						if (flagSaveToWeb) saveTo = "SAVING LOCAL&WEB";
-						if (GUI.Button (new Rect (Screen.width -160 , evaluationY, 160, 20), ""+saveTo, guiEvaluation)) {
-							flagSaveToWeb=!flagSaveToWeb;
-						}
-						evaluationY = evaluationY+ 22;
+							}
+							evaluationY = evaluationY+ 22;
+
+							// flagSaveToWeb
+							string saveTo = "SAVING LOCAL";
+							if (flagSaveToWeb) saveTo = "SAVING LOCAL&WEB";
+							if (GUI.Button (new Rect (Screen.width -160 , evaluationY, 160, 20), ""+saveTo, guiEvaluation)) {
+								flagSaveToWeb=!flagSaveToWeb;
+							}
+							evaluationY = evaluationY+ 22;
 
 
-						// NEW PLAYER
-						evaluationY = evaluationY+ 22;
-						if (GUI.Button (new Rect (Screen.width -160 , evaluationY, 160, 20), " + NEW PLAYER", guiEvaluation)) {
-							CreateNewEvaluationPlayer();
-						}
-						evaluationY = evaluationY+ 22;
-						evaluationY = evaluationY+ 22;
+							// NEW PLAYER
+							evaluationY = evaluationY+ 22;
+							if (GUI.Button (new Rect (Screen.width -160 , evaluationY, 160, 20), " + NEW PLAYER", guiEvaluation)) {
+								CreateNewEvaluationPlayer();
+							}
+							evaluationY = evaluationY+ 22;
+							evaluationY = evaluationY+ 22;
 
-						evaluationY = evaluationY+ 10;
+							evaluationY = evaluationY+ 10;
 
-						// POSSIBLE ADD ONS HERE
-						/*
+							// POSSIBLE ADD ONS HERE
+							/*
 						if (GUI.Button (new Rect (Screen.width -160 , evaluationY, 160, 20), "POSITIVE - AREA", guiEvaluation)) {
 							GameObject firstPlayer = GetFirstPlayerObject();
 							Vector3 pos = firstPlayer.transform.position;
@@ -3091,8 +3406,8 @@ public class LevelEditor : MonoBehaviour {
 						*/
 
 
-						// LOAD LEVEL
-						/*
+							// LOAD LEVEL
+							/*
 						evaluationY = evaluationY+ 22;
 						if (GUI.Button (new Rect (Screen.width -160 , evaluationY, 160, 20), "LOAD ALL EVALUATIONS", guiEvaluation)) {
 							RemoveAllEvaluationGameElements();
@@ -3104,122 +3419,122 @@ public class LevelEditor : MonoBehaviour {
 
 
 
+						}
+
 					}
 
-				}
+					// show edit ?
+					if (showEvaluationDialogEdit) {
 
-				// show edit ?
-				if (showEvaluationDialogEdit) {
-
-					if (flagEvaluation) {
+						if (flagEvaluation) {
 
 							string title = "";
-						//string desc = "";
+							//string desc = "";
 
-						int dialogEvaluationStartX = Screen.width - 700;
-						int dialogEvaluationStartY = 20;
-						int dialogEvaluationWidth = 400;
-						int dialogEvaluationHeight = 400;
-						if (showEvaluationDialogEditType.Equals ("player")) {
-							title = "EDIT EVALUATION PLAYER";
+							int dialogEvaluationStartX = Screen.width - 700;
+							int dialogEvaluationStartY = 20;
+							int dialogEvaluationWidth = 400;
+							int dialogEvaluationHeight = 400;
+							if (showEvaluationDialogEditType.Equals ("player")) {
+								title = "EDIT EVALUATION PLAYER";
+							}
+
+							int dialogEvaluationX = dialogEvaluationStartX + 10;
+							int dialogEvaluationY = dialogEvaluationStartY + 10;
+
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,dialogEvaluationWidth,dialogEvaluationHeight),"",guiEvaluation);
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,dialogEvaluationWidth,28),""+title,guiEvaluation);
+							if (GUI.Button (new Rect(dialogEvaluationX+dialogEvaluationWidth-100,dialogEvaluationY,100,28),"[CLOSE]",guiEvaluation)) {
+								EditEvaluationPlayerStop();
+							}
+							dialogEvaluationY = dialogEvaluationY + 22;
+							dialogEvaluationY = dialogEvaluationY + 22;
+
+							string arg = "";
+
+							// name
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"NAME: ",guiEvaluation);
+							arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),evaluationPlayer.name);
+							if (!arg.Equals (evaluationPlayer.name)) {
+								evaluationPlayer.name = arg;
+								SaveEvaluationPlayer( evaluationPlayer );
+							}
+							dialogEvaluationY = dialogEvaluationY + 22;
+
+							// prename
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"PRENAME: ",guiEvaluation);
+							arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),evaluationPlayer.prename);
+							if (!arg.Equals (evaluationPlayer.prename)) {
+								evaluationPlayer.prename = arg;
+								SaveEvaluationPlayer( evaluationPlayer );
+							}
+							dialogEvaluationY = dialogEvaluationY + 22;
+
+							dialogEvaluationY = dialogEvaluationY + 22;
+
+							// age
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"AGE: ",guiEvaluation);
+							arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),""+evaluationPlayer.age);
+							if (!arg.Equals (""+evaluationPlayer.age)) {
+								evaluationPlayer.age = Int32.Parse(arg);
+								SaveEvaluationPlayer( evaluationPlayer );
+							}
+							dialogEvaluationY = dialogEvaluationY + 22;
+
+							// game play 
+							dialogEvaluationY = dialogEvaluationY + 22;
+
+							// casual
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"CASUAL(x%): ",guiEvaluation);
+							arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),""+evaluationPlayer.lovedCasual);
+							if (!arg.Equals (""+evaluationPlayer.lovedCasual)) {
+								evaluationPlayer.lovedCasual = Int32.Parse(arg);
+								SaveEvaluationPlayer( evaluationPlayer );
+							}
+							dialogEvaluationY = dialogEvaluationY + 22;
+							// core
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"CORE(x%): ",guiEvaluation);
+							arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),""+evaluationPlayer.lovedCore);
+							if (!arg.Equals (""+evaluationPlayer.lovedCore)) {
+								evaluationPlayer.lovedCore = Int32.Parse(arg);
+								SaveEvaluationPlayer( evaluationPlayer );
+							}
+							dialogEvaluationY = dialogEvaluationY + 22;
+							// genre
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"GENREPLAYER: ",guiEvaluation);
+							arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),""+evaluationPlayer.lovedGenre);
+							if (!arg.Equals (evaluationPlayer.lovedGenre)) {
+								evaluationPlayer.lovedGenre = arg;
+								SaveEvaluationPlayer( evaluationPlayer );
+							}
+							dialogEvaluationY = dialogEvaluationY + 22;
+
+
+							// comment
+							dialogEvaluationY = dialogEvaluationY + 22;
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"COMMENT: ",guiEvaluation);
+							arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),""+evaluationPlayer.comment);
+							if (!arg.Equals (evaluationPlayer.comment)) {
+								evaluationPlayer.comment = arg;
+								SaveEvaluationPlayer( evaluationPlayer );
+							}
+							dialogEvaluationY = dialogEvaluationY + 22;
+
+							dialogEvaluationY = dialogEvaluationY + 22;
+
+							// sessions
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"SESSION: "+evaluationPlayer.sessionId,guiEvaluation);
+							dialogEvaluationY = dialogEvaluationY + 22;
+
 						}
-
-						int dialogEvaluationX = dialogEvaluationStartX + 10;
-						int dialogEvaluationY = dialogEvaluationStartY + 10;
-
-						GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,dialogEvaluationWidth,dialogEvaluationHeight),"",guiEvaluation);
-						GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,dialogEvaluationWidth,28),""+title,guiEvaluation);
-						if (GUI.Button (new Rect(dialogEvaluationX+dialogEvaluationWidth-100,dialogEvaluationY,100,28),"[CLOSE]",guiEvaluation)) {
-							EditEvaluationPlayerStop();
-						}
-						dialogEvaluationY = dialogEvaluationY + 22;
-						dialogEvaluationY = dialogEvaluationY + 22;
-
-						string arg = "";
-
-						// name
-						GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"NAME: ",guiEvaluation);
-						arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),evaluationPlayer.name);
-						if (!arg.Equals (evaluationPlayer.name)) {
-							evaluationPlayer.name = arg;
-							SaveEvaluationPlayer( evaluationPlayer );
-						}
-						dialogEvaluationY = dialogEvaluationY + 22;
-
-						// prename
-						GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"PRENAME: ",guiEvaluation);
-						arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),evaluationPlayer.prename);
-						if (!arg.Equals (evaluationPlayer.prename)) {
-							evaluationPlayer.prename = arg;
-							SaveEvaluationPlayer( evaluationPlayer );
-						}
-						dialogEvaluationY = dialogEvaluationY + 22;
-
-						dialogEvaluationY = dialogEvaluationY + 22;
-
-						// age
-						GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"AGE: ",guiEvaluation);
-						arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),""+evaluationPlayer.age);
-						if (!arg.Equals (""+evaluationPlayer.age)) {
-							evaluationPlayer.age = Int32.Parse(arg);
-							SaveEvaluationPlayer( evaluationPlayer );
-						}
-						dialogEvaluationY = dialogEvaluationY + 22;
-
-						// game play 
-						dialogEvaluationY = dialogEvaluationY + 22;
-						
-						// casual
-						GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"CASUAL(x%): ",guiEvaluation);
-						arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),""+evaluationPlayer.lovedCasual);
-						if (!arg.Equals (""+evaluationPlayer.lovedCasual)) {
-							evaluationPlayer.lovedCasual = Int32.Parse(arg);
-							SaveEvaluationPlayer( evaluationPlayer );
-						}
-						dialogEvaluationY = dialogEvaluationY + 22;
-						// core
-						GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"CORE(x%): ",guiEvaluation);
-						arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),""+evaluationPlayer.lovedCore);
-						if (!arg.Equals (""+evaluationPlayer.lovedCore)) {
-							evaluationPlayer.lovedCore = Int32.Parse(arg);
-							SaveEvaluationPlayer( evaluationPlayer );
-						}
-						dialogEvaluationY = dialogEvaluationY + 22;
-						// genre
-						GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"GENREPLAYER: ",guiEvaluation);
-						arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),""+evaluationPlayer.lovedGenre);
-						if (!arg.Equals (evaluationPlayer.lovedGenre)) {
-							evaluationPlayer.lovedGenre = arg;
-							SaveEvaluationPlayer( evaluationPlayer );
-						}
-						dialogEvaluationY = dialogEvaluationY + 22;
-
-
-						// comment
-						dialogEvaluationY = dialogEvaluationY + 22;
-						GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"COMMENT: ",guiEvaluation);
-						arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),""+evaluationPlayer.comment);
-						if (!arg.Equals (evaluationPlayer.comment)) {
-							evaluationPlayer.comment = arg;
-							SaveEvaluationPlayer( evaluationPlayer );
-						}
-						dialogEvaluationY = dialogEvaluationY + 22;
-
-						dialogEvaluationY = dialogEvaluationY + 22;
-
-						// sessions
-						GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"SESSION: "+evaluationPlayer.sessionId,guiEvaluation);
-						dialogEvaluationY = dialogEvaluationY + 22;
 
 					}
 
+
+
 				}
 
-
-
 			}
-
-		}
 		}
 
 		// if (!flagEvaluation)
@@ -3254,7 +3569,196 @@ public class LevelEditor : MonoBehaviour {
 			int toolsXTmpMax = toolsX;
 			int toolsYTmp=toolsY;
 
-//			GUI.Label (new Rect (editorX, editorY, editorWidth, editorHeight), "", editorBackground);
+			//			GUI.Label (new Rect (editorX, editorY, editorWidth, editorHeight), "", editorBackground);
+
+			// leveltype
+			string[] levelTypes = { "local","web" /*,"live" */};
+			string[] levelTypesLabel = { "LOCAL LEVELS","WEB LEVELS" /* ,"LIVE*" */ };
+			for (int o=0;o<levelTypes.Length;o++) {
+				string typeX = levelTypes[o];
+				string labelX = levelTypesLabel[o];
+				GUIStyle gs = editorButtonStyle;
+				if (typeX.Equals(leveltype)) {
+					gs = editorButtonActiveStyle;
+				}
+				if (GUI.Button (new Rect (toolsXTmp , toolsYTmp, 110, 20), ""+labelX, gs)) {
+					SetLevelType( typeX );
+					// GetLevelAeras ... 
+					RemoteGetAreas();
+				}
+				toolsXTmp = toolsXTmp + 120;
+
+				// SET AUTOR 
+				if (typeX.Equals("web")) {
+					// get actual 
+					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 80, 20), "AUTOR: ", editorButtonActiveStyle);
+					toolsXTmp = toolsXTmp + 90;
+				}
+			}
+			toolsXTmp=toolsX;
+
+			// weblevels
+			if (leveltype.Equals("web")) {
+				// ok - local
+				toolsYTmp = toolsYTmp + 24;
+				// get actual 
+				/*				GUI.Label (new Rect (toolsXTmp, toolsYTmp, 80, 20), "AUTOR: ", editorButtonActiveStyle);
+				toolsXTmp = toolsXTmp + 60;
+*/
+				toolsXTmp = 10;
+				toolsYTmp = toolsYTmp + 28;
+
+				// remoteSelection = true;
+				// LEVEL
+				GUI.Label (new Rect (toolsXTmp, toolsYTmp, 78, 20), "WEBLEVEL: ", editorButtonActiveStyle);
+				toolsXTmp = toolsXTmp + 80;
+				// display
+				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 178, 20), "remote/"+remoteAreaEdit+"/"+remoteAutorEdit, editorButtonStyle)) {
+					remoteArea = remoteAreaEdit;
+					remoteAutor = remoteAutorEdit;
+					remoteSelection = !remoteSelection;
+				}
+				toolsXTmp = toolsXTmp + 180;
+				// select
+				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 80, 20), "SELECT", editorButtonActiveStyle)) {
+					// select something else!
+					remoteArea = remoteAreaEdit;
+					remoteAutor = remoteAutorEdit;
+					remoteSelection = !remoteSelection;
+				}
+				toolsXTmp = toolsXTmp + 82;
+				// select
+				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 100, 20), "^ UPLOAD SET", editorButtonActiveStyle)) {
+					// SAVE IT ... 
+					RemoteUpload();
+				}
+
+				toolsXTmp = toolsXTmp + 82;
+
+				toolsYTmp = toolsYTmp + 28;
+
+				// SELECT
+				if (loading) {
+					toolsXTmp = 10;
+					toolsYTmp = toolsYTmp + 28;
+					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 400, 20), "LOADING ... LOADING ... LOADING ...", editorButtonActiveStyle);
+					// loadingLabel
+					toolsYTmp = toolsYTmp + 22;
+					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 400, 20), ""+loadingLabel, editorButtonActiveStyle);
+
+				} 
+
+
+				// remote selection? 
+				if (remoteSelection) {
+
+					toolsXTmp = 10;
+
+					// ...
+					int remoteStartXAutor = toolsXTmp + 150 ;
+					int remoteStartYAutor = toolsYTmp;
+
+					// AREAS
+					if (!loading) {
+						string remotea = "";
+						GUIStyle gs = editorButtonStyle; // editorButtonActiveStyle;
+						if (remoteArea.Equals("")) {
+							gs = editorButtonActiveStyle;
+						}
+						if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), "------ AREAS ------", gs)) {
+							remoteArea = "";
+						}
+						toolsXTmp = 10;
+						toolsYTmp = toolsYTmp + 21;
+						for (int ct=0;ct<arrRemoteAreas.Count;ct++) {
+							remotea = (string) arrRemoteAreas[ct];
+							string addon = (string) arrRemoteAreasAddOn[ct];
+							gs = editorButtonStyle; // editorButtonActiveStyle;
+							bool showIt = false;
+							if (remoteArea.Equals("")) showIt = true;
+							if (remotea.Equals(remoteArea)) {
+								gs = editorButtonActiveStyle;
+								showIt = true;
+							}
+							showIt = true;
+							if (showIt) {
+								// remotea
+								if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), ""+remotea+" "+addon, gs)) {
+									// ok set it ..
+									remoteArea = remotea;
+									remoteAutor = "";
+									RemoteGetAreaAutors();
+								}
+								toolsXTmp = 10;
+								toolsYTmp = toolsYTmp + 21;
+							}
+						}
+
+						// AUTOR?
+						// if selected autors
+						if (!remoteArea.Equals("")) {
+							gs = editorButtonStyle; // editorButtonActiveStyle;
+							if (remoteAutor.Equals("")) {
+								gs = editorButtonActiveStyle;
+							}
+							if (GUI.Button (new Rect (remoteStartXAutor, remoteStartYAutor, 140, 20), "------ AUTORS ------", gs)) {
+								remoteAutor = "";
+							}	
+							remoteStartYAutor = remoteStartYAutor + 22;
+
+							if (GUI.Button (new Rect (remoteStartXAutor, remoteStartYAutor, 140, 20), "[ADD MY LEVEL]", editorButtonStyle)) {
+								remoteAutor = "";
+							}	
+							remoteStartYAutor = remoteStartYAutor + 22;
+
+							// autors
+							for (int ct=0;ct<arrRemoteAreaAutors.Count;ct++) {
+								string autorx = (string) arrRemoteAreaAutors[ct];
+								string addon = (string) arrRemoteAreaAutorsAddOn[ct];
+								gs = editorButtonStyle; // editorButtonActiveStyle;
+								if (autorx.Equals(remoteAutor)) {
+									gs = editorButtonActiveStyle;
+								}
+								if (GUI.Button (new Rect (remoteStartXAutor, remoteStartYAutor, 140, 20), ""+autorx+" "+addon, gs)) {
+									remoteAutor = autorx;
+								}
+
+								// edit / download
+								if (autorx.Equals(remoteAutor)) {
+									// DOWNLOAD
+									// EDIT 
+									// ADDON?
+									if (GUI.Button (new Rect (remoteStartXAutor+150, remoteStartYAutor, 58, 20), "EDIT", gs)) {
+										remoteAreaEdit = remoteArea;
+										remoteAutorEdit = remoteAutor;
+										RemoteEdit();
+									}
+									if (GUI.Button (new Rect (remoteStartXAutor+150 + 60, remoteStartYAutor, 90, 20), "\\/ DOWNLOAD", gs)) {
+										remoteAreaEdit = remoteArea;
+										remoteAutorEdit = remoteAutor;
+										RemoteDownload();
+									}
+								}
+
+								// toolsXTmp = 10;
+								remoteStartYAutor = remoteStartYAutor + 21;
+								if (remoteStartYAutor>toolsYTmp) {
+									toolsYTmp = remoteStartYAutor;
+								}
+							}
+						}
+
+					} // loading
+
+					// local stored ...
+
+					toolsXTmp = 10;
+					toolsYTmp = toolsYTmp + 28;
+				} // remoteSelection
+
+			}
+			toolsXTmp = 10;
+			toolsYTmp = toolsYTmp + 28;
 
 			// working on level
 			// maxLevel
@@ -3304,33 +3808,35 @@ public class LevelEditor : MonoBehaviour {
 			toolsXTmp = toolsXTmp + 62;
 
 			if (flagShowSaveAs) {
-			// levels
-			for (int i=1; i<maxLevel; i++) {
-				string text = "" + i;
-				// actualLevel
-				GUIStyle gui = editorButtonStyle;
+				// levels
+				for (int i=1; i<maxLevel; i++) {
+					string text = "" + i;
+					// actualLevel
+					GUIStyle gui = editorButtonStyle;
 
 					bool buttonClicked = GUI.Button (new Rect (	toolsXTmp, toolsYTmp, 20, 20), text, gui);
-				if (buttonClicked) {
-					SaveLevel (i);
-					gameLogic.SetGameLevel(i);
-					flagShowSaveAs = !flagShowSaveAs;
+					if (buttonClicked) {
+						SaveLevel (i);
+						gameLogic.SetGameLevel(i);
+						flagShowSaveAs = !flagShowSaveAs;
+					}
+					toolsXTmp = toolsXTmp + 22;
 				}
-				toolsXTmp = toolsXTmp + 22;
-			}
 			}
 
 			if (toolsXTmp>toolsXTmpMax) toolsXTmpMax = toolsXTmp;
 
 			toolsYTmp = toolsYTmp + 26;
 
+
+
 			// UNDO/REDO
 			// undoVisual
 			toolsXTmp = toolsX;
 			// toolsXTmp = toolsX;
 
-				
-// 			toolsYTmp = toolsYTmp + 22;
+
+			// 			toolsYTmp = toolsYTmp + 22;
 			/*
 			// load & save
 			for (int i=0; i<4; i++) {
@@ -3380,7 +3886,7 @@ public class LevelEditor : MonoBehaviour {
 
 					}
 				}
-				
+
 			}
 			*/
 
@@ -3410,7 +3916,7 @@ public class LevelEditor : MonoBehaviour {
 				DeleteAllRelationVisuals ();
 				ToggleShowEvaluationData();
 			}
-/*
+			/*
 			widthWorking=widthWorking+44;
 			if (GUI.Button (new Rect (editorX + widthWorking, editorY, 38, 20), "CAM ", editorButtonActiveStyle)) {
 				// SetCameraZoom(0);
@@ -3443,21 +3949,21 @@ public class LevelEditor : MonoBehaviour {
 
 			// INFO
 
-/*
+			/*
 			// levels
 			int startx=-2;
 			for (int i=startx; i<5; i++) {
 				string text = "" + i;
 				// actualLevel
 				GUIStyle gui = editorButtonStyle;
-				
+
 				bool buttonClicked = GUI.Button (new Rect (editorX + widthWorking + 90 + (i - startx - 1 +1) * 23, editorY, 20, 20), text, gui);
 				if (buttonClicked) {
 					// SetCameraZoom(i); // i
 					SetCameraZoom ( i );
 				}
 			}
-*/
+			*/
 
 			// editorY = editorY + 26;
 			// tools
@@ -3500,16 +4006,26 @@ public class LevelEditor : MonoBehaviour {
 			}
 			toolsXTmp = toolsXTmp + 54;
 
+
+
+
+
 			toolsYTmp = toolsYTmp + 22;
 
 
 			if (toolsXTmp>toolsXTmpMax) toolsXTmpMax = toolsXTmp;
 
 
+
 			toolsRect.x = toolsX;
 			toolsRect.y = toolsY;
 			toolsRect.width = toolsXTmpMax-toolsX;
 			toolsRect.height = toolsYTmp - toolsY;
+
+
+			// add it ...
+			inspectorY = toolsYTmp + 26;
+
 
 			// inspector ... 
 			// background
@@ -3546,7 +4062,7 @@ public class LevelEditor : MonoBehaviour {
 							inspectorYTmp = inspectorYTmp + 22;
 							inspectorXTmp = 10;
 						}
-				    }
+					}
 				}
 
 				inspectorYTmp = inspectorYTmp + 10;
@@ -3666,84 +4182,84 @@ public class LevelEditor : MonoBehaviour {
 					}
 
 					GUI.Label (new Rect(inspectorXTmp-300,inspectorYTmp-28,280,20),"("+editorSelected.type+"."+editorSelected.subtype+") ["+editorSelected.position.x+","+editorSelected.position.y+","+editorSelected.position.z+"]",editorButtonStyle);
-			
-						
 
 
-				// inspectorYTmp = inspectorYTmp + 24; 
-				inspectorXTmp = 10;
-				
-				if (editorSelected!=null) {
-						
-					// specials refer type?
-					string release=""+editorSelected.release;
-					string add="";
-					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"STATE: ",editorButtonStyle)) {
-						editorSelected.release="";
-						AddToEditorHistory();
-					}
-					inspectorXTmp= inspectorXTmp + 60;
-					if (release.Equals ("")) { add=">"; }
-					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"active",editorButtonStyle)) {
-						editorSelected.release="";
-						AddToEditorHistory();
-					}
-					inspectorXTmp= inspectorXTmp + 60;
-					add = "";
-					if (release.Equals ("wait")) { add=">"; }
-					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"hidden",editorButtonStyle)) {
-						editorSelected.release="wait";
-						AddToEditorHistory();
-					}
-					inspectorXTmp= inspectorXTmp + 60;
-					inspectorYTmp = inspectorYTmp + 30; 
 
+
+					// inspectorYTmp = inspectorYTmp + 24; 
 					inspectorXTmp = 10;
 
-				// name
-				GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,240,20),"NAME: #");
-				editDetailName=GUI.TextField (new Rect(inspectorXTmp+50,inspectorYTmp,170,20),editDetailName);
-				if (!editorSelected.name.Equals(editDetailName)) {
-					editorSelected.name=editDetailName + "";
-					UpdateElementVisual(editorSelected);
-					AddToEditorHistory("[GUI][OBJECT][CHANGEDNAME]");
-				}
-				editorSelected.name=editDetailName + "";
-				inspectorXTmp = inspectorXTmp +218;
+					if (editorSelected!=null) {
+
+						// specials refer type?
+						string release=""+editorSelected.release;
+						string add="";
+						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"STATE: ",editorButtonStyle)) {
+							editorSelected.release="";
+							AddToEditorHistory();
+						}
+						inspectorXTmp= inspectorXTmp + 60;
+						if (release.Equals ("")) { add=">"; }
+						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"active",editorButtonStyle)) {
+							editorSelected.release="";
+							AddToEditorHistory();
+						}
+						inspectorXTmp= inspectorXTmp + 60;
+						add = "";
+						if (release.Equals ("wait")) { add=">"; }
+						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"hidden",editorButtonStyle)) {
+							editorSelected.release="wait";
+							AddToEditorHistory();
+						}
+						inspectorXTmp= inspectorXTmp + 60;
+						inspectorYTmp = inspectorYTmp + 30; 
+
+						inspectorXTmp = 10;
+
+						// name
+						GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,240,20),"NAME: #");
+						editDetailName=GUI.TextField (new Rect(inspectorXTmp+50,inspectorYTmp,170,20),editDetailName);
+						if (!editorSelected.name.Equals(editDetailName)) {
+							editorSelected.name=editDetailName + "";
+							UpdateElementVisual(editorSelected);
+							AddToEditorHistory("[GUI][OBJECT][CHANGEDNAME]");
+						}
+						editorSelected.name=editDetailName + "";
+						inspectorXTmp = inspectorXTmp +218;
 
 
-				if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,100,20),"DUPLICATE ++",editorButtonStyle)) {
-					// copy here ... 
-					GameElement copyThis = editorSelected.Copy ();
-					copyThis.position.x=copyThis.position.x+UnityEngine.Random.Range ( 0.3f, 0.9f );
-					// copyThis.position.y=UnityEngine.Random.Range ( 0.5f, 1.0f );
-					AddElement(copyThis);
+						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,100,20),"DUPLICATE ++",editorButtonStyle)) {
+							// copy here ... 
+							GameElement copyThis = editorSelected.Copy ();
+							copyThis.position.x=copyThis.position.x+UnityEngine.Random.Range ( 0.3f, 0.9f );
+							// copyThis.position.y=UnityEngine.Random.Range ( 0.5f, 1.0f );
+							AddElement(copyThis);
 
-					// add to editor history
-					AddToEditorHistory("[GUI][OBJECT][DUPLICATE]");
+							// add to editor history
+							AddToEditorHistory("[GUI][OBJECT][DUPLICATE]");
 
 
-				}
+						}
 
-				inspectorYTmp = inspectorYTmp + 32; 
-				inspectorXTmp = 10;
+						inspectorYTmp = inspectorYTmp + 32; 
+						inspectorXTmp = 10;
 
-				if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,200,20),"TYPE: "+editorSelected.type+"/"+editorSelected.subtype,editorButtonStyle)) {
+						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,200,20),"TYPE: "+editorSelected.type+"/"+editorSelected.subtype,editorButtonStyle)) {
 
-				}
+						}
 
-				inspectorXTmp = inspectorXTmp +210;
+						inspectorXTmp = inspectorXTmp +210;
 
-				if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,60,20),"SAME >",editorButtonStyle)) {
-					filterType = editorSelected.type;
-					filterTypeSub = editorSelected.subtype;
-				}
+						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,60,20),"SAME >",editorButtonStyle)) {
+							filterType = editorSelected.type;
+							filterTypeSub = editorSelected.subtype;
+						}
 
-				inspectorYTmp = inspectorYTmp + 22;
+						inspectorYTmp = inspectorYTmp + 22;
 
-				
-				
-				}
+
+
+					}
 				}
 			}
 
@@ -3826,7 +4342,7 @@ public class LevelEditor : MonoBehaviour {
 					}
 					int count=CountElementsType( gelement.type, gelement.subtype );
 					if (count>0) { if (GUI.Button (new Rect (inspectorXTmpXTemp , inspectorYTmp, 6, 20), "x", guix)) { 
-						RemoveElementsType(gelement.type, gelement.subtype);} 
+							RemoveElementsType(gelement.type, gelement.subtype);} 
 						AddToEditorHistory();
 					}
 					string strCount="";
@@ -3882,7 +4398,7 @@ public class LevelEditor : MonoBehaviour {
 			if (editorTool.Equals ("EDIT")) { 
 				if (editorSelected!=null) {
 					showElements=true; 
-					 
+
 					float editorDetailY=inspectorY;
 
 					// show size
@@ -3920,7 +4436,7 @@ public class LevelEditor : MonoBehaviour {
 
 					inspectorXTmp = 10;
 
-// todo: check for change!
+					// todo: check for change!
 
 					// trigger (add some keys)
 					if (editorSelected!=null)
@@ -4343,7 +4859,7 @@ public class LevelEditor : MonoBehaviour {
 			cursorRect.y = cursorY;
 			cursorRect.width = 188;
 			cursorRect.height = 80;
- 			
+
 
 			// setup height
 			// editorHeight = editorY;
@@ -4361,7 +4877,7 @@ public class LevelEditor : MonoBehaviour {
 				GUI.Label ( new Rect(filterTypeVisual.x,filterTypeSubVisual.y-5,filterTypeSubVisual.width+5,filterTypeSubVisual.height+10), "", editorBackground);
 				GUI.Label ( new Rect(selectionDialogeVisual.x,selectionDialogeVisual.y-5,selectionDialogeVisual.width+5,selectionDialogeVisual.height+10), "", editorBackground);
 
-/*
+				/*
 			bool selectionDialoge = true;
 			string selectFilter = ""; // names etc.  #name types ...  !abc.* !
 			Rect selectionDialogeVisual = new Rect(0,0,0,0);
@@ -4461,33 +4977,33 @@ public class LevelEditor : MonoBehaviour {
 
 				// arrEditorHistory
 				if (false) {
-				ArrayList arr = GetActualEditorHistory();
-				selectionX = 0;
-				// GUI.Button (new Rect ( selectionX+100, selectionY, 240, 20), ""+arr.Count);
-				if (arr.Count>0)
-				selectionY = (int)(Screen.width*0.3f);
-				int counter = 0;
-				for (int i=(arr.Count-1);i>=0; i--) {
-					LevelHistory gae = (LevelHistory)arr [i];
-					string text = "[" + gae.level+"] ("+gae.message+") " + gae.arrLevel.Count;
-					GUIStyle guix = editorButtonStyleNotActive;
-					// if (editorSelected==gae) guix = editorButtonActiveStyle;
-					bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 240, 20), ""+text+"", guix);
-					if (buttonClicked) {
-						// SetSelectedElement(gae);
-						UndoTo(gae);
+					ArrayList arr = GetActualEditorHistory();
+					selectionX = 0;
+					// GUI.Button (new Rect ( selectionX+100, selectionY, 240, 20), ""+arr.Count);
+					if (arr.Count>0)
+						selectionY = (int)(Screen.width*0.3f);
+					int counter = 0;
+					for (int i=(arr.Count-1);i>=0; i--) {
+						LevelHistory gae = (LevelHistory)arr [i];
+						string text = "[" + gae.level+"] ("+gae.message+") " + gae.arrLevel.Count;
+						GUIStyle guix = editorButtonStyleNotActive;
+						// if (editorSelected==gae) guix = editorButtonActiveStyle;
+						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 240, 20), ""+text+"", guix);
+						if (buttonClicked) {
+							// SetSelectedElement(gae);
+							UndoTo(gae);
+						}
+						selectionY = selectionY + 20;
+						counter++;
+						if (counter>5) break;
 					}
-					selectionY = selectionY + 20;
-					counter++;
-					if (counter>5) break;
-				}
 				}
 
 				selectionDialogeVisual.height = selectionY - selectionDialogeVisual.y;
-				  
+
 			}
 
-			
+
 			// editor
 			// float scrollToShow=((int)(scroll*10.0f))/10.0f;
 			// GUI.Label (new Rect(0,Screen.height-20,60,20),"  ["+scrollToShow+"] ",editorComment);
@@ -4508,7 +5024,7 @@ public class LevelEditor : MonoBehaviour {
 
 
 
-//			GUI.Label (filterTypeSubVisual, "", editorBackground);
+			//			GUI.Label (filterTypeSubVisual, "", editorBackground);
 
 			// filterDev
 			int filterY = Screen.height-80;
@@ -4537,23 +5053,23 @@ public class LevelEditor : MonoBehaviour {
 			filterX = filterX +70;
 			// type: *
 			// if (filterType.Equals("*")) {
-				ArrayList arrTypesUniqueX = GetElementTypesUnique ();
-				for (int i=0; i<arrTypesUniqueX.Count; i++) {
-					GameElement unique = (GameElement)arrTypesUniqueX [i];
-					string text = "" + unique.type;
-					GUIStyle guix = editorButtonStyleNotActive;
-					if (unique.type.Equals(filterType)) {
-						guix = editorButtonStyle;
-					}
-				bool buttonClicked = GUI.Button (new Rect ( filterX + i * 80, filterY, 78, 20), ""+text+".*", guix);
-					if (buttonClicked) {
-						filterType = unique.type;
-						filterTypeSub = "*";
-					}
-					// delete objects
-					// CountElementsType( string elementArea, string elementSubArea )
+			ArrayList arrTypesUniqueX = GetElementTypesUnique ();
+			for (int i=0; i<arrTypesUniqueX.Count; i++) {
+				GameElement unique = (GameElement)arrTypesUniqueX [i];
+				string text = "" + unique.type;
+				GUIStyle guix = editorButtonStyleNotActive;
+				if (unique.type.Equals(filterType)) {
+					guix = editorButtonStyle;
 				}
-				filterX = filterX + arrTypesUniqueX.Count*80;
+				bool buttonClicked = GUI.Button (new Rect ( filterX + i * 80, filterY, 78, 20), ""+text+".*", guix);
+				if (buttonClicked) {
+					filterType = unique.type;
+					filterTypeSub = "*";
+				}
+				// delete objects
+				// CountElementsType( string elementArea, string elementSubArea )
+			}
+			filterX = filterX + arrTypesUniqueX.Count*80;
 			// }
 
 
@@ -4611,7 +5127,7 @@ public class LevelEditor : MonoBehaviour {
 			}
 
 			GUI.Label (new Rect(101,Screen.height-20,Screen.width,20),"CAMERA: Use <awsd> for moving <qe> rotate side <rf> up/down <x2> lookup/down <c> reset  OBJECT: + <shift> | Objs: ["+arrLevel.Count+"] Elements "+ strSelection ,editorComment);
-			  
+
 
 		}
 
@@ -4624,8 +5140,8 @@ public class LevelEditor : MonoBehaviour {
 				text=text+"\n"+i+". ("+gaelement.type+"/"+gaelement.subtype+") ["+gameobjectname+"] [s:"+gaelement.strength+"] ";
 			}
 			GUI.Label (new Rect(0,200,Screen.width,Screen.height),""+text,editorComment);
-			
-			
+
+
 		}
 
 		// debug it 
@@ -4779,10 +5295,10 @@ public class LevelEditor : MonoBehaviour {
 				// Debug.Log ("DELETE");
 				// RemoveVerticalLine();
 				if (editorSelected!=null) {
-				RemoveElement(editorSelected);
-				editorSelected = null;
-				// add to editor history
-				AddToEditorHistory("[GUI][OBJECT][DELETE]");
+					RemoveElement(editorSelected);
+					editorSelected = null;
+					// add to editor history
+					AddToEditorHistory("[GUI][OBJECT][DELETE]");
 				}
 			}
 
@@ -4802,8 +5318,8 @@ public class LevelEditor : MonoBehaviour {
 				if (enabledEditorEdges) 
 				if (!CheckMouseInEditor())
 				{
-					
-					
+
+
 					float rotatex = 1.0f;
 					float rotatey = 1.0f;
 					if ((mouseY>=0)&&(mouseY<20)) {
@@ -4833,17 +5349,17 @@ public class LevelEditor : MonoBehaviour {
 						xcontainer.transform.Translate( 0.0f,  -0.1f,   0.0f );
 					}
 					*/
-				
+
 				}
 
 			}
-			
+
 			// IN SCENE
 			if (!CheckMouseInEditor()) {
 
 				// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // INSCENE ");
 
-				
+
 				// SPLIT!
 				if (Input.GetMouseButtonDown(0)) {
 
@@ -4867,12 +5383,12 @@ public class LevelEditor : MonoBehaviour {
 							InsertHorizontalLine();
 							AddToEditorHistory("[GUI][SPLIT]DOWN");
 						}
-						
+
 					}
 				}
 
 
-				
+
 				// not? create
 				if (true) {
 
@@ -4886,11 +5402,11 @@ public class LevelEditor : MonoBehaviour {
 							//HandleMouseDownToCreate();
 						}
 						*/
-						
+
 					} // CREATE
-					
+
 				}
-				
+
 			}
 
 
@@ -4942,7 +5458,7 @@ public class LevelEditor : MonoBehaviour {
 			Vector3 mouseVec = Input.mousePosition;
 			float mouseX = mouseVec.x;
 			float mouseY = Screen.height-mouseVec.y;
-//			print("---"+mouseVec.x+"/"+mouseVec.y);
+			//			print("---"+mouseVec.x+"/"+mouseVec.y);
 
 			if (mouseY>directMouseInputY) {
 				if (mouseY<(directMouseInputY+20)) {
@@ -5060,7 +5576,7 @@ public class LevelEditor : MonoBehaviour {
 			// Debug.Log ("...."+container.transform.localRotation.y);
 
 			if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor) {
-				
+
 				// scroll to zoom
 				container.transform.position += editorcamera.transform.forward*Input.GetAxis("Mouse ScrollWheel");
 
@@ -5069,8 +5585,8 @@ public class LevelEditor : MonoBehaviour {
 				// float xspeedFactor = 3.0f;
 				// float xspeedEffective = 1.0f;
 
-					// default: move camera
-					if (!(Input.GetKey ("left shift"))&&(!Input.GetKey ("right shift"))) {
+				// default: move camera
+				if (!(Input.GetKey ("left shift"))&&(!Input.GetKey ("right shift"))) {
 
 					if ((Input.GetKey ("a"))||(Input.GetKey ("left"))) {
 						// scroll = scroll - 0.3f;
@@ -5093,11 +5609,11 @@ public class LevelEditor : MonoBehaviour {
 						// DoScroll( 0.0f,0.3f);
 						// DoEditorScroll( 0.0f, 0.0f, speed.z );
 						container.transform.Translate ( new Vector3(0.0f, 0.0f, speedCamera));
-							
+
 					}
 					if ((Input.GetKey ("s"))||(Input.GetKey ("down"))) {
 						// scroll = scroll + 0.3f;
-//						DoEditorScroll( 0.0f, 0.0f, -speed.z );
+						//						DoEditorScroll( 0.0f, 0.0f, -speed.z );
 						container.transform.Translate ( new Vector3(0.0f, 0.0f, -speedCamera));
 
 					}
@@ -5128,12 +5644,12 @@ public class LevelEditor : MonoBehaviour {
 					if ((Input.GetKey ("q"))) {
 						//GameObject containerx=GameObject.Find ("editorCameraContainer");
 						// version 1.0
-//						container.transform.Rotate ( new Vector3(0.0f, 90.0f, 0.0f));
+						//						container.transform.Rotate ( new Vector3(0.0f, 90.0f, 0.0f));
 						container.transform.Rotate ( new Vector3(0.0f, -2.0f, 0.0f));
 					}
 					if ((Input.GetKey ("e"))) {
 						//GameObject containerx=GameObject.Find ("editorCameraContainer");
-//						container.transform.Rotate ( new Vector3(0.0f, 90.0f, 0.0f));
+						//						container.transform.Rotate ( new Vector3(0.0f, 90.0f, 0.0f));
 						container.transform.Rotate ( new Vector3(0.0f,  2.0f, 0.0f));
 					}
 
@@ -5141,10 +5657,10 @@ public class LevelEditor : MonoBehaviour {
 						// reset 
 						//GameObject containerx=GameObject.Find ("editorCameraContainer");
 						//						container.transform.Rotate ( new Vector3(0.0f, 90.0f, 0.0f));
-//						container.transform.Rotate ( new Vector3(0.0f,  2.0f, 0.0f));
+						//						container.transform.Rotate ( new Vector3(0.0f,  2.0f, 0.0f));
 						ResetRotation();
 					}
-				
+
 				}
 
 				// special move objects
@@ -5197,7 +5713,7 @@ public class LevelEditor : MonoBehaviour {
 							UpdateElementVisual(editorSelected);
 						}
 						if ((Input.GetKey ("e"))) {
-//							editorSelected.rotation = editorSelected.rotation - 3.0f;
+							//							editorSelected.rotation = editorSelected.rotation - 3.0f;
 							MoveObjectAlongEditorCamera("rotateleft");
 							UpdateElementVisual(editorSelected);
 						}
@@ -5210,7 +5726,7 @@ public class LevelEditor : MonoBehaviour {
 
 			}
 
-		
+
 
 
 
@@ -5239,7 +5755,7 @@ public class LevelEditor : MonoBehaviour {
 
 		// clear all
 		DeleteAllRelationVisuals ();
-		 
+
 		// return 
 		if (gameLogic!=null)
 		if (gameLogic.modal != GameLogic.GameLogicModal.Editor)
@@ -5275,180 +5791,180 @@ public class LevelEditor : MonoBehaviour {
 			gelement.descError = "";
 			// Debug.Log ("---"+a+". "+gelement.type+"/"+gelement.subtype+"   searching for: "+gameObj.GetInstanceID());
 			// if (gelement.release!=null) {
-				// check it now ... 
-				// trigger/player
+			// check it now ... 
+			// trigger/player
 
-				// check type
-				string checkType="";
-				if (gelement.type.Equals ("trigger")) {
-					if (gelement.subtype.Equals ("player")) {
-						checkType="notification";
-					}
-					if (gelement.subtype.Equals ("activate")) {
-						checkType="name";
-					}
-					if (gelement.subtype.Equals ("remove")) {
-						checkType="name";
-					}
+			// check type
+			string checkType="";
+			if (gelement.type.Equals ("trigger")) {
+				if (gelement.subtype.Equals ("player")) {
+					checkType="notification";
 				}
-				if (gelement.type.Equals ("action")) {
-						if (gelement.subtype.Equals ("notification")) {
-							checkType="notification";
-						}
+				if (gelement.subtype.Equals ("activate")) {
+					checkType="name";
 				}
+				if (gelement.subtype.Equals ("remove")) {
+					checkType="name";
+				}
+			}
+			if (gelement.type.Equals ("action")) {
+				if (gelement.subtype.Equals ("notification")) {
+					checkType="notification";
+				}
+			}
 			if (gelement.type.Equals ("path")) {
-					if (gelement.subtype.Equals ("path")) {
-						checkType="names";
+				if (gelement.subtype.Equals ("path")) {
+					checkType="names";
+				}
+			}
+
+			// check types
+			switch (checkType) {
+
+			case "notification":
+				if (gelement.argument.Equals ("")) {
+					gelement.flagError = true;
+					gelement.descError = "No notifaction!";
+					CreateVisualRelationError (gelement);
+				}
+				if (!gelement.argument.Equals ("")) {
+					Vector3 posTo = gelement.position + new Vector3 (0.0f, 5.0f, 0.0f);
+					CreateVisualRelationAction (gelement, posTo);
+				}
+				break;
+			case "name":
+				if (gelement.argument.Equals ("")) {
+					gelement.flagError = true;
+					gelement.descError = "No name!";
+					CreateVisualRelationError (gelement);
+				}
+				if (!gelement.argument.Equals ("")) {
+					//bool err = false;
+					ArrayList arr = GetGameElementsByName (gelement.argument);
+					for (int i=0; i<arr.Count; i++) {
+						GameElement gx = (GameElement)arr [i];
+						if (gx!=null) {
+							Vector3 posTo = gx.position; 
+							CreateVisualRelationPath (gelement, posTo);
+						} else {
+							// err = true;	
+						}
+					}
+
+					if (arr.Count==0) {
+						gelement.flagError = true;
+						gelement.descError = "No elements with name ("+gelement.argument+") found !";
+						CreateVisualRelationError (gelement);
 					}
 				}
-			
-			// check types
-				switch (checkType) {
-					
-				case "notification":
-					if (gelement.argument.Equals ("")) {
-						gelement.flagError = true;
-						gelement.descError = "No notifaction!";
-						CreateVisualRelationError (gelement);
-					}
-					if (!gelement.argument.Equals ("")) {
-						Vector3 posTo = gelement.position + new Vector3 (0.0f, 5.0f, 0.0f);
-						CreateVisualRelationAction (gelement, posTo);
-					}
-					break;
-				case "name":
-					if (gelement.argument.Equals ("")) {
-						gelement.flagError = true;
-						gelement.descError = "No name!";
-						CreateVisualRelationError (gelement);
-					}
-					if (!gelement.argument.Equals ("")) {
-						//bool err = false;
-						ArrayList arr = GetGameElementsByName (gelement.argument);
+				break;
+
+			case "names":
+				if (gelement.argument.Equals ("")) {
+					gelement.flagError = true;
+					gelement.descError = "No list of names!";
+					CreateVisualRelationError (gelement);
+				}
+				if (!gelement.argument.Equals ("")) {
+
+
+					// one or more ,-seperated objects
+					//bool err = false;
+					string[] words = gelement.argument.Split(',');
+
+					GameElement last = gelement; 
+					foreach (string word in words)
+					{
+						// word 
+						// test @abc > use names in unity3d 
+						// default: 
+						ArrayList arr = GetGameElementsByName (word);
 						for (int i=0; i<arr.Count; i++) {
 							GameElement gx = (GameElement)arr [i];
 							if (gx!=null) {
 								Vector3 posTo = gx.position; 
-								CreateVisualRelationPath (gelement, posTo);
-							} else {
-								// err = true;	
+								CreateVisualRelationPath (last, posTo);
+								last = gx; 
 							}
 						}
 
 						if (arr.Count==0) {
 							gelement.flagError = true;
-							gelement.descError = "No elements with name ("+gelement.argument+") found !";
+							gelement.descError = "No elements with name ("+word+") found !";
 							CreateVisualRelationError (gelement);
+
 						}
+
+						// @xyz > direct names in game ...
+						// ex. @player1
+
+
+
 					}
-					break;
 
-					case "names":
-						if (gelement.argument.Equals ("")) {
-							gelement.flagError = true;
-							gelement.descError = "No list of names!";
-							CreateVisualRelationError (gelement);
-						}
-						if (!gelement.argument.Equals ("")) {
-
-							
-							// one or more ,-seperated objects
-							//bool err = false;
-							string[] words = gelement.argument.Split(',');
-							
-							GameElement last = gelement; 
-							foreach (string word in words)
-							{
-								// word 
-								// test @abc > use names in unity3d 
-								// default: 
-								ArrayList arr = GetGameElementsByName (word);
-								for (int i=0; i<arr.Count; i++) {
-									GameElement gx = (GameElement)arr [i];
-									if (gx!=null) {
-										Vector3 posTo = gx.position; 
-										CreateVisualRelationPath (last, posTo);
-										last = gx; 
-									}
-								}
-
-								if (arr.Count==0) {
-									gelement.flagError = true;
-									gelement.descError = "No elements with name ("+word+") found !";
-									CreateVisualRelationError (gelement);
-
-								}
-
-								// @xyz > direct names in game ...
-								// ex. @player1
-								
-								
-
-							}
-							
-						}
-						break;	
-					
 				}
-			
-				
-			}
-	
-		}
+				break;	
 
-			void DeleteAllRelationVisuals () {
-				GameObject gobj;
-				if (arrRelation.Count > 0) {
-					for (int i=arrRelation.Count-1; i>=0; i--) {
-						gobj = (GameObject)arrRelation [i];
-						Destroy (gobj);
-					}
-				}
 			}
 
 
-		// Error
-		void CreateVisualRelationError( GameElement elem ) {
-		 	GameObject vl=Instantiate(lineVisualisationError, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
-			vl.name = "NotFound3";
-
-			LineRenderer lr=vl.GetComponent<LineRenderer>();
-			lr.SetPosition (0, elem.position );
-			lr.SetPosition (1, elem.position + new Vector3(0.0f,5.0f, 0.0f) );
-			arrRelation.Add (vl);
 		}
-	
-		// Path Visuals
-		void CreateVisualRelationPath( GameElement elem, Vector3 pointTo ) {
-			GameObject vl=Instantiate(lineVisualisationPath, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
-			vl.name = "NotFound4";
 
-			LineRenderer lr=vl.GetComponent<LineRenderer>();
-			lr.SetPosition (0, elem.position );
-			lr.SetPosition (1, pointTo );
-			arrRelation.Add (vl);
+	}
+
+	void DeleteAllRelationVisuals () {
+		GameObject gobj;
+		if (arrRelation.Count > 0) {
+			for (int i=arrRelation.Count-1; i>=0; i--) {
+				gobj = (GameObject)arrRelation [i];
+				Destroy (gobj);
+			}
 		}
-		// Action Visuals
-		void CreateVisualRelationAction( GameElement elem, Vector3 pointTo ) {
-			GameObject vl=Instantiate(lineVisualisation, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
+	}
+
+
+	// Error
+	void CreateVisualRelationError( GameElement elem ) {
+		GameObject vl=Instantiate(lineVisualisationError, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
+		vl.name = "NotFound3";
+
+		LineRenderer lr=vl.GetComponent<LineRenderer>();
+		lr.SetPosition (0, elem.position );
+		lr.SetPosition (1, elem.position + new Vector3(0.0f,5.0f, 0.0f) );
+		arrRelation.Add (vl);
+	}
+
+	// Path Visuals
+	void CreateVisualRelationPath( GameElement elem, Vector3 pointTo ) {
+		GameObject vl=Instantiate(lineVisualisationPath, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
+		vl.name = "NotFound4";
+
+		LineRenderer lr=vl.GetComponent<LineRenderer>();
+		lr.SetPosition (0, elem.position );
+		lr.SetPosition (1, pointTo );
+		arrRelation.Add (vl);
+	}
+	// Action Visuals
+	void CreateVisualRelationAction( GameElement elem, Vector3 pointTo ) {
+		GameObject vl=Instantiate(lineVisualisation, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
 		vl.name = "NotFound5";
-			LineRenderer lr=vl.GetComponent<LineRenderer>();
-			lr.SetPosition (0, elem.position );
-			lr.SetPosition (1, pointTo );
-			arrRelation.Add (vl);
-		}
+		LineRenderer lr=vl.GetComponent<LineRenderer>();
+		lr.SetPosition (0, elem.position );
+		lr.SetPosition (1, pointTo );
+		arrRelation.Add (vl);
+	}
 
 	// CreateVisualRelationEvaluation
-		void CreateVisualRelationEvaluation( GameElement elem, Vector3 pointTo ) {
-			GameObject vl=Instantiate(lineVisualisation, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
+	void CreateVisualRelationEvaluation( GameElement elem, Vector3 pointTo ) {
+		GameObject vl=Instantiate(lineVisualisation, new Vector3(elem.position.x,elem.position.y,elem.position.z), new Quaternion()) as GameObject;
 		vl.name = "NotFound6";
-				LineRenderer lr=vl.GetComponent<LineRenderer>();
-			lr.SetPosition (0, elem.position );
-			lr.SetPosition (1, pointTo );
-			arrRelation.Add (vl);
-		}
+		LineRenderer lr=vl.GetComponent<LineRenderer>();
+		lr.SetPosition (0, elem.position );
+		lr.SetPosition (1, pointTo );
+		arrRelation.Add (vl);
+	}
 
-	
-	
-	
+
+
+
 }
