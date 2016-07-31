@@ -3,23 +3,79 @@ using System.Collections;
 
 // todo: add this also to TriggerBase!!!
 
+/*
+ * you can use:
+ * 
+ * - OnPlayerHit()
+ * - PathFollowing
+ * 
+ * */
+
 public class GameElementBased : MonoBehaviour {
 
 	// game logic
 	public GameLogic gameLogic;
 
+	// overwrite this for activating path following!
+	public virtual bool FollowingPath() {
+		return false;
+	}
 
-
+	// classics
 	public void Start() {
 		gameLogic = GameObject.FindObjectOfType<GameLogic>();
 	}
-
 	public void FixedUpdate() {
 
 		// processing path ... 
-		ProcessPathFollowing();
+		if (FollowingPath()) ProcessPathFollowing();
 
 	}
+
+	/*
+	 *  override elements
+	 * 
+	 * */
+
+	// after set game element!
+	public virtual void OnGameElementInit() {
+
+		Debug.Log("GameElementBased.OnGameElementInit()");
+		OnGameElementInitPathFollowing();
+
+	}
+
+	// on game start
+	public virtual void OnGameStart() {
+
+	}
+
+	// on player hit
+	// you need just a trigger (hitbox / trigger)
+	public virtual void OnPlayerHit() {
+		Debug.Log("GameElementBased.OnPlayerHit()");
+	}
+
+
+
+	/*
+	 *  OnEnterTrigger
+	 * 
+	 * 
+	 * */
+	void OnTriggerEnter(Collider other) {
+		// Debug.Log("SwitchNotification.OnTriggerEnter() name: "+other.gameObject.name);
+		// Destroy(other.gameObject);
+
+		// dirty
+		if (other.gameObject.name.IndexOf("HitBox")!=-1) {
+			OnPlayerHit();
+		}
+	}
+
+
+
+
 
 	/*
    * AddNotification
@@ -57,18 +113,6 @@ public class GameElementBased : MonoBehaviour {
 		gameElement = ga;
 
 		OnGameElementInit();
-	}
-
-	// after set game element!
-	public virtual void OnGameElementInit() {
-
-		Debug.Log("GameElementBased.OnGameElementInit()");
-		OnGameElementInitPathFollowing();
-
-	}
-
-	public void OnGameStart() {
-		
 	}
 
 	/*
