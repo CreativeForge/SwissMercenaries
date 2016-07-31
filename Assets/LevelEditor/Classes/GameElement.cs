@@ -58,6 +58,7 @@ public class GameElement {
 	// position ... 
 	public Vector3 position=new Vector3(0.0f,0.0f,0.0f);
 	public float rotation = 0.0f; // in euler!
+	public float rotationForward = 0.0f; // in euler!
 
 	public float size = 1.0f;
 //	public Vector3 size=new Vector3(1.0f,1.0f,1.0f); // * not yet used
@@ -120,6 +121,7 @@ public class GameElement {
 		copyX.scrollX = scrollX;
 		copyX.strength = strength;
 		copyX.rotation = rotation;
+		copyX.rotationForward = rotationForward;
 		copyX.size = size;
 
 		copyX.guiBoolArgument = guiBoolArgument;
@@ -195,6 +197,7 @@ public class GameElement {
 		jsonObj.AddField("release", release); // target?
 		jsonObj.AddField("releasearg", releaseArg);
 		jsonObj.AddField("rotation", rotation);
+		jsonObj.AddField("rotationforward", rotationForward);
 		jsonObj.AddField("size", size);
 
 		// evaluation stuff
@@ -231,6 +234,7 @@ public class GameElement {
 			if (key.Equals ("release")) { 	release=jkeyObj.str; }
 			if (key.Equals ("releasearg")) { 	releaseArg=jkeyObj.str; }
 			if (key.Equals ("rotation")) { 	rotation=(float)jkeyObj.n; } 
+			if (key.Equals ("rotationforward")) { 	rotationForward=(float)jkeyObj.n; } 
 			if (key.Equals ("size")) { 	size=(float)jkeyObj.n; }
 
 			// evaluation stuff

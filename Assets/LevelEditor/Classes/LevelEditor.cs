@@ -185,8 +185,8 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	// speeds
-	float speedCamera = 0.2f;
-	float speedObject = 0.2f;
+	float speedCamera = 0.4f;
+	float speedObject = 0.4f;
 
 	// buttons
 	bool cursorObject = false; // object or ...
@@ -223,16 +223,16 @@ public class LevelEditor : MonoBehaviour {
 			bool isMovement = true;
 			if (strdirect.Equals("forward")) direction = direction;
 			if (strdirect.Equals("backward")) direction = -direction;
-			if (strdirect.Equals("up")) direction =  new Vector3(0.0f, speedObject, 0.0f);
-			if (strdirect.Equals("down")) direction =  new Vector3(0.0f, -speedObject, 0.0f);
+			if (strdirect.Equals("up")) direction =  new Vector3(0.0f, speedObject*2.0f, 0.0f);
+			if (strdirect.Equals("down")) direction =  new Vector3(0.0f, -speedObject*2.0f, 0.0f);
 			if (strdirect.Equals("left")) direction = new Vector3(-direction.z, 0.0f, direction.x);
 			if (strdirect.Equals("right")) direction =  new Vector3(direction.z, 0.0f, -direction.x);
-			if (strdirect.Equals("rotateforward")) { direction =  new Vector3(0.0f,0.0f,0.0f); AddEditorMessage("Not implemented for objects!"); }
-			if (strdirect.Equals("rotatebackward")) { direction =  new Vector3(0.0f,0.0f,0.0f); AddEditorMessage("Not implemented for objects!"); }
-			if (strdirect.Equals("rotateleft")) { editorSelected.rotation = editorSelected.rotation - 5.0f; isMovement= false; }
-			if (strdirect.Equals("rotateright")) { editorSelected.rotation = editorSelected.rotation + 5.0f; isMovement= false; }
+			if (strdirect.Equals("rotateforward")) { editorSelected.rotationForward = editorSelected.rotationForward + 5.0f;  isMovement= false; /* direction =  new Vector3(0.0f,0.0f,0.0f); AddEditorMessage("Not implemented for objects!"); */ }
+			if (strdirect.Equals("rotatebackward")) { editorSelected.rotationForward = editorSelected.rotationForward - 5.0f;  isMovement= false; /* direction =  new Vector3(0.0f,0.0f,0.0f); AddEditorMessage("Not implemented for objects!"); */ }
+			if (strdirect.Equals("rotateleft")) { editorSelected.rotation = editorSelected.rotation + 5.0f; isMovement= false; }
+			if (strdirect.Equals("rotateright")) { editorSelected.rotation = editorSelected.rotation - 5.0f; isMovement= false; }
 			if (isMovement) {
-				direction = direction * 0.5f;
+				direction = direction * 0.5f * speedObject;
 				// Debug.Log("LevelEditor.MoveObjectAlongEditorCamera() // " + direction);
 				editorSelected.position = editorSelected.position + direction;
 			}
@@ -1660,7 +1660,7 @@ public class LevelEditor : MonoBehaviour {
 				// rotation 
 				Quaternion re = new Quaternion();
 				if (elem.rotation!=0.0f) {
-					re = Quaternion.Euler(0, elem.rotation, 0);
+					re = Quaternion.Euler(elem.rotationForward, elem.rotation, 0);
 				}
 
 				// elPrefab.prefabGameObject // .prefabEditor
@@ -4284,6 +4284,7 @@ public class LevelEditor : MonoBehaviour {
 				if (!showElementsSubTypeOnly) {
 					ArrayList arrTypesUnique = GetElementTypesUnique ();
 					int inspectorXTmpTemp = inspectorXTmp;
+					int inspectorXAddOnX = 0;
 					for (int i=0; i<arrTypesUnique.Count; i++) {
 						GameElement unique = (GameElement)arrTypesUnique [i];
 						string text = "" + unique.type;
@@ -4320,7 +4321,8 @@ public class LevelEditor : MonoBehaviour {
 						// CountElementsType( string elementArea, string elementSubArea )
 						inspectorXTmpTemp = inspectorXTmpTemp + 60;
 						if (inspectorXTmpTemp>maxXToWrap) {
-							inspectorXTmpTemp = 10;
+							inspectorXAddOnX = inspectorXAddOnX + 3;
+							inspectorXTmpTemp = 10 + inspectorXAddOnX;
 							inspectorYTmp = inspectorYTmp + 21;
 						}
 
@@ -4331,6 +4333,7 @@ public class LevelEditor : MonoBehaviour {
 				// show subcategories!
 				ArrayList arr = GetElementTypes (selectedEditorArea);
 				int inspectorXTmpXTemp = 10;
+				int inspectorXAddOn = 10;
 				for (int a=0; a<arr.Count; a++) {
 					GameElement gelement = (GameElement)arr [a];
 					string text = "" + gelement.subtype;
@@ -4372,7 +4375,8 @@ public class LevelEditor : MonoBehaviour {
 
 					inspectorXTmpXTemp = inspectorXTmpXTemp + 80;
 					if (inspectorXTmpXTemp>maxXToWrap) {
-						inspectorXTmpXTemp = 10;
+						inspectorXAddOn = inspectorXAddOn + 1;
+						inspectorXTmpXTemp = 10 + inspectorXAddOn;
 						inspectorYTmp = inspectorYTmp + 21;
 					}
 				}
@@ -4781,22 +4785,22 @@ public class LevelEditor : MonoBehaviour {
 				inspectorXTmp = inspectorXTmp + 30;
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "\\", "rotateleft" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "^", "up" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "^", "forward" );
 				inspectorXTmp = inspectorXTmp + 30;
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "/", "rotateright" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "-", "forward" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "-", "up" );
 				inspectorYTmp = inspectorYTmp + 30; 
 				inspectorXTmp = cursorX; 
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "||", "rotatebackward" );
 				inspectorXTmp = inspectorXTmp + 30;
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "<", "left" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "u", "down" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "u", "backward" );
 				inspectorXTmp = inspectorXTmp + 30;
 				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, ">", "right" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "_", "backward" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "_", "down" );
 
 			}
 
@@ -4820,7 +4824,7 @@ public class LevelEditor : MonoBehaviour {
 			// 1-4
 			//				inspectorYTmp = inspectorYTmp + 30; 
 			//				inspectorXTmp = cursorX; 
-			for (int y=0;y<4;y++) {
+			for (int y=0;y<6;y++) {
 				float val = 0.2f + 0.2f * y;
 				GUIStyle guixx = editorButtonStyleNotActive;
 				if (!cursorObject) {
@@ -5241,6 +5245,20 @@ public class LevelEditor : MonoBehaviour {
 						AddToEditorHistory("[GUI][OBJECT][RX]--");
 					}
 					if ((Input.GetKeyUp ("e"))) {
+						AddToEditorHistory("[GUI][OBJECT][RX]++");
+					}
+
+					// rotate
+					if ((Input.GetKeyUp ("2"))) {
+						AddToEditorHistory("[GUI][OBJECT][RX]--");
+					}
+					if ((Input.GetKeyUp ("3"))) {
+						AddToEditorHistory("[GUI][OBJECT][RX]--");
+					}
+					if ((Input.GetKeyUp ("x"))) {
+						AddToEditorHistory("[GUI][OBJECT][RX]++");
+					}
+					if ((Input.GetKeyUp ("y"))) {
 						AddToEditorHistory("[GUI][OBJECT][RX]++");
 					}
 				}
@@ -5717,6 +5735,17 @@ public class LevelEditor : MonoBehaviour {
 						if ((Input.GetKey ("e"))) {
 							//							editorSelected.rotation = editorSelected.rotation - 3.0f;
 							MoveObjectAlongEditorCamera("rotateleft");
+							UpdateElementVisual(editorSelected);
+						}
+
+						if ((Input.GetKey ("2"))||(Input.GetKey ("3"))) {
+							// editorSelected.position.z = editorSelected.position.z + vectorMove.z;
+							MoveObjectAlongEditorCamera("rotateforward");
+							UpdateElementVisual(editorSelected);
+						}
+						if ((Input.GetKey ("x"))||(Input.GetKey ("y"))) {
+							// editorSelected.position.z = editorSelected.position.z + vectorMove.z;
+							MoveObjectAlongEditorCamera("rotatebackward");
 							UpdateElementVisual(editorSelected);
 						}
 					}
