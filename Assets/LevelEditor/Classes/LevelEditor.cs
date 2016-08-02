@@ -194,7 +194,8 @@ public class LevelEditor : MonoBehaviour {
 	float speedCamera = 0.4f;
 	float speedObject = 0.4f;
 
-	// buttons
+
+
 	bool cursorObject = false; // object or ...
 	int cursorX = Screen.width - 300;
 	int cursorY = Screen.height - 200;
@@ -202,21 +203,21 @@ public class LevelEditor : MonoBehaviour {
 	ArrayList arrSensButtons = new ArrayList();
 	class SensButton {
 		public Rect rect = new Rect();
-		public string text = "";
+		public Texture2D icon ;
 		public string key = "";
-		public void Init( int ix, int iy, int iwidth, int iheight, string itext, string ikey) {
+		public void Init( int ix, int iy, int iwidth, int iheight, Texture2D iicon, string ikey) {
 			rect.x = ix	;
 			rect.y = iy;
 			rect.width = iwidth;
 			rect.height = iheight;
-			text = itext;
+			icon = iicon;
 			key = ikey;
 		}
 	}
 
-	void AddSensButton(int x, int y, int width, int height, string text, string key) {
+	void AddSensButton(int x, int y, int width, int height, Texture2D icon, string key) {
 		SensButton sensbuttonObj = new SensButton();
-		sensbuttonObj.Init( x,  y,  width,  height,  text,  key);
+		sensbuttonObj.Init( x,  y,  width,  height,  icon,  key);
 		arrSensButtons.Add(sensbuttonObj);
 	}
 
@@ -1031,7 +1032,7 @@ public class LevelEditor : MonoBehaviour {
 	public LevelElement[] MovableLevelElements = { new LevelElement ("box")   };
 	public LevelElement[] FurnitureLevelElements = { } ;
 	public LevelElement[] PlayerLevelElements = { new LevelElement ("player1"), new LevelElement ("player2") };
-	public LevelElement[] SwissLevelSoldiersEleements = { new LevelElement ("small"), new LevelElement ("idiot") , new LevelElement ("cool")  };
+	// public LevelElement[] SwissLevelSoldiersEleements = { new LevelElement ("small"), new LevelElement ("idiot") , new LevelElement ("cool")  };
 
 	public LevelElement[] EnemyLevelElements= { new LevelElement ("waiting"), new LevelElement ("landsknecht") , new LevelElement ("dtreich")  };
 
@@ -1117,7 +1118,7 @@ public class LevelEditor : MonoBehaviour {
 		RegisterLevelElements( "movable", MovableLevelElements );
 
 		RegisterLevelElements( "player", PlayerLevelElements );
-		RegisterLevelElements( "swisssoldiers", SwissLevelSoldiersEleements );
+		// RegisterLevelElements( "swisssoldiers", SwissLevelSoldiersEleements );
 
 		RegisterLevelElements( "enemy", EnemyLevelElements );
 
@@ -2883,6 +2884,20 @@ public class LevelEditor : MonoBehaviour {
 		}
 	}
 
+	// buttons
+	public Texture2D cursorIconCam;
+	public Texture2D cursorIconObject;
+	public Texture2D cursorIconUp;
+	public Texture2D cursorIconDown;
+	public Texture2D cursorIconLeft;
+	public Texture2D cursorIconForward;
+	public Texture2D cursorIconBackward;
+	public Texture2D cursorIconRight;
+	public Texture2D cursorIconRotateLeft;
+	public Texture2D cursorIconRotateRight;
+	public Texture2D cursorIconRotateForward;
+	public Texture2D cursorIconRotateBackward;
+
 	void OnGUI() {
 
 		bool debugThis = false;
@@ -3361,7 +3376,7 @@ public class LevelEditor : MonoBehaviour {
 						for (int i=0;i<names.Length;i++) {
 							string allover = "";
 							if (evaluationUserAllOver.Equals(""+values[i])) {
-								allover = ">";
+								// allover = ">";
 							}
 							if (GUI.Button (new Rect (edX , 0, 38, 20), allover+""+names[i], guiEvaluation)) {
 								evaluationUserAllOver = ""+values[i]; 
@@ -3843,7 +3858,7 @@ public class LevelEditor : MonoBehaviour {
 				GUIStyle gui = editorButtonStyle;
 				if (i == actualLevel) {
 					gui = editorButtonActiveStyle;
-					text = ">" + text + "";
+					// text = ">" + text + "";
 				}
 
 				bool buttonClicked = GUI.Button (new Rect (toolsXTmp, toolsYTmp, 20, 20), text, gui);
@@ -4260,14 +4275,14 @@ public class LevelEditor : MonoBehaviour {
 							AddToEditorHistory("state");
 						}
 						inspectorXTmp= inspectorXTmp + 60;
-						if (release.Equals ("")) { add=">"; }
+						if (release.Equals ("")) { /* add=">"; */ }
 						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"active",editorButtonStyle)) {
 							editorSelected.release="";
 							AddToEditorHistory("active");
 						}
 						inspectorXTmp= inspectorXTmp + 60;
 						add = "";
-						if (release.Equals ("wait")) { add=">"; }
+						if (release.Equals ("wait")) { /* add=">"; */ }
 						if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,58,20),add+"hidden",editorButtonStyle)) {
 							editorSelected.release="wait";
 							AddToEditorHistory("wait");
@@ -4481,7 +4496,7 @@ public class LevelEditor : MonoBehaviour {
 						GUIStyle gui = editorButtonStyle;
 						if (editorSelected.size==size) {
 							gui = editorButtonActiveStyle;
-							text = ">" + text + "";
+							// text = ">" + text + "";
 						}
 						bool buttonClicked = GUI.Button (new Rect (inspectorXTmp + 62 + i * 24, inspectorYTmp, 22, 20), text , gui );
 						if (buttonClicked) {
@@ -4491,9 +4506,39 @@ public class LevelEditor : MonoBehaviour {
 						}
 					}
 
-					inspectorYTmp = inspectorYTmp + 10;
+					inspectorYTmp = inspectorYTmp + 22; 
+
+					GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 58, 20), "ROTATE", editorButtonStyle);
+					inspectorXTmp = inspectorXTmp + 60;
+
+					int deg = 0;
+					for (int i=0; i<22; i++) {
+						/*if (i==1 || i==5 || i==8 || i==10 || i==11 || i==13 || i==14 ||
+						i==16 || i==17 || i==19) continue;*/
+						if(i==0 || i==3 || i==6 || i==9 || i==12 || i==15 || i==18 || i==21){
+							string text = ""+(i*15);
+							GUIStyle gui = editorButtonStyle;
+							if (editorSelected.rotation==(i*15)) {
+								gui = editorButtonActiveStyle;
+								text = "" + (i*15) + "";
+							}
+							bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 26, 20), text, gui);
+							if (buttonClicked) {
+								// editorDegree = i * 15;
+								editorSelected.rotation = i * 15;
+								UpdateElementVisual(editorSelected);
+								AddToEditorHistory("Editor UpdateObject");
+							}
+
+							inspectorXTmp = inspectorXTmp + 28;
+						}
+					}
 
 					inspectorYTmp = inspectorYTmp + 22; 
+					inspectorYTmp = inspectorYTmp + 10;
+
+
+
 
 					/*
 					if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,200,20),""+editorTool,editorButtonStyleBig)) {
@@ -4702,10 +4747,10 @@ public class LevelEditor : MonoBehaviour {
 					string add="";
 					string title=""; 
 					GUIStyle gs = editorButtonStyle;
-					if (i==0) { title = "ADD |>"; if (editorToolSub.Equals ("right")) { add=">";  gs= editorButtonActiveStyle; } }
-					if (i==1) { title = "|< DEL"; if (editorToolSub.Equals ("left")) { add=">"; gs= editorButtonActiveStyle; } }
-					if (i==2) { title = "ADD ^"; if (editorToolSub.Equals ("down")) { add=">"; gs= editorButtonActiveStyle;   } }
-					if (i==3) { title = "DEL ^"; if (editorToolSub.Equals ("up")) { add=">"; gs= editorButtonActiveStyle; } }
+					if (i==0) { title = "ADD |>"; if (editorToolSub.Equals ("right")) {  gs= editorButtonActiveStyle; } }
+					if (i==1) { title = "|< DEL"; if (editorToolSub.Equals ("left")) { gs= editorButtonActiveStyle; } }
+					if (i==2) { title = "ADD ^"; if (editorToolSub.Equals ("down")) { gs= editorButtonActiveStyle;   } }
+					if (i==3) { title = "DEL ^"; if (editorToolSub.Equals ("up")) { gs= editorButtonActiveStyle; } }
 
 					if (GUI.Button (new Rect (inspectorXTmp + i*60, inspectorYTmp, 58, 20), add+""+title, gs )) {
 						editorToolSub	= arrEditorToolsSub[i];	
@@ -4738,7 +4783,7 @@ public class LevelEditor : MonoBehaviour {
 				// PLAYERS
 				int dtx = inspectorXTmp; 
 				string addOnX = "";
-				if (editorEvaluationFilter.Equals("all")) { addOnX = ">"; } 
+				if (editorEvaluationFilter.Equals("all")) {  } 
 				if (GUI.Button (new Rect (inspectorXTmp + 0*60, inspectorYTmp, 58, 20), addOnX+"ALL", editorButtonStyle )) {
 
 					if (!editorShowEvaluationData) {
@@ -4758,7 +4803,7 @@ public class LevelEditor : MonoBehaviour {
 						pl = arrEvaluationPlayersObj[o];
 						string addOn = "";
 						if (editorEvaluationPlayerId.Equals(pl.playerId))  {
-							addOn = ">";
+							// addOn = ">";
 						}
 						if (GUI.Button (new Rect (dtx + (o+1)*60, inspectorYTmp, 58, 20), addOn+"" + pl.name, editorButtonStyle )) {
 							// UpdateShowEvaluationData();
@@ -4780,7 +4825,7 @@ public class LevelEditor : MonoBehaviour {
 				// session id
 				dtx = inspectorXTmp; 
 				addOnX = "";
-				if (editorEvaluationSessionId.Equals("")) { addOnX = ">"; } 
+				if (editorEvaluationSessionId.Equals("")) { /* addOnX = ">"; */ } 
 				if (GUI.Button (new Rect (inspectorXTmp + 0*60, inspectorYTmp, 58, 20), addOnX+"ALL", editorButtonStyle )) {
 
 					if (!editorShowEvaluationData) {
@@ -4803,7 +4848,7 @@ public class LevelEditor : MonoBehaviour {
 					el = (GameElement)arrSessions[o];
 					string addOn = "";
 					if (editorEvaluationSessionId.Equals(""+el.evaluationSessionId)) {
-						addOn = ">";
+						// addOn = ">";
 					}
 					if (GUI.Button (new Rect (dtx + (o+1)*60, inspectorYTmp, 58, 20), addOn+"/" + el.evaluationSessionId, editorButtonStyle )) {
 
@@ -4843,26 +4888,26 @@ public class LevelEditor : MonoBehaviour {
 			inspectorXTmp = cursorX;
 			inspectorYTmp = cursorY;
 			if (arrSensButtons.Count==0) {
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "|", "rotateforward" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateForward, "rotateforward" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "\\", "rotateleft" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateLeft, "rotateleft" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "^", "forward" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconForward, "forward" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "/", "rotateright" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateRight, "rotateright" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "-", "up" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconUp, "up" );
 				inspectorYTmp = inspectorYTmp + 30; 
 				inspectorXTmp = cursorX; 
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "||", "rotatebackward" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateBackward, "rotatebackward" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "<", "left" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconLeft, "left" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "u", "backward" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconBackward, "backward" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, ">", "right" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRight, "right" );
 				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, "_", "down" );
+				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconDown, "down" );
 
 			}
 
@@ -4872,7 +4917,7 @@ public class LevelEditor : MonoBehaviour {
 				// Debug.Log("arrSensButtons.Count: "+arrSensButtons.Count);
 				for (int i=0;i<arrSensButtons.Count;i++) {
 					sb = (SensButton) arrSensButtons[i];
-					GUI.Label ( sb.rect, ""+sb.text, editorButtonStyle);
+					GUI.Label ( sb.rect, sb.icon, editorButtonStyle);
 
 
 				}
@@ -4913,7 +4958,7 @@ public class LevelEditor : MonoBehaviour {
 			if (!cursorObject) {
 				guixxx = editorButtonActiveStyle;
 			}
-			if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 34, 28), "CAM", guixxx)) {
+			if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 34, 28), cursorIconCam, guixxx)) {
 				cursorObject = false;
 			}
 			inspectorYTmp = inspectorYTmp + 30;
@@ -4921,7 +4966,7 @@ public class LevelEditor : MonoBehaviour {
 			if (cursorObject) {
 				guixxx = editorButtonActiveStyle;
 			}
-			if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 34, 28), "OBJ", guixxx)) {
+			if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 34, 28), cursorIconObject, guixxx)) {
 				cursorObject = true;
 			}
 			cursorRect.x = cursorX;
@@ -5113,9 +5158,9 @@ public class LevelEditor : MonoBehaviour {
 
 			filterX = 0;
 
-			GUIStyle xyz = editorButtonActiveStyle;
-			if (filterType.Equals(""))  xyz = editorButtonStyle;
-			if (GUI.Button (new Rect(0,filterY,60,20),"VIEW *.* " ,xyz)) {
+			GUIStyle xyz = editorButtonStyleNotActive;
+			if (filterType.Equals("*"))  xyz = editorButtonActiveStyle;
+			if (GUI.Button (new Rect(0,filterY,60,20),"VIEW ALL" ,xyz)) {
 				filterType = "*";
 			}
 
