@@ -31,6 +31,8 @@ public class GameElement {
 
 	public int index = 0; // index of the gameelement ... 
 
+	public string creator = "";
+
 	public bool editorRandom = false;
 
 	// condition
@@ -112,6 +114,7 @@ public class GameElement {
 
 		copyX.strevent = strevent;
 		copyX.target = target;
+		copyX.creator = creator;
 		copyX.timed = timed;
 
 		copyX.index = index;
@@ -127,6 +130,9 @@ public class GameElement {
 		copyX.guiBoolArgument = guiBoolArgument;
 		copyX.guiDescription = guiDescription;
 		copyX.guiLabel = guiLabel;
+
+		copyX.editorTileSize = editorTileSize;
+		copyX.editorIsGround = editorIsGround;
 
 		copyX.editorRandom = editorRandom;
 		copyX.editorDisplaySize = editorDisplaySize;
@@ -191,6 +197,8 @@ public class GameElement {
 		jsonObj.AddField("argumentsub", argumentsub);
 
 		jsonObj.AddField("target", target);
+		// creator
+		jsonObj.AddField("creator", creator);
 		jsonObj.AddField("strevent", strevent);
 		jsonObj.AddField("timed", timed);
 
@@ -228,6 +236,8 @@ public class GameElement {
 			if (key.Equals ("timed")) { 	timed=(float)jkeyObj.n; }
 			if (key.Equals ("argument")) { 	argument=jkeyObj.str; }
 			if (key.Equals ("target")) { 	target=jkeyObj.str; }
+			if (key.Equals ("creator")) { 	creator=jkeyObj.str; }
+
 			if (key.Equals ("strevent")) { 	strevent=jkeyObj.str; }
 			if (key.Equals ("index")) { 	index=(int)jkeyObj.n; }
 			if (key.Equals ("argumentsub")) { 	argumentsub=jkeyObj.str; }

@@ -80,6 +80,12 @@ public class LevelEditor : MonoBehaviour {
 	// float stateSpecialEditorScroll=0.0f;
 	// float stateSpecialEditorScrollY=0.0f;
 
+	/*
+	 * editor
+	 * 
+	 * */
+	string editorAutor = "ANONYMOUS";
+
 	// overlay
 	bool cameraOverlayTypes = false;
 
@@ -1015,6 +1021,11 @@ public class LevelEditor : MonoBehaviour {
 	public LevelElement[] LightLevelElements= {  new LevelElement ("light")   };
 	public LevelElement[] SkyLevelElements = {    };
 	public LevelElement[] MetaLevelElements= {   };
+
+	// tiles
+	public LevelElement[] TileLevelElements = {   };
+
+	// specials
 	public LevelElement[] ImmovablesLevelElements = { new LevelElement ("scheune"), new LevelElement ("city"),  new LevelElement ("fountain")    };
 	public LevelElement[] ColliderLevelElements = {    };
 	public LevelElement[] MovableLevelElements = { new LevelElement ("box")   };
@@ -1094,6 +1105,9 @@ public class LevelEditor : MonoBehaviour {
 		RegisterLevelElements( "light", LightLevelElements );
 		RegisterLevelElements( "sky", SkyLevelElements );
 
+		RegisterLevelElements( "tile", TileLevelElements );
+
+
 		RegisterLevelElements( "meta", MetaLevelElements );
 		RegisterLevelElements( "immovable", ImmovablesLevelElements );
 		RegisterLevelElements( "furniture", FurnitureLevelElements );
@@ -1164,6 +1178,7 @@ public class LevelEditor : MonoBehaviour {
 			// copy and add all prefabs for arguments (evaluation.allover 2,1,0 etc
 			geType.prefabEditorDummyArguments = el.prefabEditorDummyArguments; // .Copy(); // all the same reference
 			geType.guiBoolArgument = el.argumentNeeded; 
+			// geType.editorIsGround = el.isGround;
 			geType.guiLabel = el.argumentLabel;	 
 			geType.guiDescription = el.argumentDescription;
 
@@ -1174,7 +1189,9 @@ public class LevelEditor : MonoBehaviour {
 
 			geType.editorTileSize = el.editorTileSize;
 			geType.editorIsGround = el.isGround;
-
+			if (geType.editorIsGround) {
+				// Debug.Log("LevelEditor.RegisterLevelElements() // isGROUND: "+geType.type+"/"+geType.subtype);
+			}
 			geType.guiShowInMenu = visibleInEditor;
 
 			geType.editorDisplaySize = el.editorDisplaySize;
@@ -1708,12 +1725,14 @@ public class LevelEditor : MonoBehaviour {
 					}
 
 
-					// special - only in editor?
+					// EDITOR: special - only in editor?
 					if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor ) {
 
 
 						GameObject go = new GameObject();
-						if (elPrefab.prefabEditorDummyGameObject!=null) {
+
+						// editor prefab!! = prefabEditorDummyGameObject
+						if (elPrefab.prefabEditorDummyGameObject!=null)  {
 
 							//	if (elem.prefabEditorDummyArguments==null) Debug.Log(". LeveLElementOption NULL"+elem.prefabEditorDummyArguments);
 							// else Debug.Log(". LeveLElementOption FOUND!"+elem.prefabEditorDummyArguments);
@@ -1722,10 +1741,31 @@ public class LevelEditor : MonoBehaviour {
 
 							// argument?
 							// no alternative elements for argument
-							if (elem.prefabEditorDummyArguments==null) {
-								go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-								go.name = "NotFound8";
 
+							// default
+							if (elem.prefabEditorDummyArguments.Length==0) {
+								go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+								// go.name = "FOUNDEditorPrefab";
+
+								// use normal gameobject if 
+								if (elPrefab.editorIsGround) {
+									if (editorSelected!=elem) {
+									// Debug.Log("IS GROUND!!! "+elPrefab.type);
+									// update with ingameobject ! as ground!!!
+									go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+									go.name = "editorXYZGROUND";	
+									}
+								}
+
+								GameElementBased geb = go.GetComponent<GameElementBased>();
+								// Debug.Log ("---"+trb.ToString ());
+								if (geb!=null) {
+									geb.SetGameElement( elem );
+									// trb.SetGameElementArgument(argument);
+									// Debug.Log ("ARGUMENT 2: "+trb.argument);
+								}
+
+							// options for EVALUATIONS etc.
 							} else {
 								// Debug.Log(". LeveLElementOption FOUND! "+elem.argument+" "+elem.prefabEditorDummyArguments);
 
@@ -1745,7 +1785,7 @@ public class LevelEditor : MonoBehaviour {
 								} 
 								if (!found) {
 									go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-									go.name = "NotFound";
+									go.name = "NotFoundDUMMY!";
 								}
 							}
 
@@ -1756,9 +1796,10 @@ public class LevelEditor : MonoBehaviour {
 							elem.gameObject=go;
 							if (!elem.name.Equals("")) { go.name=""+elem.name; }
 							go.transform.parent = levelObject.transform; 
+
 						} else {
 							go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-							go.name = "NotFoundXYZ";
+							go.name = "NOEDITORPREFABATALLPrefabEditor!!!";
 
 							// size
 							if (elem.size!=1.0f) {
@@ -2011,6 +2052,12 @@ public class LevelEditor : MonoBehaviour {
 	// special in tools
 	// edit
 	void SetSelectedElement( GameElement ga ) {
+
+		// deselect old!
+		if (editorSelected!=null) {
+			UpdateElementVisual(editorSelected);
+		}
+
 		// Debug.Log ("SetSelectedElement()");
 		editorSelected = ga;
 		if (ga==null) {
@@ -2776,6 +2823,7 @@ public class LevelEditor : MonoBehaviour {
 			// arg
 			GameElement arg = editorPrefabX.Copy();
 			AddElement(arg);
+			arg.creator = editorAutor;
 			UpdateGameElementToPosition(arg, Input.mousePosition);
 
 			// copy to the actualGameElement
@@ -3096,7 +3144,11 @@ public class LevelEditor : MonoBehaviour {
 							bool showInfo=false;
 							string textInfo="";
 							if (!gaelement.name.Equals ("")) { showInfo=true; textInfo=textInfo+"#"+gaelement.name+""; } 
-							if (!gaelement.argument.Equals ("")) { showInfo=true; if (!textInfo.Equals ("")) textInfo=textInfo+" "; /* textInfo=textInfo+"{"+gaelement.argument+"}"; */ } 
+							if (!gaelement.argument.Equals ("")) { showInfo=true; if (!textInfo.Equals ("")) textInfo=textInfo+" ";/* textInfo=textInfo+"{"+gaelement.argument+"}"; */ } 
+
+							if (gaelement.type.Equals("remark")) {
+								textInfo=textInfo+" " +"{"+gaelement.argument+"}";  
+							}
 
 							// info here 
 							string waiting ="";
@@ -3589,14 +3641,22 @@ public class LevelEditor : MonoBehaviour {
 				}
 				toolsXTmp = toolsXTmp + 120;
 
-				// SET AUTOR 
-				if (typeX.Equals("web")) {
-					// get actual 
-					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 80, 20), "AUTOR: ", editorButtonActiveStyle);
-					toolsXTmp = toolsXTmp + 90;
-				}
+
 			}
+
+			// SET AUTOR 
+			// if (typeX.Equals("web")) {
+			// get actual 
+			toolsXTmp = toolsXTmp + 70;
+			GUI.Label (new Rect (toolsXTmp, toolsYTmp, 80, 20), "AUTOR: ", editorButtonStyle);
+			toolsXTmp = toolsXTmp + 82;
+			editorAutor=GUI.TextField (new Rect(toolsXTmp, toolsYTmp,140,20),editorAutor);
+			toolsXTmp = toolsXTmp + 90;
+			// }
+
 			toolsXTmp=toolsX;
+
+
 
 			// weblevels
 			if (leveltype.Equals("web")) {
@@ -4182,7 +4242,7 @@ public class LevelEditor : MonoBehaviour {
 						AddToEditorHistory("[GUI][OBJECT][DELETE]");
 					}
 
-					GUI.Label (new Rect(inspectorXTmp-300,inspectorYTmp-28,280,20),"("+editorSelected.type+"."+editorSelected.subtype+") ["+editorSelected.position.x+","+editorSelected.position.y+","+editorSelected.position.z+"]",editorButtonStyle);
+					GUI.Label (new Rect(inspectorXTmp-300,inspectorYTmp-28,280,20),"("+editorSelected.type+"."+editorSelected.subtype+") "+editorSelected.creator+" ["+editorSelected.position.x+","+editorSelected.position.y+","+editorSelected.position.z+"]",editorButtonStyle);
 
 
 
@@ -4298,7 +4358,7 @@ public class LevelEditor : MonoBehaviour {
 						if (editorTool.Equals ("EDIT")) {  if (editorSelected!=null) { selectedEditorArea=editorSelected.type;  } }
 						if (ieditorArea.Equals (selectedEditorArea)) {
 							guix = editorButtonTypeStyle;
-							text = ">" + text;
+							// text = ">" + text;
 
 						}
 						bool buttonClicked = GUI.Button (new Rect (inspectorXTmpTemp, inspectorYTmp, 58, 20), text, guix);
@@ -4307,6 +4367,8 @@ public class LevelEditor : MonoBehaviour {
 							// editorArea=ieditorArea;
 							if (editorTool.Equals ("CREATE")) {  SetEditorArea (ieditorArea); SetSubEditorArea (unique.subtype);}
 							if (editorTool.Equals ("EDIT")) { 
+								UpdateElementVisual(editorSelected); 
+
 								editorSelected.type=unique.type; 
 								editorSelected.subtype=unique.subtype; 
 								// getsize etc ... 
@@ -4342,7 +4404,7 @@ public class LevelEditor : MonoBehaviour {
 					if (editorTool.Equals ("EDIT")) {  if (editorSelected!=null) { selectedEditorSubArea=editorSelected.subtype;  } }
 					if (selectedEditorSubArea.Equals (gelement.subtype)) {
 						guix = editorButtonTypeSubStyle;
-						text = ">" + text;
+						// text = ">" + text;
 					}
 					int count=CountElementsType( gelement.type, gelement.subtype );
 					if (count>0) { 
@@ -5066,9 +5128,9 @@ public class LevelEditor : MonoBehaviour {
 				string text = "" + unique.type;
 				GUIStyle guix = editorButtonStyleNotActive;
 				if (unique.type.Equals(filterType)) {
-					guix = editorButtonStyle;
+					guix = editorButtonActiveStyle;
 				}
-				bool buttonClicked = GUI.Button (new Rect ( filterX + i * 80, filterY, 78, 20), ""+text+".*", guix);
+				bool buttonClicked = GUI.Button (new Rect ( filterX + i * 50, filterY, 46, 20), ""+text+"", guix);
 				if (buttonClicked) {
 					filterType = unique.type;
 					filterTypeSub = "*";
@@ -5076,7 +5138,7 @@ public class LevelEditor : MonoBehaviour {
 				// delete objects
 				// CountElementsType( string elementArea, string elementSubArea )
 			}
-			filterX = filterX + arrTypesUniqueX.Count*80;
+			filterX = filterX + arrTypesUniqueX.Count*48;
 			// }
 
 
@@ -5099,8 +5161,8 @@ public class LevelEditor : MonoBehaviour {
 					GameElement gelement = (GameElement)arr [a];
 					string text = "" + gelement.subtype;
 					GUIStyle guix = editorButtonStyleNotActive;
-					if (filterTypeSub.Equals(gelement.subtype)) guix = editorButtonStyle;
-					bool buttonClicked = GUI.Button (new Rect ( filterX + offset + a * 60, filterY, 58, 20), "."+text, guix);
+					if (filterTypeSub.Equals(gelement.subtype)) guix = editorButtonActiveStyle;
+					bool buttonClicked = GUI.Button (new Rect ( filterX + offset + a * 62, filterY, 58, 20), ""+text, guix);
 					if (buttonClicked) {
 						filterTypeSub = gelement.subtype;
 					}
