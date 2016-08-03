@@ -231,6 +231,10 @@ public class HitterScript : MonoBehaviour {
 
 		GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity) as GameObject;
 		projectile.GetComponent<HitBoxScript>().SetParentHitterScript(this);
+		GameObject level = GameObject.Find("level");
+		if (level!=null) {
+			projectile.transform.parent = level.transform;
+		}
 
 	}
 

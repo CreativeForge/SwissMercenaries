@@ -193,6 +193,10 @@ namespace GameLab.NotficationCenter
 				// Debug.Log("NotificationCenter.CreateInstantiatePrefab() // Prefab existing");
 				GameObject go=Instantiate(nt.prefabGameObject, position, new Quaternion()) as GameObject;
 				go.name = "NotFound.Notification10";
+				GameObject level = GameObject.Find("level");
+				if (level!=null) {
+					go.transform.parent = level.transform;
+				}
 			}
 
 		}

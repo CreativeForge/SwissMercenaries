@@ -1730,7 +1730,10 @@ public class LevelEditor : MonoBehaviour {
 					if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor ) {
 
 
-						GameObject go = new GameObject();
+						// GameObject go; // new GameObject(); // > create a new bare game object
+						GameObject go = null ;// = new GameObject(); // > create a new bare game object
+						// go.name = "PROBLEMWITHDUMMY: "+elem.type+"/"+elem.subtype+" ( go = new GameObject())";
+						// go.transform.parent = levelObject.transform;
 
 						// editor prefab!! = prefabEditorDummyGameObject
 						if (elPrefab.prefabEditorDummyGameObject!=null)  {
@@ -1746,13 +1749,14 @@ public class LevelEditor : MonoBehaviour {
 							// default
 							if (elem.prefabEditorDummyArguments.Length==0) {
 								go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-								// go.name = "FOUNDEditorPrefab";
+								go.name = "FOUNDEditorPrefab";
 
 								// use normal gameobject if 
 								if (elPrefab.editorIsGround) {
 									if (editorSelected!=elem) {
 									// Debug.Log("IS GROUND!!! "+elPrefab.type);
 									// update with ingameobject ! as ground!!!
+									Destroy(go);
 									go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
 									go.name = "editorXYZGROUND";	
 									}
@@ -1825,7 +1829,7 @@ public class LevelEditor : MonoBehaviour {
 						// only instiante pure releases (no waits)
 						if (elem.release.Equals ("")) {
 							GameObject go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-							// go.name = "NotFound2";
+							go.name = "NotFound2";
 
 							// size
 							if (elem.size!=1.0f) {
@@ -2364,7 +2368,7 @@ public class LevelEditor : MonoBehaviour {
 		SetSelectedElement(null);
 
 		// update 
-		UpdateShowEvaluationData ();
+	//	UpdateShowEvaluationData ();
 
 		Debug.Log("gameLogic: "+gameLogic);
 		if (gameLogic && gameLogic.modal == GameLogic.GameLogicModal.Editor) {
@@ -2430,6 +2434,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		editorLogText = ""+DateTime.Now.ToString("LOADED: HH:mm:ss");
+		AddEditorMessage( editorLogText );
 
 		// add evaluation 
 		string addEvaluationsFolder = ""; // all 
@@ -2557,6 +2562,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		editorLogText = ""+DateTime.Now.ToString("SAVED: HH:mm:ss");
+		AddEditorMessage( editorLogText );
 
 		// Debug.Log(encodedString);
 
@@ -2619,14 +2625,19 @@ public class LevelEditor : MonoBehaviour {
 	Vector3 positionReset;
 	Quaternion rotationReset;
 
+	GameObject levelObject = null;
+
 	// Use this for initialization
 	void Start () {
-
+		
 		// Get GameLogic
 		GetGameLogic ();
 
 		// Notification Center
 		GetNotificationCenter();
+
+		// levelObject
+		levelObject = GameObject.Find("level");
 
 		// game logic
 		// gameLogic.SetGameState ( GameLogic.GameLogicModal.Editor );
@@ -2952,10 +2963,13 @@ public class LevelEditor : MonoBehaviour {
 				}
 
 				// messages
-				for (int a=0; a<arrEditorMessages.Count; a++) {
+				int cou = 0;
+				if (arrEditorMessages.Count>0)
+					for (int a=(arrEditorMessages.Count-1); a>=0; a--) {
 					LevelEditorMessage msgObj = (LevelEditorMessage)arrEditorMessages [a];
-					GUI.Label (new Rect (10, Screen.height*0.5f+60+a*22, 500, 20), ""+msgObj.message, guixt);
-
+					GUI.Label (new Rect (400, Screen.height*0.6f+60+a*22, 500, 20), ""+msgObj.message, guixt);
+					cou++;
+					if (cou>10) break;
 				}
 
 				// check for ..
@@ -3675,6 +3689,8 @@ public class LevelEditor : MonoBehaviour {
 
 			// weblevels
 			if (leveltype.Equals("web")) {
+
+
 				// ok - local
 				toolsYTmp = toolsYTmp + 24;
 				// get actual 
@@ -3682,7 +3698,7 @@ public class LevelEditor : MonoBehaviour {
 				toolsXTmp = toolsXTmp + 60;
 */
 				toolsXTmp = 10;
-				toolsYTmp = toolsYTmp + 28;
+				// toolsYTmp = toolsYTmp + 28;
 
 				// remoteSelection = true;
 				// LEVEL
@@ -3704,19 +3720,21 @@ public class LevelEditor : MonoBehaviour {
 				}
 				toolsXTmp = toolsXTmp + 82;
 				// select
-				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 100, 20), "^ UPLOAD SET", editorButtonActiveStyle)) {
+				/*
+				 * if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 100, 20), "^ UPLOAD LEVELS", editorButtonActiveStyle)) {
 					// SAVE IT ... 
 					RemoteUpload();
 				}
+				*/
 
-				toolsXTmp = toolsXTmp + 82;
+				// toolsXTmp = toolsXTmp + 82;
 
 				toolsYTmp = toolsYTmp + 28;
 
 				// SELECT
 				if (loading) {
 					toolsXTmp = 10;
-					toolsYTmp = toolsYTmp + 28;
+					// toolsYTmp = toolsYTmp + 28;
 					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 400, 20), "LOADING ... LOADING ... LOADING ...", editorButtonActiveStyle);
 					// loadingLabel
 					toolsYTmp = toolsYTmp + 22;
@@ -3829,16 +3847,30 @@ public class LevelEditor : MonoBehaviour {
 					// local stored ...
 
 					toolsXTmp = 10;
-					toolsYTmp = toolsYTmp + 28;
+					// toolsYTmp = toolsYTmp + 28;
 				} // remoteSelection
 
 			}
+
+
+			// weblevels
+			if (leveltype.Equals("web")) {
+				toolsXTmp = 10;
+				toolsYTmp = toolsYTmp + 28;
+				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 300, 20), "^ UPLOAD ALL LEVELS TO WEB ", editorButtonActiveStyle)) {
+					// SAVE IT ... 
+					RemoteUpload();
+				}
+			}
+
 			toolsXTmp = 10;
 			toolsYTmp = toolsYTmp + 28;
 
 			// working on level
 			// maxLevel
 			GUI.Label (new Rect (toolsXTmp, toolsYTmp, 60, 20), "LEVEL: ", editorButtonActiveStyle);
+			toolsXTmp = 10;
+
 			// levels
 			toolsXTmp = toolsXTmp + 62;
 

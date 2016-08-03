@@ -29,7 +29,12 @@ public class EnemySpawnerScript : MonoBehaviour {
 			//int numToSpawn = Random.Range(1, 3);
 
 			//for (var i = 0; i < numToSpawn; i++) {
-				Instantiate(EnemyPrefab, spawnPosT.position, EnemyPrefab.transform.rotation);
+				GameObject xob = (GameObject)Instantiate(EnemyPrefab, spawnPosT.position, EnemyPrefab.transform.rotation);
+				// add to level
+				GameObject level = GameObject.Find("level");
+				if (level!=null) {
+					xob.transform.parent = level.transform;
+				}
 			//}
 
 			nextSpawnTime = Time.time + Random.Range(minTimeInterval, maxTimeInterval);
