@@ -2315,6 +2315,8 @@ public class LevelEditor : MonoBehaviour {
 	public GUIStyle editorButtonTypeSubStyle;
 	public GUIStyle editorButtonTypeSubStyleNotActive;
 
+	public GUIStyle editorLoading;
+
 
 	//	public GUIStyle editorDeleteStyle;
 	public GUIStyle editorComment;
@@ -3811,11 +3813,11 @@ public class LevelEditor : MonoBehaviour {
 				if (loading) {
 					toolsXTmp = 10;
 					// toolsYTmp = toolsYTmp + 28;
-					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 400, 20), "LOADING ... LOADING ... LOADING ...", editorButtonActiveStyle);
+					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 400, 20), "LOADING ... LOADING ... LOADING ...", editorLoading);
 					// loadingLabel
 					toolsYTmp = toolsYTmp + 22;
-					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 400, 20), ""+loadingLabel, editorButtonActiveStyle);
-
+					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 400, 20), ""+loadingLabel, editorLoading);
+					toolsYTmp = toolsYTmp + 22;
 				} 
 
 
