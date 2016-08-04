@@ -68,8 +68,15 @@ public class GameLogic : MonoBehaviour {
 
 		GetLevelEditor();
 
+		// get autor 
+
+		// prefs
 		int lastEditedLevel = PlayerPrefs.GetInt("LastEditedLevel");
-		if(lastEditedLevel>0)level = lastEditedLevel;
+		if(lastEditedLevel>0) level = lastEditedLevel;
+
+		// get web ...
+
+
 			
 		// Camera
 		SetGameCamera( GameObject.Find("Main Camera") );

@@ -140,7 +140,7 @@ public class GameElement {
 		copyX.prefabGameObject = prefabGameObject;
 		copyX.prefabEditorDummyGameObject = prefabEditorDummyGameObject;
 
-		copyX.prefabEditorDummyArguments = prefabEditorDummyArguments;
+		copyX.prefabPredefinedArguments = prefabPredefinedArguments;
 
 		// copyX.state = state;
 		return copyX;
@@ -177,7 +177,7 @@ public class GameElement {
 
 	// prefab dummy
 	public  GameObject prefabEditorDummyGameObject;
-	public LevelElementOption[] prefabEditorDummyArguments;
+	public LevelElementOption[] prefabPredefinedArguments;
 
 	// Object to JSON
 	public JSONObject GetJSONObject() {

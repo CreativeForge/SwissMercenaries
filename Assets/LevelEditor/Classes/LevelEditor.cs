@@ -366,6 +366,9 @@ public class LevelEditor : MonoBehaviour {
 	string leveltype = "local"; // type of level: [local/web/live]
 	void SetLevelType( string nleveltype ) {
 		leveltype = nleveltype;
+
+		PlayerPrefs.SetString("leveltype", leveltype);
+
 		// ok let's check ... 
 		LoadLevel( actualLevel );
 		// remoteSelection = true;
@@ -1177,7 +1180,7 @@ public class LevelEditor : MonoBehaviour {
 			geType.skyBoxMaterial = el.skyBoxMaterial;
 			geType.prefabEditorDummyGameObject = el.editorPrefab; // dummy prefab
 			// copy and add all prefabs for arguments (evaluation.allover 2,1,0 etc
-			geType.prefabEditorDummyArguments = el.prefabEditorDummyArguments; // .Copy(); // all the same reference
+			geType.prefabPredefinedArguments = el.prefabPredefinedArguments; // .Copy(); // all the same reference
 			geType.guiBoolArgument = el.argumentNeeded; 
 			// geType.editorIsGround = el.isGround;
 			geType.guiLabel = el.argumentLabel;	 
@@ -1647,7 +1650,7 @@ public class LevelEditor : MonoBehaviour {
 		return elem;
 	}
 
-	void UpdateElementVisual( GameElement elem ) {
+	public void UpdateElementVisual( GameElement elem ) {
 
 		GameObject levelObject = GameObject.Find ("level");
 
@@ -1738,8 +1741,8 @@ public class LevelEditor : MonoBehaviour {
 						// editor prefab!! = prefabEditorDummyGameObject
 						if (elPrefab.prefabEditorDummyGameObject!=null)  {
 
-							//	if (elem.prefabEditorDummyArguments==null) Debug.Log(". LeveLElementOption NULL"+elem.prefabEditorDummyArguments);
-							// else Debug.Log(". LeveLElementOption FOUND!"+elem.prefabEditorDummyArguments);
+							//	if (elem.prefabPredefinedArguments==null) Debug.Log(". LeveLElementOption NULL"+elem.prefabPredefinedArguments);
+							// else Debug.Log(". LeveLElementOption FOUND!"+elem.prefabPredefinedArguments);
 
 							// Debug.Log(". LeveLElementOption ??? "+elem.type+" / "+elem.subtype+"  "+elem.argument);
 
@@ -1747,7 +1750,7 @@ public class LevelEditor : MonoBehaviour {
 							// no alternative elements for argument
 
 							// default
-							if (elem.prefabEditorDummyArguments.Length==0) {
+							if (elem.prefabPredefinedArguments.Length==0) {
 								go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
 								go.name = "FOUNDEditorPrefab";
 
@@ -1759,7 +1762,7 @@ public class LevelEditor : MonoBehaviour {
 									Destroy(go);
 									go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
 									go.name = "editorXYZGROUND";	
-									}
+									} 
 								}
 
 								GameElementBased geb = go.GetComponent<GameElementBased>();
@@ -1771,13 +1774,14 @@ public class LevelEditor : MonoBehaviour {
 								}
 
 							// options for EVALUATIONS etc.
-							} else {
-								// Debug.Log(". LeveLElementOption FOUND! "+elem.argument+" "+elem.prefabEditorDummyArguments);
+							} 
+							else  {
+								// Debug.Log(". LeveLElementOption FOUND! "+elem.argument+" "+elem.prefabPredefinedArguments);
 
 								bool found=false;
 								LevelElementOption leo;
-								for (int ix = 0; ix < elem.prefabEditorDummyArguments.Length; ix ++) {
-									leo = elem.prefabEditorDummyArguments[ix];
+								for (int ix = 0; ix < elem.prefabPredefinedArguments.Length; ix ++) {
+									leo = elem.prefabPredefinedArguments[ix];
 									// Debug.Log(ix+". LeveLElementOption "+leo.argument+" vs "+elem.argument);
 									if (leo.argument.Equals(elem.argument)) {
 										if (leo.editorPrefab!=null) {
@@ -1803,8 +1807,10 @@ public class LevelEditor : MonoBehaviour {
 							go.transform.parent = levelObject.transform; 
 
 						} else {
-							go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-							go.name = "NOEDITORPREFABATALLPrefabEditor!!!";
+
+							if (elem.prefabPredefinedArguments.Length>0) {
+								go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+								go.name = "NOEDITORPREFABATALLPrefabEditor!!!";
 
 							// size
 							if (elem.size!=1.0f) {
@@ -1818,18 +1824,47 @@ public class LevelEditor : MonoBehaviour {
 
 
 					}
+					
+					}
 
 					// game ...
 
 					// Debug.Log("Could find Type("+elem.type+"/"+elem.subtype+") has prefab!");
 					if (gameLogic !=null && gameLogic.modal!=GameLogic.GameLogicModal.Editor ) {
 						// Debug.Log("PREFAB");			
-						// Debug.Log ("[LevelEditor] CREATE["+elem.name+"/"+elem.type+"."+elem.subtype+"/"+elem.release+"]");
+						Debug.Log ("[LevelEditor] CREATE["+elem.name+"/"+elem.type+"."+elem.subtype+"/"+elem.release+"]");
 
 						// only instiante pure releases (no waits)
 						if (elem.release.Equals ("")) {
-							GameObject go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-							go.name = "NotFound2";
+							GameObject go=null;
+
+							if (elem.prefabPredefinedArguments.Length==0) {
+								go = Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+								go.name = "NotFound2";
+							}
+
+							// are there some alternatives?
+							// variations?
+							if (elem.prefabPredefinedArguments.Length>0) {
+								bool found=false;
+								LevelElementOption leo;
+								for (int ix = 0; ix < elem.prefabPredefinedArguments.Length; ix ++) {
+									leo = elem.prefabPredefinedArguments[ix];
+									// Debug.Log(ix+". LeveLElementOption "+leo.argument+" vs "+elem.argument);
+									if (leo.argument.Equals(elem.argument)) {
+										if (leo.gameobjectPrefab!=null) {
+											found=true;
+											go=Instantiate(leo.gameobjectPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+											go.name = "NotFound9GameObject";
+
+										}
+									}
+								} 
+								if (!found) {
+										go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+									go.name = "NotFoundDUMMY!";
+								}
+							}
 
 							// size
 							if (elem.size!=1.0f) {
@@ -1892,11 +1927,12 @@ public class LevelEditor : MonoBehaviour {
 							// Debug.Log("Could find Type("+elem.type+"/"+elem.subtype+").AddedAt("+elem.position.x+","+elem.position.y+","+elem.position.z+")");
 						}
 					}
-				}
+				
 			}
 		}
-
-
+		
+	  }
+	
 	}
 
 	// only deactivate it!!
@@ -2058,13 +2094,20 @@ public class LevelEditor : MonoBehaviour {
 	// edit
 	void SetSelectedElement( GameElement ga ) {
 
+		GameElement previousElementX = null;
+
 		// deselect old!
 		if (editorSelected!=null) {
 			UpdateElementVisual(editorSelected);
-		}
+			previousElementX= editorSelected;
+		}   
 
 		// Debug.Log ("SetSelectedElement()");
 		editorSelected = ga;
+		// update old element
+		if (previousElementX!=null) {
+			UpdateElementVisual(previousElementX); 
+		}
 		if (ga==null) {
 			editorArea = "";
 			editorSubArea = "";
@@ -2082,6 +2125,8 @@ public class LevelEditor : MonoBehaviour {
 			editorArea = ga.type;
 			editorSubArea = ga.subtype;
 			SetSubEditorArea( editorSubArea );
+
+			UpdateElementVisual(ga); 
 		}
 
 	}
@@ -2639,6 +2684,18 @@ public class LevelEditor : MonoBehaviour {
 		// levelObject
 		levelObject = GameObject.Find("level");
 
+		// ...
+		string editorAutorX = PlayerPrefs.GetString("editorAutor");
+		if(editorAutorX!=null) editorAutor = editorAutorX;
+
+		string remoteAreaEditX = PlayerPrefs.GetString("remoteAreaEdit");
+		string remoteAutorEditX = PlayerPrefs.GetString("remoteAutorEdit");
+		if(remoteAreaEditX!=null) remoteAreaEdit = remoteAreaEditX;
+		if(remoteAutorEditX!=null) remoteAutorEdit = remoteAutorEditX;
+
+		string levelTypeX = PlayerPrefs.GetString("leveltype");
+		if(levelTypeX!=null) leveltype = levelTypeX;
+
 		// game logic
 		// gameLogic.SetGameState ( GameLogic.GameLogicModal.Editor );
 
@@ -2967,7 +3024,7 @@ public class LevelEditor : MonoBehaviour {
 				if (arrEditorMessages.Count>0)
 					for (int a=(arrEditorMessages.Count-1); a>=0; a--) {
 					LevelEditorMessage msgObj = (LevelEditorMessage)arrEditorMessages [a];
-					GUI.Label (new Rect (400, Screen.height*0.6f+60+a*22, 500, 20), ""+msgObj.message, guixt);
+					GUI.Label (new Rect (600, Screen.height*0.6f+60+a*22, 500, 20), ""+msgObj.message, guixt);
 					cou++;
 					if (cou>10) break;
 				}
@@ -3158,7 +3215,10 @@ public class LevelEditor : MonoBehaviour {
 
 						// screen pos
 						Camera cam  = Camera.main;
-						cam = GameObject.Find ("editorcamera").GetComponent<Camera>();
+						GameObject camx = GameObject.Find ("editorcamera");
+						if ( camx!=null ) {
+								cam = camx.GetComponent<Camera>();
+						}
 						Vector3 screenPos = cam.WorldToScreenPoint (gaelement.position);
 
 						// visible?
@@ -3666,7 +3726,10 @@ public class LevelEditor : MonoBehaviour {
 				if (GUI.Button (new Rect (toolsXTmp , toolsYTmp, 110, 20), ""+labelX, gs)) {
 					SetLevelType( typeX );
 					// GetLevelAeras ... 
-					RemoteGetAreas();
+					// only in the case of web!
+					if (typeX.Equals("web")) {
+						RemoteGetAreas();
+					}
 				}
 				toolsXTmp = toolsXTmp + 120;
 
@@ -3679,7 +3742,11 @@ public class LevelEditor : MonoBehaviour {
 			toolsXTmp = toolsXTmp + 70;
 			GUI.Label (new Rect (toolsXTmp, toolsYTmp, 80, 20), "AUTOR: ", editorButtonStyle);
 			toolsXTmp = toolsXTmp + 82;
-			editorAutor=GUI.TextField (new Rect(toolsXTmp, toolsYTmp,140,20),editorAutor);
+			string editorAutorX=GUI.TextField (new Rect(toolsXTmp, toolsYTmp,140,20),editorAutor);
+			if (!editorAutorX.Equals(editorAutor)) {
+				editorAutor = editorAutorX;
+				PlayerPrefs.SetString("editorAutor", editorAutor);
+			}
 			toolsXTmp = toolsXTmp + 90;
 			// }
 
@@ -3825,11 +3892,15 @@ public class LevelEditor : MonoBehaviour {
 									if (GUI.Button (new Rect (remoteStartXAutor+150, remoteStartYAutor, 58, 20), "EDIT", gs)) {
 										remoteAreaEdit = remoteArea;
 										remoteAutorEdit = remoteAutor;
+										PlayerPrefs.SetString("remoteAreaEdit", remoteAreaEdit);
+										PlayerPrefs.SetString("remoteAutorEdit", remoteAutorEdit);
 										RemoteEdit();
 									}
 									if (GUI.Button (new Rect (remoteStartXAutor+150 + 60, remoteStartYAutor, 90, 20), "\\/ DOWNLOAD", gs)) {
 										remoteAreaEdit = remoteArea;
 										remoteAutorEdit = remoteAutor;
+										PlayerPrefs.SetString("remoteAreaEdit", remoteAreaEdit);
+										PlayerPrefs.SetString("remoteAutorEdit", remoteAutorEdit);
 										RemoteDownload();
 									}
 								}
@@ -4790,6 +4861,30 @@ public class LevelEditor : MonoBehaviour {
 
 				}
 				inspectorYTmp = inspectorYTmp + 22;
+
+				// RASTER SPLIT
+				inspectorYTmp = inspectorYTmp + 22;
+				GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 78, 20), "RASTER SPLIT", editorButtonStyle);
+				inspectorXTmp = inspectorXTmp + 80;
+				for (int i=0; i<arrRasters.Length; i++) {
+					float raster = arrRasters [i];
+					string text = ""+raster;
+					GUIStyle gui = editorButtonStyle;
+					if (lineWidth==arrRasters[i]) {
+						gui = editorButtonActiveStyle;
+						text = "" + text + "";
+					}
+					bool buttonClicked = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 22, 20), text, gui);
+					if (buttonClicked) {
+						// SetRasterIndex ( i );
+						lineWidth = arrRasters [i];
+						if (i==0) {
+							lineWidth = 0.5f;
+						}
+					}
+
+					inspectorXTmp = inspectorXTmp + 24;
+				}
 			}
 
 			// EVALUATION

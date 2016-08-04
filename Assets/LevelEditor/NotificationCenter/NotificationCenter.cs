@@ -274,6 +274,41 @@ namespace GameLab.NotficationCenter
 					}
 				}
 
+				// argument
+				if (nt.subtype.Equals("setargument")) {
+					if (ge.gameObject!=null) {
+						ge.argument = nt.argument;
+						gameLogic.levelEditor.UpdateElementVisual(ge);
+					}
+				}
+
+				// incargument
+				if (nt.subtype.Equals("incargument")) {
+					if (ge.gameObject!=null) {
+						int ix = 0;
+						try {
+							ix = Int32.Parse(ge.argument);
+							ix ++;
+						} catch {  }
+						ge.argument = ""+ix;
+						gameLogic.levelEditor.UpdateElementVisual(ge);
+					} 
+				}
+
+				// argument
+				if (nt.subtype.Equals("decargument")) {
+					if (ge.gameObject!=null) {
+						int ix = 0;
+						try {
+							ix = Int32.Parse(ge.argument);
+						ix --;
+						} catch {  }
+						ge.argument = ""+ix;
+						gameLogic.levelEditor.UpdateElementVisual(ge);
+					}
+				}
+
+
 			}
 		}
 

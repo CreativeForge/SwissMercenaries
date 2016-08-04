@@ -10,7 +10,7 @@ public class LevelElement {
 	public GameObject gameObject ;
 	public Material skyBoxMaterial;
 	public GameObject editorPrefab; // dummy object
-	public LevelElementOption[] prefabEditorDummyArguments;
+	public LevelElementOption[] prefabPredefinedArguments;
 
 	public string genericName = "objekt";
 
