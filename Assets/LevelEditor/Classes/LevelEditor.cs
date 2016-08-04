@@ -4517,8 +4517,6 @@ public class LevelEditor : MonoBehaviour {
 				}
 			}
 			
-			}
-
 			// show elements
 			if ((showElements)||(showElementsSubTypeOnly)) {
 
@@ -4910,7 +4908,7 @@ public class LevelEditor : MonoBehaviour {
 
 					inspectorYTmp = inspectorYTmp + 22;
 				}
-			// }
+			}
 			// if (editorTool.Equals ("MOVE")) { showElements=true; }
 
 			if (editorTool.Equals ("MOVE")) {
