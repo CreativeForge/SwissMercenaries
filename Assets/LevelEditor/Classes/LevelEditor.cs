@@ -5191,12 +5191,13 @@ public class LevelEditor : MonoBehaviour {
 						guixx = editorButtonActiveStyle;
 					}
 				}
-				if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 28, 20), "x"+(y+1), guixx)) {
+				if (GUI.Button (new Rect (inspectorXTmp, inspectorYTmp, 22, 20), "x"+(y+1), guixx)) {
 					if (!cursorObject) speedCamera = val;
 					if (cursorObject) speedObject = val;
-				}
-				inspectorXTmp = inspectorXTmp + 30;
+				} 
+				inspectorXTmp = inspectorXTmp + 24; 
 			}
+			// add raster .. 
 
 			// create cursor
 			inspectorXTmp = cursorX+150;
