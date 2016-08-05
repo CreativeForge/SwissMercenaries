@@ -1796,7 +1796,18 @@ public class LevelEditor : MonoBehaviour {
 										if (leo.editorPrefab!=null) {
 											found=true;
 											go=Instantiate(leo.editorPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-											go.name = "NotFound9";
+											go.name = "NotFound19";
+
+											// use normal gameobject if 
+											if (elPrefab.editorIsGround) {
+												if (editorSelected!=elem) {
+													// Debug.Log("IS GROUND!!! "+elPrefab.type);
+													// update with ingameobject ! as ground!!!
+													Destroy(go);
+													go=Instantiate(leo.gameobjectPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+													go.name = "editorXYZGROUNDVARIANT";	
+												} 
+											}
 
 										}
 									}
@@ -1804,6 +1815,16 @@ public class LevelEditor : MonoBehaviour {
 								if (!found) {
 									go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
 									go.name = "NotFoundDUMMY!";
+									// prefab
+									if (elPrefab.editorIsGround) {
+										if (editorSelected!=elem) {
+											// Debug.Log("IS GROUND!!! "+elPrefab.type);
+											// update with ingameobject ! as ground!!!
+											Destroy(go);
+											go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+											go.name = "editorXYZGROUNDVARIANT";	
+										} 
+									}
 								}
 							}
 
@@ -2055,6 +2076,7 @@ public class LevelEditor : MonoBehaviour {
 
 	void SetRasterIndex( int index ) { // Index!
 		editorRaster = index;
+		AddEditorMessage("Raster: Index: "+editorRaster+" Raster:"+GetRaster());
 	}
 
 	int GetRasterIndexFor( float rasterX ) {
@@ -4620,7 +4642,8 @@ public class LevelEditor : MonoBehaviour {
 							// Debug.Log("element selected: "+Time.time);
 							SetSubEditorArea (gelement.subtype); 
 							if (gelement.editorTileSize!=0.0f) {
-								editorRaster = GetRasterIndexFor(gelement.editorTileSize);
+								SetRasterIndex(GetRasterIndexFor(gelement.editorTileSize));
+
 							}
 						}
 						if (editorTool.Equals ("EDIT")) {  
