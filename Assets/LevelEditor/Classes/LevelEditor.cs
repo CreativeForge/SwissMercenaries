@@ -2113,6 +2113,8 @@ public class LevelEditor : MonoBehaviour {
 	string editorTool= "CREATE"; 
 	string editorToolSub = "";
 	void SetTool(string ieditorTool) {
+		// deselect ...
+		SetSelectedElement( null );
 		ActivateCursorPreview(ieditorTool=="CREATE");
 		editorTool = ieditorTool;
 		if (editorTool.Equals ("SPLIT")) {
@@ -2126,6 +2128,11 @@ public class LevelEditor : MonoBehaviour {
 	void SetSelectedElement( GameElement ga ) {
 
 		GameElement previousElementX = null;
+
+		if (editorSelected==null) {
+			// deselect all
+			editDetailName = "";
+		}
 
 		// deselect old!
 		if (editorSelected!=null) {
@@ -5273,11 +5280,12 @@ public class LevelEditor : MonoBehaviour {
 					if (editorSelected==gae) guix = editorButtonActiveStyle;
 					bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 140, 20), ""+text+"", guix);
 					if (buttonClicked) {
-						SetSelectedElement(gae);
 						SetTool("EDIT");
+						SetSelectedElement(gae);
+
 					}
 					selectionY = selectionY + 20;
-					if (i>30) break;
+					if (i>10) break;
 				} 
 				selectionY = selectionY + 20;
 
