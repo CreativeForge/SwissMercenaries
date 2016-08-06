@@ -87,9 +87,18 @@ namespace GameLab.NotficationCenter
 			string[] arr = typesubtype.Split('.');
 			if (arr.Length>1) {
 				AddNotification( arr[0],arr[1],  targetName,  timed,  argument, new Vector3() );
+			} else {
+				AddNotification( arr[0], "???"+typesubtype,  targetName,  timed,  argument, new Vector3() );
 			}
+		}
 
-			AddNotification( arr[0], "???",  targetName,  timed,  argument, new Vector3() );
+		public void AddNotification( string typesubtype, string targetName, float timed, string argument, Vector3 pos ) {
+			string[] arr = typesubtype.Split('.');
+			if (arr.Length>1) {
+				AddNotification( arr[0],arr[1],  targetName,  timed,  argument, pos );
+			} else {
+				AddNotification( arr[0], "???"+typesubtype,  targetName,  timed,  argument, new Vector3() );
+			}
 		}
 
 		public void AddNotification( string type, string subtype, string targetName, float timed, string argument, Vector3 pos  ) {
@@ -241,75 +250,101 @@ namespace GameLab.NotficationCenter
 		void ProcessObject( Notification nt ) {
 			// gameLogics
 			// print(""+nt.targetName);
-			ArrayList arr = GetGameElementsByTargetName( nt.targetName );
-			for (int a=0;a<arr.Count;a++) {
-				GameElement ge = (GameElement) arr[a];
-				// Debug.LogFormat("NotificationCenter.ProcessVisual3d() a. // "+ge.name)	;			
 
-				// object/remove
-				if (nt.subtype.Equals("activate")) {
-					ge.release = "";
-					gameLogic.levelEditor.AddElement(ge);
-
-					// start / ...
-				}
-
-				// just make out of an active element a [-] = on release
-				if (nt.subtype.Equals("deactivate")) {
-					gameLogic.levelEditor.DeactivateElement( ge );
-
-
-					// start / ...
-				}
-
-				// object/remove / destroy
-				if (nt.subtype.Equals("remove")) {
-					gameLogic.levelEditor.RemoveElement( ge );
-				}
-
-				// object/rotate
-				if (nt.subtype.Equals("rotate")) {
-					if (ge.gameObject!=null) {
-						ge.gameObject.transform.Rotate( new Vector3(0.0f,15.0f,0.0f));
+			// vector? to do it?
+			if (nt.targetName.Equals("vector")) {
+				if (nt.subtype.Equals("create")) {
+					// todo: , ? > random
+					string[] arrx = nt.argument.Split('.');
+					if (arrx.Length>1) {
+						gameLogic.levelEditor.AddGameElementAtName( arrx[0],arrx[1], nt.targetPoint, "created" );
 					}
 				}
-
-				// argument
-				if (nt.subtype.Equals("setargument")) {
-					if (ge.gameObject!=null) {
-						ge.argument = nt.argument;
-						gameLogic.levelEditor.UpdateElementVisual(ge);
-					}
-				}
-
-				// incargument
-				if (nt.subtype.Equals("incargument")) {
-					if (ge.gameObject!=null) {
-						int ix = 0;
-						try {
-							ix = Int32.Parse(ge.argument);
-							ix ++;
-						} catch {  }
-						ge.argument = ""+ix;
-						gameLogic.levelEditor.UpdateElementVisual(ge);
-					} 
-				}
-
-				// argument
-				if (nt.subtype.Equals("decargument")) {
-					if (ge.gameObject!=null) {
-						int ix = 0;
-						try {
-							ix = Int32.Parse(ge.argument);
-						ix --;
-						} catch {  }
-						ge.argument = ""+ix;
-						gameLogic.levelEditor.UpdateElementVisual(ge);
-					}
-				}
-
-
 			}
+
+			// target names
+			ArrayList arr = GetGameElementsByTargetName( nt.targetName );
+			if (arr.Count>0) {
+				for (int a=0;a<arr.Count;a++) {
+					GameElement ge = (GameElement) arr[a];
+					// Debug.LogFormat("NotificationCenter.ProcessVisual3d() a. // "+ge.name)	;			
+
+					// object/remove
+					if (nt.subtype.Equals("activate")) {
+						ge.release = "";
+						gameLogic.levelEditor.AddElement(ge);
+
+						// start / ...
+					}
+
+					// just make out of an active element a [-] = on release
+					if (nt.subtype.Equals("deactivate")) {
+						gameLogic.levelEditor.DeactivateElement( ge );
+
+
+						// start / ...
+					}
+
+					// object/remove / destroy
+					if (nt.subtype.Equals("remove")) {
+						gameLogic.levelEditor.RemoveElement( ge );
+					}
+
+					// object/rotate
+					if (nt.subtype.Equals("rotate")) {
+						if (ge.gameObject!=null) {
+							ge.gameObject.transform.Rotate( new Vector3(0.0f,15.0f,0.0f));
+						}
+					}
+
+					// argument
+					if (nt.subtype.Equals("setargument")) {
+						if (ge.gameObject!=null) {
+							ge.argument = nt.argument;
+							gameLogic.levelEditor.UpdateElementVisual(ge);
+						}
+					}
+
+					// incargument
+					if (nt.subtype.Equals("incargument")) {
+						if (ge.gameObject!=null) {
+							int ix = 0;
+							try {
+								ix = Int32.Parse(ge.argument);
+								ix ++;
+							} catch {  }
+							ge.argument = ""+ix;
+							gameLogic.levelEditor.UpdateElementVisual(ge);
+						} 
+					}
+
+					// argument
+					if (nt.subtype.Equals("decargument")) {
+						if (ge.gameObject!=null) {
+							int ix = 0;
+							try {
+								ix = Int32.Parse(ge.argument);
+							ix --;
+							} catch {  }
+							ge.argument = ""+ix;
+							gameLogic.levelEditor.UpdateElementVisual(ge);
+						}
+					}
+
+					// create
+					if (nt.subtype.Equals("create")) {
+						// AddGameElementAtName( string type, string subtype, Vector3 pos, string name )
+						// ge
+						string[] arrx = nt.argument.Split('.');
+						if (arrx.Length>1) {
+							// gameLogic.levelEditor.AddNotification( arr[0],arr[1],  targetName,  0.0f,  argument, ge.gameObject.transform.position );
+							gameLogic.levelEditor.AddGameElementAtName( arrx[0],arrx[1], ge.gameObject.transform.position, "created" );
+						}
+					}
+
+
+				}
+			} // target names ...
 		}
 
 		void ProcessInGame( Notification nt ) {

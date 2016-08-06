@@ -1862,7 +1862,7 @@ public class LevelEditor : MonoBehaviour {
 					// Debug.Log("Could find Type("+elem.type+"/"+elem.subtype+") has prefab!");
 					if (gameLogic !=null && gameLogic.modal!=GameLogic.GameLogicModal.Editor ) {
 						// Debug.Log("PREFAB");			
-						Debug.Log ("[LevelEditor] CREATE["+elem.name+"/"+elem.type+"."+elem.subtype+"/"+elem.release+"]");
+						// Debug.Log ("[LevelEditor] CREATE["+elem.name+"/"+elem.type+"."+elem.subtype+"/"+elem.release+"]");
 
 						// only instiante pure releases (no waits)
 						if (elem.release.Equals ("")) {
@@ -2071,7 +2071,7 @@ public class LevelEditor : MonoBehaviour {
 
 	// raster
 	int editorRaster=0;
-	float[] arrRasters = { 0.0f, 0.5f, 1.0f, 1.5f, 2.0f, 2.5f, 3.0f, 3.5f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f };
+	float[] arrRasters = { 0.0f, 1.0f, 2.0f } ; // { 0.0f, 0.5f, 1.0f, 1.5f, 2.0f, 2.5f, 3.0f, 3.5f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f };
 	int editorDegree = 0;
 
 	void SetRasterIndex( int index ) { // Index!
@@ -3111,8 +3111,10 @@ public class LevelEditor : MonoBehaviour {
 				}
 				notificationDialogYTmp = notificationDialogYTmp + 22;
 
+				/*
 				strNotification = GUI.TextField (new Rect ( notificationDialogXTmp, notificationDialogYTmp, notificationVisual.width, 20), ""+strNotification, editorButtonActiveStyle) ;
 				notificationDialogYTmp = notificationDialogYTmp + 22;
+				*/
 
 				notificationDialogYTmp = notificationDialogYTmp + 3;
 
@@ -3384,8 +3386,8 @@ public class LevelEditor : MonoBehaviour {
 
 
 
-												float offsetX=0.25f;
-												float offsetY=0.25f;
+												float offsetX=0.0f;
+												float offsetY=0.0f;
 
 												// editorSelected.position.x=((int)((editorSelected.position.x+offsetX)/raster))*raster;
 												// editorSelected.position.y=((int)((editorSelected.position.y+offsetY)/raster))*raster;
@@ -3402,7 +3404,7 @@ public class LevelEditor : MonoBehaviour {
 										AddToEditorHistory("[GUI][OBJECT][MOVE]");
 
 										// move
-										editorSelected=null;
+										SetSelectedElement(null);
 										editorToolMove="";
 
 									}
@@ -4342,7 +4344,7 @@ public class LevelEditor : MonoBehaviour {
 							Transform cursorPreviewT = GameObject.Find("editorcursorpreview").transform;
 							if(cursorPreviewT.childCount>0){
 								foreach(Transform childT in cursorPreviewT){
-									childT.rotation = Quaternion.Euler(0,editorDegree,0);
+									childT.localRotation = Quaternion.Euler(0,editorDegree,0);
 								}
 							}
 						}
