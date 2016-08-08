@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
-public class InGameController : MonoBehaviour {
+public class InGameController : GameElementBased {
 
 	public static InGameController i;
 	public PlayerScript playerS;
@@ -149,6 +149,15 @@ public class InGameController : MonoBehaviour {
 		Application.Quit();
 	}
 
+	// handle player
+	void HandlePlayerChangeAmountMoney(PlayerScript playerscript, int newMoneyAmount) {
+		if (gameLogic!=null) {
+			gameLogic.HandlePlayerChangeAmountMoney(playerscript,newMoneyAmount);
+		}
+
+	}
+
+
 	void HandleHolyRageGUIVisualisation(){
 		if(playerS.isInHolyRage){
 			AdjustHolyRageVisualisation();
@@ -156,6 +165,7 @@ public class InGameController : MonoBehaviour {
 	}
 
 	void HandleCheatInput(){
+		
 		if(Input.GetKeyDown(KeyCode.H)){
 			playerS.dS.Health = 100;
 		}

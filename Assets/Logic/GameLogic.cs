@@ -132,6 +132,15 @@ public class GameLogic : MonoBehaviour {
 			camEditor.enabled = false ;
 		}
 
+	public bool CheckIngameState() {
+		return !(modal==GameLogic.GameLogicModal.Editor);
+	}
+
+	public bool CheckEditorState() {
+		return (modal==GameLogic.GameLogicModal.Editor);
+	}
+	
+
 
 	// Levels (Load etc.)
 	public LevelEditor levelEditor;
@@ -189,6 +198,45 @@ public class GameLogic : MonoBehaviour {
 
 		level++;
 		LoadGameLevel (level);
+	}
+
+	/*
+	 * 
+	 *   Ingame
+	 * 
+	 *   (mirrored to the ingamecontrol)
+	 * 
+	 * */
+
+	// all rewards
+	public int gold = 0;
+	public int goldMax = 0;
+	public int killed = 0;
+	public float playTime = 0.0f;
+	// artefacts
+	public Reward[] arrArtefacts; // all the possible ... 
+	// mentals
+	public Reward[] arrMentals; // all the possible ... 
+
+	// gold visualisation
+	public Reward[] arrGold; // via score
+
+	// outgoing (level beginning)
+	// update to ...
+	public void UpdateToIngameControl() {
+		
+	}
+
+	// incmoing (storing ingame)
+	public void UpdateFromIngameControl() {
+		
+	}
+	public void HandlePlayerChangeAmountMoney(PlayerScript playerscript, int newMoneyAmount) {
+		// handle player change amoutn
+		gold = newMoneyAmount;
+		if (gold>goldMax) goldMax = gold;
+
+
 	}
 
 	// GameElements

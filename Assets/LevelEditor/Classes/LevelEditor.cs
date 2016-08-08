@@ -1196,7 +1196,7 @@ public class LevelEditor : MonoBehaviour {
 			geType.guiDescription = el.argumentDescription;
 
 			geType.argumentInputType = el.inputType;
-			geType.argumentInputTypeSelect = el.inputTypeSelect;
+			// geType.argumentInputTypeSelect = el.inputTypeSelect;
 
 			//						geType.editorIndex = el.editorIndex;
 

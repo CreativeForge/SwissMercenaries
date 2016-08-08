@@ -12,6 +12,7 @@ public class Spawner : GameElementBased {
 	// Update is called once per frame
 	void FixedUpdate () {
 	
+		if (gameLogic.CheckIngameState()) { 
 		if (gameElement!=null) {
 			// check it ..
 			if (!started) {
@@ -27,11 +28,22 @@ public class Spawner : GameElementBased {
 				// do it now ... 
 				if (Time.time>timeToSpawn) {
 					Debug.Log("Spawner.FixedUpdate().FixedUpdate() // Do: "+typeToSpawn+"/"+intervalTime);
-					gameLogic.levelEditor.notificationCenter.AddNotification( "object.create", "vector", 0.0f, ""+typeToSpawn, gameElement.gameObject.transform.position );
+
+					// xyz,abc
+					string[] arr = typeToSpawn.Split(',');
+					string typeToSpawnXY = typeToSpawn; // "";
+					/*if (arr.Length==1) {
+						typeToSpawnXY= typeToSpawn;
+					} */
+					if (arr.Length>1) {
+						int index = (int) Random.Range(0,arr.Length);	
+						typeToSpawnXY = arr[index];
+					}
+					gameLogic.levelEditor.notificationCenter.AddNotification( "object.create", "vector", 0.0f, ""+typeToSpawnXY, gameElement.gameObject.transform.position );
 					timeToSpawn = Time.time + intervalTime;
 				}
 			}
 		}
-
+		}
 	}
 }

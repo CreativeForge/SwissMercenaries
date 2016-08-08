@@ -39,6 +39,7 @@ public class PlayerScript : MonoBehaviour {
 
 	bool isGrounded;
 
+	// changes here > update over ingamecontrol?
 	int money = 0;
 	float faith = 0;
 	public float holyRageEnergy = 0;

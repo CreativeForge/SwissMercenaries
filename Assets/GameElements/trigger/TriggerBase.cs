@@ -89,6 +89,9 @@ public class TriggerBase : MonoBehaviour {
 
   void OnTriggerEnter(Collider other) {
 
+		if (gameLogic!=null)
+		if (gameLogic.CheckIngameState()) {
+
 		// check for player
 		PlayerScript PlayerScript = other.GetComponent<PlayerScript>();
 		if (PlayerScript != null) {
@@ -107,11 +110,14 @@ public class TriggerBase : MonoBehaviour {
 
 		}
 		
+		}
 	}
 
 	void OnTriggerExit(Collider other) {
 
-
+		if (gameLogic!=null)
+		if (gameLogic.CheckIngameState()) {
+			
 		// check for player
 		PlayerScript PlayerScript = other.GetComponent<PlayerScript>();
 		if (PlayerScript != null) {
@@ -126,6 +132,8 @@ public class TriggerBase : MonoBehaviour {
 			}
 
 				OnPlayerExit( PlayerScript, other );
+
+		}
 
 		}
 		

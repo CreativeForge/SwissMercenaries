@@ -10,9 +10,10 @@ public class LevelElement {
 	public GameObject gameObject ;
 	public Material skyBoxMaterial;
 	public GameObject editorPrefab; // dummy object
+	// public bool attachToPlayer = false; // > do it in the prefab > AttachToPlayer
 	public LevelElementOption[] prefabPredefinedArguments;
 
-	public string genericName = "objekt";
+	// public string genericName = "objekt";
 
 	public bool isGround = false;
 
@@ -21,10 +22,9 @@ public class LevelElement {
 	public string argumentDescription = "";
 
 	public string inputType = ""; // names, name, notification, selection or abc.def
-	public string inputTypeSelect = ""; // x,y,z
+	string inputTypeSelect = ""; // x,y,z
 
 	public float editorDisplaySize = 1.0f;
-
 	public float editorTileSize = 0.0f;
 
 	public int editorIndex = 1;

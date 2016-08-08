@@ -28,8 +28,10 @@ public class GameElementBased : MonoBehaviour {
 	public void FixedUpdate() {
 
 		// processing path ... 
-		if (FollowingPath()) ProcessPathFollowing();
-
+		if (gameLogic!=null)
+		if (gameLogic.CheckIngameState()) {
+			if (FollowingPath()) ProcessPathFollowing();
+		}
 	}
 
 	/*
