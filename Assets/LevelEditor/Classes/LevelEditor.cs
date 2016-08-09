@@ -85,6 +85,8 @@ public class LevelEditor : MonoBehaviour {
 	 * 
 	 * */
 	string editorAutor = "ANONYMOUS";
+	string editorPassword = "";
+	string editorNewArea = "";
 
 	// overlay
 	bool cameraOverlayTypes = false;
@@ -379,7 +381,9 @@ public class LevelEditor : MonoBehaviour {
 		PlayerPrefs.SetString("leveltype", leveltype);
 
 		// ok let's check ... 
-		LoadLevel( actualLevel );
+		// confusing
+		// LoadLevel( actualLevel );
+		LoadLevel( 1 );
 		// remoteSelection = true;
 	}
 
@@ -400,11 +404,13 @@ public class LevelEditor : MonoBehaviour {
 	string remoteAreaEdit = "";
 	string remoteAutorEdit = "";
 	void RemoteEdit() {
+		error = false;
 		remoteSelection = false; 
 		// 		LoadLevel (actualLevel);
 		SetLevel(1);
 	}
 	void RemoteDownload() {
+		error = false;
 		RemoteDownloadsDo();
 	}
 
@@ -439,6 +445,8 @@ public class LevelEditor : MonoBehaviour {
 	bool offline = false;
 	bool loading = false;
 	string loadingLabel = "";
+	bool error = false;
+	string errorLabel = "";
 
 
 	/*
@@ -446,6 +454,8 @@ public class LevelEditor : MonoBehaviour {
 	 * 
 	 * */
 	void RemoteGetAreas() {
+		error = false;
+
 		if (!Directory.Exists ("remote")) {
 			Directory.CreateDirectory("remote");
 		}
@@ -491,6 +501,7 @@ public class LevelEditor : MonoBehaviour {
 				// string key = (string)jsonArray.keys[i];
 				JSONObject levelObj = jsonArray[i];
 				JSONObject areaObj =  levelObj.GetField("area");
+				if (areaObj!=null) {
 				string str = ""+areaObj.str;
 				// arrRemoteAreas
 				// local?
@@ -501,16 +512,28 @@ public class LevelEditor : MonoBehaviour {
 				}
 				arrRemoteAreasAddOn.Add(""+addon);
 				arrRemoteAreas.Add(""+str);
+				}
 			}
 		}
 
 		loading = false;
 
+		// go on ...
+		if (!remoteAutorEdit.Equals("")) {
+			loading = true;
+			RemoteGetAreaAutors();
+		}
+
 	}
 	void RemoteGetAreaAutors() {
-		StartCoroutine(RemoteGetAreaAutorsGet());
+		error = false;
+
+		StartCoroutine(RemoteGetAreaAutorsGet( true ));
 	}
-	private IEnumerator RemoteGetAreaAutorsGet() {
+	void RemoteGetAreaAutorsNoClose() {
+		StartCoroutine(RemoteGetAreaAutorsGet( false ));
+	}
+	private IEnumerator RemoteGetAreaAutorsGet( bool closeDialog ) {
 		loading = true;
 		loadingLabel = "LOADING AUTORS FOR "+remoteArea;
 		string url = "http://www.swissmercenariesgame.com/services.php?service=getareaautors&area="+WWW.EscapeURL(remoteArea);
@@ -542,11 +565,20 @@ public class LevelEditor : MonoBehaviour {
 			arrRemoteAreaAutors = new ArrayList();
 			arrRemoteAreaAutorsAddOn = new ArrayList();
 			string jsonText = ""+w.text;
+			if (jsonText.IndexOf("result\":\"error\"")!=-1) {
+				// return ; 
+			}
 			JSONObject jsonArray = new JSONObject(jsonText);
+			// remoteArea
+			//			if (jsonArray!=null) 
+//			if (jsonArray.list.Count>0)
+			if (jsonArray.list!=null)
+			{
 			for(int i = 0; i < jsonArray.list.Count; i++){
 				// string key = (string)jsonArray.keys[i];
 				JSONObject levelObj = jsonArray[i];
 				JSONObject areaObj =  levelObj.GetField("autor");
+				if (areaObj!=null) {
 				string str = "" + areaObj.str;
 				string localpath = ""+"remote"+Path.DirectorySeparatorChar+remoteArea+Path.DirectorySeparatorChar+str;
 				Debug.Log("LevelEditor.RemoteGetAreaAutorsGet() // localpath = "+localpath);
@@ -557,15 +589,20 @@ public class LevelEditor : MonoBehaviour {
 				}
 				arrRemoteAreaAutors.Add(""+str);
 				arrRemoteAreaAutorsAddOn.Add(""+addon);
+				}
+			}
 			}
 		}
 
-		loading = false;
-
+		if (closeDialog){
+			loading = false;
+		}
 	}
 
 	// RemoteDownloadsDo
 	void RemoteDownloadsDo() {
+		error = false;
+
 		StartCoroutine(RemoteDownloadsDoGet());
 	}
 	private IEnumerator RemoteDownloadsDoGet() {
@@ -595,6 +632,7 @@ public class LevelEditor : MonoBehaviour {
 				Debug.Log("LevelEditor.RemoteDownloadsDoGet() // "+ path);
 				System.IO.File.WriteAllText( path,""+w.text);
 
+
 			}
 		}
 
@@ -605,16 +643,26 @@ public class LevelEditor : MonoBehaviour {
 
 	// remote upload
 	void RemoteUpload() {
-		StartCoroutine(RemoteUploadDo());
+		error = false;
+
+		StartCoroutine(RemoteUploadDo( true ));
 	}
-	private IEnumerator RemoteUploadDo() {
+	// used for create a new level
+	void RemoteUploadDummy() {
+		// remoteAutorEdit
+		StartCoroutine(RemoteUploadDo( false ));
+	}
+	private IEnumerator RemoteUploadDo( bool uploadExistingLevels ) {
 
 		loading = true;
 		loadingLabel = "UPLOADING LEVELS ";
+		if (!uploadExistingLevels) {
+			loadingLabel = "CREATING EMPTY LEVELS FOR AUTOR ";
+		}
 
 		for (int i=1;i<maxLevel;i++) {
 			loadingLabel = "UPLOADING LEVEL "+i+"/"+maxLevel;
-			string url = "http://www.swissmercenariesgame.com/services.php?service=set&area="+ WWW.EscapeURL(remoteAreaEdit)+"&autor="+WWW.EscapeURL(remoteAutorEdit)+"&level="+WWW.EscapeURL(""+i);
+			string url = "http://www.swissmercenariesgame.com/services.php?service=set&password="+WWW.EscapeURL(editorPassword)+"&area="+ WWW.EscapeURL(remoteAreaEdit)+"&autor="+WWW.EscapeURL(remoteAutorEdit)+"&level="+WWW.EscapeURL(""+i);
 			Debug.Log("LevelEditor.RemoteUploadGet() // url = "+url);
 
 			string path = GetRemotePath();
@@ -647,11 +695,81 @@ public class LevelEditor : MonoBehaviour {
 			*/ 
 			// version 2
 			WWWForm form = new WWWForm();
-			if (System.IO.File.Exists( path + "level"+i+".txt" )) {
-				jsonText = System.IO.File.ReadAllText( path + "level"+i+".txt");
+			if (uploadExistingLevels) {
+				if (System.IO.File.Exists( path + "level"+i+".txt" )) {
+					jsonText = System.IO.File.ReadAllText( path + "level"+i+".txt");
+				}
 			}
 			form.AddField("argument",jsonText);
+			
 			WWW w = new WWW(url,form);
+			yield return w;
+			if (w.error != null)
+			{
+				Debug.Log("Error .. " +w.error);
+				// for example, often 'Error .. 404 Not Found'
+				// tell error
+				AddEditorMessage("Sorry, are you connected to internet?");
+				error = true;
+				errorLabel = "Could not upload. Are you connected to the internet?";
+			}
+			else
+			{
+
+				Debug.Log("LevelEditor.RemoteUploadDo() // level = "+i+" text = " +w.text +"<==");
+
+				if (w.text.IndexOf("result\":\"error\"")!=-1) {
+					error = true;
+					errorLabel = "Password wrong!";
+				}
+			}
+		}
+
+		if (uploadExistingLevels) {
+			loading = false;
+			remoteSelection = false; 
+		} else {
+			remoteAutor = "";
+			remoteAutorEdit = "";
+			RemoteGetAreaAutors();
+		}
+	}
+
+	/*
+	 *  ADMIN
+	 * 
+	 * */
+	// RemoteDelete
+	void RemoteDelete() {
+		error = false;
+
+		StartCoroutine(RemoteDeleteDo( ));
+	}
+	private IEnumerator RemoteDeleteDo(  ) {
+
+		loading = true;
+		loadingLabel = "DELETING LEVELS";
+
+		for (int i=1;i<maxLevel;i++) {
+			loadingLabel = "DELETING LEVELS "+i+"/"+maxLevel;
+			string url = "http://www.swissmercenariesgame.com/services.php?service=delete&password="+WWW.EscapeURL(editorPassword)+"&area="+ WWW.EscapeURL(remoteAreaEdit)+"&autor="+WWW.EscapeURL(remoteAutorEdit)+"&level="+WWW.EscapeURL(""+i);
+			Debug.Log("LevelEditor.RemoteDeleteDo() // url = "+url);
+
+			string path = GetRemotePath();
+			string jsonText = "[]";
+
+			// version 2
+			/*
+			WWWForm form = new WWWForm();
+			if (uploadExistingLevels) {
+				if (System.IO.File.Exists( path + "level"+i+".txt" )) {
+					jsonText = System.IO.File.ReadAllText( path + "level"+i+".txt");
+				}
+			}
+			form.AddField("argument",jsonText);
+			*/
+
+			WWW w = new WWW(url);
 			yield return w;
 			if (w.error != null)
 			{
@@ -664,15 +782,67 @@ public class LevelEditor : MonoBehaviour {
 			{
 
 				Debug.Log("LevelEditor.RemoteUploadDo() // level = "+i+" text = " +w.text +"<==");
+				if (w.text.IndexOf("error")!=-1) {
+					error = true;
+					errorLabel = "WRONG PASSWORD!";
+				}
 
 			}
 		}
 
 		loading = false;
-		remoteSelection = false; 
 
+		if (!error) {
+			RemoteGetAreas();
+		}
 	}
 
+	// RemoteNewArea
+	void RemoteNewArea( string newArea ) {
+		error = false;
+
+		StartCoroutine(RemoteNewAreaDo(  newArea  ));
+	}
+	private IEnumerator RemoteNewAreaDo(  string newArea  ) {
+
+		loading = true;
+		loadingLabel = "NEW AREA";
+
+		// for (int i=1;i<maxLevel;i++) {
+			loadingLabel = "NEW AREA ";
+			string url = "http://www.swissmercenariesgame.com/services.php?service=new&password="+WWW.EscapeURL(editorPassword)+"&area="+ WWW.EscapeURL(newArea)+"&autor=xyz&level=1";
+			Debug.Log("LevelEditor.RemoteNewAreaDo() // url = "+url);
+
+			string path = GetRemotePath();
+			string jsonText = "[]";
+
+			// version 2
+			WWW w = new WWW(url);
+			yield return w;
+			if (w.error != null)
+			{
+				Debug.Log("Error .. " +w.error);
+				// for example, often 'Error .. 404 Not Found'
+				// tell error
+				AddEditorMessage("Sorry, are you connected to internet?");
+			}
+			else
+			{
+
+				Debug.Log("LevelEditor.RemoteNewAreaDo() " +w.text +"<==");
+				if (w.text.IndexOf("error")!=-1) {
+					error = true;
+					errorLabel = "WRONG PASSWORD!";
+				}
+
+			}
+
+		loading = false;
+
+		if (!error) {
+			RemoteGetAreas();
+		}
+	}
 
 	/*
 	 * LevelEditor
@@ -730,6 +900,8 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	void ClearLevel() {
+
+		EmptyEditorCursorPreview();
 
 		ClearElements ();
 
@@ -2113,6 +2285,7 @@ public class LevelEditor : MonoBehaviour {
 	string editorTool= "CREATE"; 
 	string editorToolSub = "";
 	void SetTool(string ieditorTool) {
+		EmptyEditorCursorPreview();
 		// deselect ...
 		SetSelectedElement( null );
 		ActivateCursorPreview(ieditorTool=="CREATE");
@@ -2329,6 +2502,7 @@ public class LevelEditor : MonoBehaviour {
 	// GameElement editorChangeToSelection = new GameElement(); // [EDIT]: change element type to ... 
 
 	public GUIStyle editorBackground;
+	public GUIStyle editorWebLevels;
 	public GUIStyle editorInspectorBackground;
 
 	public GUIStyle editorButtonStyle;
@@ -2355,6 +2529,8 @@ public class LevelEditor : MonoBehaviour {
 	public GUIStyle editorElementType;
 
 	public GUIStyle guiEvaluation;
+
+	public GUIStyle editorTitleStyle;
 
 	public Texture2D editorEditImage;
 	public Texture2D editorSelectedImage;
@@ -3005,6 +3181,10 @@ public class LevelEditor : MonoBehaviour {
 	public Texture2D cursorIconRotateRight;
 	public Texture2D cursorIconRotateForward;
 	public Texture2D cursorIconRotateBackward;
+	// toggle
+	bool expandedLevelEdit = true;
+	public Texture2D cursorIconExpand;
+	public Texture2D cursorIconShrink;
 
 	void OnGUI() {
 
@@ -3745,7 +3925,11 @@ public class LevelEditor : MonoBehaviour {
 			 * 
 			 * */
 			// background
-			GUI.Label ( new Rect(toolsRect.x-5,toolsRect.y-5,toolsRect.width+5,toolsRect.height+10), "", editorBackground);
+			GUIStyle toolback = editorBackground;
+			if (leveltype.Equals("web")) {
+				toolback = editorWebLevels;
+			}
+			GUI.Label ( new Rect(toolsRect.x-5,toolsRect.y-5,toolsRect.width+5,toolsRect.height+10), "", toolback);
 
 
 			// editor X / Y
@@ -3754,6 +3938,8 @@ public class LevelEditor : MonoBehaviour {
 			int toolsYTmp=toolsY;
 
 			//			GUI.Label (new Rect (editorX, editorY, editorWidth, editorHeight), "", editorBackground);
+
+			if (expandedLevelEdit) {
 
 			// leveltype
 			string[] levelTypes = { "local","web" /*,"live" */};
@@ -3770,38 +3956,75 @@ public class LevelEditor : MonoBehaviour {
 					// GetLevelAeras ... 
 					// only in the case of web!
 					if (typeX.Equals("web")) {
-						RemoteGetAreas();
+						// RemoteGetAreas();
 					}
 				}
 				toolsXTmp = toolsXTmp + 120;
 
 
 			}
+			
 
 			// SET AUTOR 
 			// if (typeX.Equals("web")) {
 			// get actual 
-			toolsXTmp = toolsXTmp + 70;
+			toolsXTmp = toolsXTmp + 2;
 			GUI.Label (new Rect (toolsXTmp, toolsYTmp, 80, 20), "AUTOR: ", editorButtonStyle);
 			toolsXTmp = toolsXTmp + 82;
-			string editorAutorX=GUI.TextField (new Rect(toolsXTmp, toolsYTmp,140,20),editorAutor);
+			string editorAutorX=GUI.TextField (new Rect(toolsXTmp, toolsYTmp,120,20),editorAutor);
 			if (!editorAutorX.Equals(editorAutor)) {
 				editorAutor = editorAutorX;
 				PlayerPrefs.SetString("editorAutor", editorAutor);
 			}
-			toolsXTmp = toolsXTmp + 90;
+			toolsXTmp = toolsXTmp + 1;
 			// }
+			}
 
+			if (!expandedLevelEdit) {
+				toolsXTmp = 10;
+				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 220, 20), "[....]", editorButtonStyle)) {
+					expandedLevelEdit = !expandedLevelEdit;
+				}
+				toolsXTmp = toolsXTmp + 220;
+				toolsXTmp = toolsXTmp + 120 + 80;
+				// toolsXTmp=10;
+				// toolsYTmp = toolsYTmp + 28;
+
+
+
+			} 
+
+
+			toolsXTmp = 570 - 30;
+			Texture2D t2d = cursorIconExpand;
+			if (expandedLevelEdit) {
+				t2d = cursorIconShrink;
+			}
+			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 24, 24), t2d, editorButtonStyle)) {
+				expandedLevelEdit = !expandedLevelEdit;
+			}
+
+
+			// start again
 			toolsXTmp=toolsX;
+
+			if (!expandedLevelEdit) {
+			//if (!leveltype.Equals("web")) {
+				toolsYTmp = toolsYTmp + 28;
+			//}
+			}
+
+			if (expandedLevelEdit) {
 
 
 
 			// weblevels
 			if (leveltype.Equals("web")) {
-
+				
+				toolsYTmp = toolsYTmp + 28;
 
 				// ok - local
-				toolsYTmp = toolsYTmp + 24;
+				// toolsYTmp = toolsYTmp + 24;
 				// get actual 
 				/*				GUI.Label (new Rect (toolsXTmp, toolsYTmp, 80, 20), "AUTOR: ", editorButtonActiveStyle);
 				toolsXTmp = toolsXTmp + 60;
@@ -3811,13 +4034,16 @@ public class LevelEditor : MonoBehaviour {
 
 				// remoteSelection = true;
 				// LEVEL
-				GUI.Label (new Rect (toolsXTmp, toolsYTmp, 78, 20), "WEBLEVEL: ", editorButtonActiveStyle);
+				GUI.Label (new Rect (toolsXTmp, toolsYTmp, 78, 20), "REMOTE: ", editorButtonActiveStyle);
 				toolsXTmp = toolsXTmp + 80;
 				// display
-				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 178, 20), "remote/"+remoteAreaEdit+"/"+remoteAutorEdit, editorButtonStyle)) {
+				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 178, 20), "> "+remoteAreaEdit+"/"+remoteAutorEdit, editorButtonStyle)) {
 					remoteArea = remoteAreaEdit;
 					remoteAutor = remoteAutorEdit;
 					remoteSelection = !remoteSelection;
+					if (remoteSelection) {
+						RemoteGetAreas();
+					}
 				}
 				toolsXTmp = toolsXTmp + 180;
 				// select
@@ -3826,8 +4052,26 @@ public class LevelEditor : MonoBehaviour {
 					remoteArea = remoteAreaEdit;
 					remoteAutor = remoteAutorEdit;
 					remoteSelection = !remoteSelection;
+					if (remoteSelection) {
+						RemoteGetAreas();
+
+					}
 				}
 				toolsXTmp = toolsXTmp + 82;
+
+				// select
+				if (leveltype.Equals("web")) {
+					if (editorAutor.Equals("admin")) {
+					editorNewArea = GUI.TextField (new Rect (toolsXTmp, toolsYTmp, 60, 20), ""+editorNewArea, editorButtonStyle);
+					toolsXTmp = toolsXTmp + 62;
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 60, 20), "NEW", editorButtonActiveStyle)) {
+						// add this
+						RemoteNewArea(editorNewArea);
+					}
+					toolsXTmp = toolsXTmp + 82;
+				 }
+				}
+
 				// select
 				/*
 				 * if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 100, 20), "^ UPLOAD LEVELS", editorButtonActiveStyle)) {
@@ -3839,6 +4083,7 @@ public class LevelEditor : MonoBehaviour {
 				// toolsXTmp = toolsXTmp + 82;
 
 				toolsYTmp = toolsYTmp + 28;
+				
 
 				// SELECT
 				if (loading) {
@@ -3848,6 +4093,21 @@ public class LevelEditor : MonoBehaviour {
 					// loadingLabel
 					toolsYTmp = toolsYTmp + 22;
 					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 400, 20), ""+loadingLabel, editorLoading);
+					toolsYTmp = toolsYTmp + 22;
+				} 
+
+				// ERROR
+				if (error) {
+					// error = fal;
+					// toolsYTmp = toolsYTmp + 28;
+					// GUI.Label (new Rect (toolsXTmp, toolsYTmp, 400, 20), "LOADING ... LOADING ... LOADING ...", editorLoading);
+					// loadingLabel
+					toolsYTmp = toolsYTmp + 22;
+					toolsXTmp = 20;
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 300, 20), ""+errorLabel+" [OK]", editorLoading)) {
+						error = false;
+					}
+					toolsYTmp = toolsYTmp + 22;
 					toolsYTmp = toolsYTmp + 22;
 				} 
 
@@ -3873,6 +4133,7 @@ public class LevelEditor : MonoBehaviour {
 						}
 						toolsXTmp = 10;
 						toolsYTmp = toolsYTmp + 21;
+						// show them all
 						for (int ct=0;ct<arrRemoteAreas.Count;ct++) {
 							remotea = (string) arrRemoteAreas[ct];
 							string addon = (string) arrRemoteAreasAddOn[ct];
@@ -3909,10 +4170,26 @@ public class LevelEditor : MonoBehaviour {
 							}	
 							remoteStartYAutor = remoteStartYAutor + 22;
 
-							if (GUI.Button (new Rect (remoteStartXAutor, remoteStartYAutor, 140, 20), "[ADD MY LEVEL]", editorButtonStyle)) {
-								remoteAutor = "";
+							// if not yet exists .
+							// check for existing autor remote levels
+							bool existingOwn = false;
+							for (int ct=0;ct<arrRemoteAreaAutors.Count;ct++) {
+								string autorx = (string) arrRemoteAreaAutors[ct];
+								if (autorx.Equals(editorAutor)) {
+									existingOwn = true;
+								}
+							}
+							// existing ...
+							if (!existingOwn) {
+							if (GUI.Button (new Rect (remoteStartXAutor, remoteStartYAutor, 140, 20), "[ADD "+editorAutor+"]", editorButtonStyle)) {
+								// save a level now ... 
+									remoteAreaEdit = remoteArea;
+								remoteAutorEdit = editorAutor;
+								RemoteUploadDummy();
+
 							}	
 							remoteStartYAutor = remoteStartYAutor + 22;
+							}
 
 							// autors
 							for (int ct=0;ct<arrRemoteAreaAutors.Count;ct++) {
@@ -3929,16 +4206,19 @@ public class LevelEditor : MonoBehaviour {
 								// edit / download
 								if (autorx.Equals(remoteAutor)) {
 									// DOWNLOAD
-									// EDIT 
+									// EDIT  
+									// ADMIN
+
 									// ADDON?
+									if (addon.IndexOf("(local)")!=-1) {
 									if (GUI.Button (new Rect (remoteStartXAutor+150, remoteStartYAutor, 58, 20), "EDIT", gs)) {
 										remoteAreaEdit = remoteArea;
 										remoteAutorEdit = remoteAutor;
 										PlayerPrefs.SetString("remoteAreaEdit", remoteAreaEdit);
 										PlayerPrefs.SetString("remoteAutorEdit", remoteAutorEdit);
 										RemoteEdit();
-									}
-									if (GUI.Button (new Rect (remoteStartXAutor+150 + 60, remoteStartYAutor, 90, 20), "\\/ DOWNLOAD", gs)) {
+									} }
+									if (GUI.Button (new Rect (remoteStartXAutor+150 + 60, remoteStartYAutor, 130, 20), "DOWNLOAD & EDIT", gs)) {
 										remoteAreaEdit = remoteArea;
 										remoteAutorEdit = remoteAutor;
 										PlayerPrefs.SetString("remoteAreaEdit", remoteAreaEdit);
@@ -3952,12 +4232,15 @@ public class LevelEditor : MonoBehaviour {
 								if (remoteStartYAutor>toolsYTmp) {
 									toolsYTmp = remoteStartYAutor;
 								}
+
+								// remoteStartYAutor = remoteStartYAutor + 21;
 							}
 						}
 
 					} // loading
 
 					// local stored ...
+					toolsYTmp = toolsYTmp + 28;
 
 					toolsXTmp = 10;
 					// toolsYTmp = toolsYTmp + 28;
@@ -3970,12 +4253,36 @@ public class LevelEditor : MonoBehaviour {
 			if (leveltype.Equals("web")) {
 				toolsXTmp = 10;
 				// toolsYTmp = toolsYTmp + 28;
-				GUI.Label (new Rect (toolsXTmp, toolsYTmp, 180, 20), "REMOTE (STORED LOCAL): ", editorButtonStyle);
-				toolsXTmp = toolsXTmp + 182;
-				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 120, 20), "UPLOAD NOW", editorButtonActiveStyle)) {
+				// admin things
+				if (editorAutor.Equals("admin")) {
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 80, 20), "DEL", editorButtonActiveStyle)) {
+						RemoteDelete();
+					}
+					toolsXTmp = toolsXTmp + 82;
+				}
+				// PASS
+				GUI.Label (new Rect (toolsXTmp, toolsYTmp, 40, 20), "PASS:", editorButtonActiveStyle);
+				toolsXTmp = toolsXTmp + 42;
+				editorPassword = GUI.TextField (new Rect (toolsXTmp, toolsYTmp, 120, 20), ""+editorPassword, editorButtonStyle);
+				GUI.Label (new Rect (toolsXTmp, toolsYTmp, editorPassword.Length*9, 20), "", editorButtonActiveStyle);
+				toolsXTmp = toolsXTmp + 122;
+
+				// UPLOAD
+				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 120, 20), "UPLOAD", editorButtonActiveStyle)) {
 					// SAVE IT ... 
 					RemoteUpload();
 				}
+
+				toolsXTmp = toolsXTmp + 120;
+
+				/*
+				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 120, 20), "UPLOAD AS "+editorAutor+"", editorButtonActiveStyle)) {
+					// SAVE IT ... 
+					// RemoteUpload();
+				}
+				toolsXTmp = toolsXTmp + 122;
+				*/
+
 			}
 
 			toolsXTmp = 10;
@@ -4052,6 +4359,7 @@ public class LevelEditor : MonoBehaviour {
 			toolsYTmp = toolsYTmp + 26;
 
 
+			} // shrink
 
 			// UNDO/REDO
 			// undoVisual
@@ -4360,6 +4668,32 @@ public class LevelEditor : MonoBehaviour {
 					}
 				}
 
+				inspectorXTmp = inspectorXTmp + 10;
+
+				// ROTATE
+				bool rotated = false;
+				// inspectorXTmp = inspectorXTmp + 28;
+				if (GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 26, 20), " < ", editorButtonStyle)) {
+					editorDegree = editorDegree - 90	;	
+					if (editorDegree==-90) editorDegree = 270;
+					rotated = true;
+				}
+				inspectorXTmp = inspectorXTmp + 28;
+				if (GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 26, 20), " > ", editorButtonStyle)) {
+					editorDegree = editorDegree + 90	;				
+					if (editorDegree==360) editorDegree = 0;
+					rotated = true;
+				}
+				inspectorXTmp = inspectorXTmp + 28;
+				if (rotated) {
+					Transform cursorPreviewT = GameObject.Find("editorcursorpreview").transform;
+					if(cursorPreviewT.childCount>0){
+						foreach(Transform childT in cursorPreviewT){
+							childT.localRotation = Quaternion.Euler(0,editorDegree,0);
+						}
+					}
+				}
+
 				inspectorYTmp = inspectorYTmp + 24;
 				inspectorXTmp = 10;
 
@@ -4524,6 +4858,26 @@ public class LevelEditor : MonoBehaviour {
 								}
 							}
 
+							// ROTATE
+							bool rotated = false;
+							inspectorXTmp = inspectorXTmp + 10;
+							if (GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 26, 20), " < ", editorButtonStyle)) {
+								editorSelected.rotation = editorSelected.rotation - 90;
+								if (editorSelected.rotation==-90) editorSelected.rotation = 270;
+								rotated = true;
+							}
+							inspectorXTmp = inspectorXTmp + 28;
+							if (GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 26, 20), " > ", editorButtonStyle)) {
+								editorSelected.rotation = editorSelected.rotation - 90;
+								if (editorDegree==360) editorSelected.rotation = 0;
+								rotated = true;
+							}
+							inspectorXTmp = inspectorXTmp + 28;
+							if (rotated) {
+								UpdateElementVisual(editorSelected);
+								AddToEditorHistory("Editor UpdateObject");
+							}
+
 							inspectorYTmp = inspectorYTmp + 22; 
 							// inspectorYTmp = inspectorYTmp + 10;
 
@@ -4551,6 +4905,7 @@ public class LevelEditor : MonoBehaviour {
 				}
 
 			}
+
 
 
 			// show elements
@@ -5235,8 +5590,19 @@ public class LevelEditor : MonoBehaviour {
 			// setup height
 			// editorHeight = editorY;
 
-
-
+			// the leveltitle
+			GameElement titleGE = GetGameElementByName("TITLE");
+			if (titleGE!=null) {
+				string title = ""+titleGE.argument;
+				if (title.Equals("")) {
+					title = "[NOT YET A TITLE]";
+				}
+				if (GUI.Button ( new Rect(600,20,200,20), ""+title, editorTitleStyle)) {
+					// edit here
+					SetTool("EDIT");
+					SetSelectedElement( titleGE );
+				}
+			}
 
 			// 	selectiondialoge
 			if (selectionDialoge) {

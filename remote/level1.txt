@@ -1,1 +1,0 @@
-[{"id":"-1","name":"","type":"immovable","subtype":"building_s","x":0,"y":0,"z":0,"index":0,"argument":"","argumentsub":"","target":"self","creator":"ANONYMOUS","strevent":"enter","timed":0,"release":"","releasearg":"","rotation":0,"rotationforward":0,"size":1,"evaluationPlayerId":"","evaluationSessionId":0,"evaluationPlayTime":0}]
