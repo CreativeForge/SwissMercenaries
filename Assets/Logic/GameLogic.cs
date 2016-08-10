@@ -31,7 +31,7 @@ public class GameLogic : MonoBehaviour {
 	public float GetVersionGame() {
 		return versionGame;
 	}
-	private float versionEditor = 0.7f; // versioning
+	private float versionEditor = 0.8f; // versioning
 	public float GetVersionEditor() {
 		return versionEditor;
 	}

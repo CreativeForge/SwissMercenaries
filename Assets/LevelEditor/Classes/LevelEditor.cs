@@ -11,9 +11,9 @@
 	* 
 	* */
 
-	// new LevelObjects > levelElements
+// new LevelObjects > levelElements
 
-	using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 using GameLab.LanguageCenter;
@@ -110,6 +110,41 @@ public class LevelEditor : MonoBehaviour {
 			NewSession (evaluationPlayer);
 		}
 
+	}
+
+	// copy & paste
+	ArrayList arrClipBoardLevel = new ArrayList();
+	void CopyActualLEvelToClipBoard() {
+		arrClipBoardLevel.Clear();
+		GameElement ge;
+		for (int i=0;i<arrLevel.Count;i++) {
+			ge = (GameElement) arrLevel[i];
+			GameElement gen = ge.Copy();
+			arrClipBoardLevel.Add(gen);
+		}
+		AddEditorMessage("Actual level copied to clipboard");
+
+	}
+	void ClipBoardToActualLevel() {
+		AddToEditorHistory("Paste level into actual Level");
+		ClearLevel();
+
+		// do this as level history
+		ClearLevel();
+
+		// add it .. 
+		GameElement ge;
+		for (int i=0;i<arrClipBoardLevel.Count;i++) {
+			ge = (GameElement) arrClipBoardLevel[i];
+			// update than ..
+			AddElement( ge );  
+		}
+
+		UpdateShowEvaluationData ();
+
+
+		AddToEditorHistory("Copied level");
+		AddEditorMessage("Imported actual level");
 	}
 
 
@@ -645,14 +680,18 @@ public class LevelEditor : MonoBehaviour {
 	void RemoteUpload() {
 		error = false;
 
-		StartCoroutine(RemoteUploadDo( true ));
+		StartCoroutine(RemoteUploadDo( true, -1 ));
 	}
+	void RemoteUploadOnly( int levelIndex ) {
+		StartCoroutine(RemoteUploadDo( true, levelIndex ));
+	}
+
 	// used for create a new level
 	void RemoteUploadDummy() {
 		// remoteAutorEdit
-		StartCoroutine(RemoteUploadDo( false ));
+		StartCoroutine(RemoteUploadDo( false, -1 ));
 	}
-	private IEnumerator RemoteUploadDo( bool uploadExistingLevels ) {
+	private IEnumerator RemoteUploadDo( bool uploadExistingLevels, int levelIndex /* or -1 for all */ ) {
 
 		loading = true;
 		loadingLabel = "UPLOADING LEVELS ";
@@ -661,6 +700,12 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		for (int i=1;i<maxLevel;i++) {
+			// only one level (very dirty version .-)
+			if (levelIndex!=-1) {
+				if (levelIndex!=i) {
+					continue;
+				}
+			}
 			loadingLabel = "UPLOADING LEVEL "+i+"/"+maxLevel;
 			string url = "http://www.swissmercenariesgame.com/services.php?service=set&password="+WWW.EscapeURL(editorPassword)+"&area="+ WWW.EscapeURL(remoteAreaEdit)+"&autor="+WWW.EscapeURL(remoteAutorEdit)+"&level="+WWW.EscapeURL(""+i);
 			Debug.Log("LevelEditor.RemoteUploadGet() // url = "+url);
@@ -728,6 +773,11 @@ public class LevelEditor : MonoBehaviour {
 		if (uploadExistingLevels) {
 			loading = false;
 			remoteSelection = false; 
+
+			if (!error) {
+				AddEditorMessage("Upload done");
+			}
+
 		} else {
 			remoteAutor = "";
 			remoteAutorEdit = "";
@@ -2300,6 +2350,8 @@ public class LevelEditor : MonoBehaviour {
 	// edit
 	void SetSelectedElement( GameElement ga ) {
 
+		EmptyEditorCursorPreview();
+
 		GameElement previousElementX = null;
 
 		if (editorSelected==null) {
@@ -2343,6 +2395,7 @@ public class LevelEditor : MonoBehaviour {
 	}
 	// update to 
 	void SetSelectedElementToGUI() {
+		EmptyEditorCursorPreview();
 		//editDetailX = ""+ editorSelected.position.x;
 		//editDetailY = ""+ editorSelected.position.y;
 		editDetailName = ""+ editorSelected.name;
@@ -2350,10 +2403,13 @@ public class LevelEditor : MonoBehaviour {
 		editDetailArgumentSub = "" + editorSelected.argumentsub;
 	}
 	void StoreSelectedElement(  ) {
+		EmptyEditorCursorPreview();
 		SetSelectedElementFromGUI ();
 	}
 	// update to 
 	void SetSelectedElementFromGUI() {
+		EmptyEditorCursorPreview();
+
 		//		editDetailSelected.position.x=editDetailX;
 		// editorDetailSelected.position.x=editDetailY;
 		editorSelected.name=editDetailName;
@@ -2619,6 +2675,8 @@ public class LevelEditor : MonoBehaviour {
 	void LoadLevel( int level  ) {
 
 		SetSelectedElement(null);
+
+		EmptyEditorCursorPreview();
 
 		ClearLevel();
 
@@ -3244,7 +3302,7 @@ public class LevelEditor : MonoBehaviour {
 				if (arrEditorMessages.Count>0)
 					for (int a=(arrEditorMessages.Count-1); a>=0; a--) {
 						LevelEditorMessage msgObj = (LevelEditorMessage)arrEditorMessages [a];
-						GUI.Label (new Rect (600, Screen.height*0.6f+60+a*22, 500, 20), ""+msgObj.message, guixt);
+						GUI.Label (new Rect (600, Screen.height*0.6f+60+cou*22, 500, 20), ""+msgObj.message, guixt);
 						cou++;
 						if (cou>3) break;
 					}
@@ -4267,13 +4325,20 @@ public class LevelEditor : MonoBehaviour {
 				GUI.Label (new Rect (toolsXTmp, toolsYTmp, editorPassword.Length*9, 20), "", editorButtonActiveStyle);
 				toolsXTmp = toolsXTmp + 122;
 
-				// UPLOAD
-				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 120, 20), "UPLOAD", editorButtonActiveStyle)) {
+				// UPLOAD SELECTED LEVEL
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 120, 20), "UPLOAD LEVEL "+actualLevel, editorButtonActiveStyle)) {
+					// SAVE IT ... 
+					RemoteUploadOnly(actualLevel);
+				}
+				toolsXTmp = toolsXTmp + 122;
+
+
+				// UPLOAD ALL
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), "UPLOAD LEVELS 1-"+(maxLevel-1), editorButtonActiveStyle)) {
 					// SAVE IT ... 
 					RemoteUpload();
 				}
-
-				toolsXTmp = toolsXTmp + 120;
+				toolsXTmp = toolsXTmp + 140;
 
 				/*
 				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 120, 20), "UPLOAD AS "+editorAutor+"", editorButtonActiveStyle)) {
@@ -4329,7 +4394,17 @@ public class LevelEditor : MonoBehaviour {
 
 			toolsXTmp = toolsXTmp + 2;
 
+			// COPY
+			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 60, 20), "COPY", editorButtonActiveStyle)) {
+				CopyActualLEvelToClipBoard();
 
+			}
+			toolsXTmp = toolsXTmp + 62;
+			// PASTE
+			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 60, 20), "PASTE", editorButtonActiveStyle)) {
+				ClipBoardToActualLevel();
+			}
+			toolsXTmp = toolsXTmp + 62;
 
 			// COPYTO
 			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 60, 20), "SAVE AS ", editorButtonActiveStyle)) {
