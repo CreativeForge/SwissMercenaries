@@ -532,6 +532,7 @@ public class LevelEditor : MonoBehaviour {
 			arrRemoteAreasAddOn = new ArrayList();
 			string jsonText = ""+w.text;
 			JSONObject jsonArray = new JSONObject(jsonText);
+			if (jsonArray.list!=null)
 			for(int i = 0; i < jsonArray.list.Count; i++){
 				// string key = (string)jsonArray.keys[i];
 				JSONObject levelObj = jsonArray[i];
@@ -2574,6 +2575,10 @@ public class LevelEditor : MonoBehaviour {
 	public GUIStyle editorButtonTypeSubStyle;
 	public GUIStyle editorButtonTypeSubStyleNotActive;
 
+	public GUIStyle editorButtonStyleWeb;
+	public GUIStyle editorButtonActiveStyleWeb;
+
+
 	public GUIStyle editorLoading;
 
 
@@ -3875,7 +3880,7 @@ public class LevelEditor : MonoBehaviour {
 							string arg = "";
 
 							// name
-							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,160,20),"NAME: ",guiEvaluation);
+							GUI.Label (new Rect(dialogEvaluationX,dialogEvaluationY,120,20),"NAME: ",guiEvaluation);
 							arg=GUI.TextField (new Rect(dialogEvaluationX+120,dialogEvaluationY,200,20),evaluationPlayer.name);
 							if (!arg.Equals (evaluationPlayer.name)) {
 								evaluationPlayer.name = arg;
@@ -4009,6 +4014,13 @@ public class LevelEditor : MonoBehaviour {
 				if (typeX.Equals(leveltype)) {
 					gs = editorButtonActiveStyle;
 				}
+				if (typeX.Equals("web")) {
+						// gs = editorButtonTypeStyleActiveWeb; 
+						if (typeX.Equals(leveltype)) {
+							gs = editorButtonActiveStyleWeb; 
+						}
+				}
+
 				if (GUI.Button (new Rect (toolsXTmp , toolsYTmp, 110, 20), ""+labelX, gs)) {
 					SetLevelType( typeX );
 					// GetLevelAeras ... 
@@ -4092,10 +4104,10 @@ public class LevelEditor : MonoBehaviour {
 
 				// remoteSelection = true;
 				// LEVEL
-				GUI.Label (new Rect (toolsXTmp, toolsYTmp, 78, 20), "REMOTE: ", editorButtonActiveStyle);
+					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 78, 20), "REMOTE: ", editorButtonActiveStyleWeb);
 				toolsXTmp = toolsXTmp + 80;
 				// display
-				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 178, 20), "> "+remoteAreaEdit+"/"+remoteAutorEdit, editorButtonStyle)) {
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 178, 20), "> "+remoteAreaEdit+"/"+remoteAutorEdit, editorButtonStyleWeb)) {
 					remoteArea = remoteAreaEdit;
 					remoteAutor = remoteAutorEdit;
 					remoteSelection = !remoteSelection;
@@ -4105,7 +4117,7 @@ public class LevelEditor : MonoBehaviour {
 				}
 				toolsXTmp = toolsXTmp + 180;
 				// select
-				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 80, 20), "SELECT", editorButtonActiveStyle)) {
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 80, 20), "SELECT", editorButtonActiveStyleWeb)) {
 					// select something else!
 					remoteArea = remoteAreaEdit;
 					remoteAutor = remoteAutorEdit;
@@ -4120,9 +4132,9 @@ public class LevelEditor : MonoBehaviour {
 				// select
 				if (leveltype.Equals("web")) {
 					if (editorAutor.Equals("admin")) {
-					editorNewArea = GUI.TextField (new Rect (toolsXTmp, toolsYTmp, 60, 20), ""+editorNewArea, editorButtonStyle);
+							editorNewArea = GUI.TextField (new Rect (toolsXTmp, toolsYTmp, 60, 20), ""+editorNewArea, editorButtonStyleWeb);
 					toolsXTmp = toolsXTmp + 62;
-					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 60, 20), "NEW", editorButtonActiveStyle)) {
+							if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 60, 20), "NEW", editorButtonActiveStyleWeb)) {
 						// add this
 						RemoteNewArea(editorNewArea);
 					}
@@ -4182,9 +4194,9 @@ public class LevelEditor : MonoBehaviour {
 					// AREAS
 					if (!loading) {
 						string remotea = "";
-						GUIStyle gs = editorButtonStyle; // editorButtonActiveStyle;
+							GUIStyle gs = editorButtonStyleWeb; // editorButtonActiveStyle;
 						if (remoteArea.Equals("")) {
-							gs = editorButtonActiveStyle;
+								gs = editorButtonActiveStyleWeb;
 						}
 						if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), "------ AREAS ------", gs)) {
 							remoteArea = "";
@@ -4195,11 +4207,11 @@ public class LevelEditor : MonoBehaviour {
 						for (int ct=0;ct<arrRemoteAreas.Count;ct++) {
 							remotea = (string) arrRemoteAreas[ct];
 							string addon = (string) arrRemoteAreasAddOn[ct];
-							gs = editorButtonStyle; // editorButtonActiveStyle;
+								gs = editorButtonStyleWeb; // editorButtonActiveStyle;
 							bool showIt = false;
 							if (remoteArea.Equals("")) showIt = true;
 							if (remotea.Equals(remoteArea)) {
-								gs = editorButtonActiveStyle;
+									gs = editorButtonActiveStyleWeb;
 								showIt = true;
 							}
 							showIt = true;
@@ -4219,9 +4231,9 @@ public class LevelEditor : MonoBehaviour {
 						// AUTOR?
 						// if selected autors
 						if (!remoteArea.Equals("")) {
-							gs = editorButtonStyle; // editorButtonActiveStyle;
+								gs = editorButtonStyleWeb; // editorButtonActiveStyle;
 							if (remoteAutor.Equals("")) {
-								gs = editorButtonActiveStyle;
+									gs = editorButtonActiveStyleWeb;
 							}
 							if (GUI.Button (new Rect (remoteStartXAutor, remoteStartYAutor, 140, 20), "------ AUTORS ------", gs)) {
 								remoteAutor = "";
@@ -4239,7 +4251,7 @@ public class LevelEditor : MonoBehaviour {
 							}
 							// existing ...
 							if (!existingOwn) {
-							if (GUI.Button (new Rect (remoteStartXAutor, remoteStartYAutor, 140, 20), "[ADD "+editorAutor+"]", editorButtonStyle)) {
+									if (GUI.Button (new Rect (remoteStartXAutor, remoteStartYAutor, 140, 20), "[ADD "+editorAutor+"]", editorButtonStyleWeb)) {
 								// save a level now ... 
 									remoteAreaEdit = remoteArea;
 								remoteAutorEdit = editorAutor;
@@ -4253,9 +4265,9 @@ public class LevelEditor : MonoBehaviour {
 							for (int ct=0;ct<arrRemoteAreaAutors.Count;ct++) {
 								string autorx = (string) arrRemoteAreaAutors[ct];
 								string addon = (string) arrRemoteAreaAutorsAddOn[ct];
-								gs = editorButtonStyle; // editorButtonActiveStyle;
+									gs = editorButtonStyleWeb; // editorButtonActiveStyle;
 								if (autorx.Equals(remoteAutor)) {
-									gs = editorButtonActiveStyle;
+										gs = editorButtonActiveStyleWeb;
 								}
 								if (GUI.Button (new Rect (remoteStartXAutor, remoteStartYAutor, 140, 20), ""+autorx+" "+addon, gs)) {
 									remoteAutor = autorx;
@@ -4313,20 +4325,20 @@ public class LevelEditor : MonoBehaviour {
 				// toolsYTmp = toolsYTmp + 28;
 				// admin things
 				if (editorAutor.Equals("admin")) {
-					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 80, 20), "DEL", editorButtonActiveStyle)) {
+						if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 80, 20), "DEL", editorButtonActiveStyleWeb)) {
 						RemoteDelete();
 					}
 					toolsXTmp = toolsXTmp + 82;
 				}
 				// PASS
-				GUI.Label (new Rect (toolsXTmp, toolsYTmp, 40, 20), "PASS:", editorButtonActiveStyle);
+					GUI.Label (new Rect (toolsXTmp, toolsYTmp, 40, 20), "PASS:", editorButtonActiveStyleWeb);
 				toolsXTmp = toolsXTmp + 42;
-				editorPassword = GUI.TextField (new Rect (toolsXTmp, toolsYTmp, 120, 20), ""+editorPassword, editorButtonStyle);
-				GUI.Label (new Rect (toolsXTmp, toolsYTmp, editorPassword.Length*9, 20), "", editorButtonActiveStyle);
+					editorPassword = GUI.TextField (new Rect (toolsXTmp, toolsYTmp, 120, 20), ""+editorPassword, editorButtonStyleWeb);
+					GUI.Label (new Rect (toolsXTmp, toolsYTmp, editorPassword.Length*9, 20), "", editorButtonActiveStyleWeb);
 				toolsXTmp = toolsXTmp + 122;
 
 				// UPLOAD SELECTED LEVEL
-					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 120, 20), "UPLOAD LEVEL "+actualLevel, editorButtonActiveStyle)) {
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 120, 20), "UPLOAD LEVEL "+actualLevel, editorButtonActiveStyleWeb)) {
 					// SAVE IT ... 
 					RemoteUploadOnly(actualLevel);
 				}
@@ -4334,7 +4346,7 @@ public class LevelEditor : MonoBehaviour {
 
 
 				// UPLOAD ALL
-					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), "UPLOAD LEVELS 1-"+(maxLevel-1), editorButtonActiveStyle)) {
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), "UPLOAD LEVELS 1-"+(maxLevel-1), editorButtonActiveStyleWeb)) {
 					// SAVE IT ... 
 					RemoteUpload();
 				}
@@ -4677,7 +4689,7 @@ public class LevelEditor : MonoBehaviour {
 				inspectorYTmp = inspectorYTmp + 22;
 
 				// name
-				GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,160,20),"NAME: ",guiEvaluation);
+				GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,110,20),"NAME: ",guiEvaluation);
 				createName=GUI.TextField (new Rect(inspectorXTmp+120,inspectorYTmp,200,20),createName);
 
 				inspectorXTmp = 10;
@@ -5672,7 +5684,7 @@ public class LevelEditor : MonoBehaviour {
 				if (title.Equals("")) {
 					title = "[NOT YET A TITLE]";
 				}
-				if (GUI.Button ( new Rect(600,20,200,20), ""+title, editorTitleStyle)) {
+				if (GUI.Button ( new Rect(600,20,400,20), ""+title, editorTitleStyle)) {
 					// edit here
 					SetTool("EDIT");
 					SetSelectedElement( titleGE );
