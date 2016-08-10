@@ -12,7 +12,7 @@ public class LevelElement {
 	public GameObject editorPrefab; // dummy object
 	// public bool attachToPlayer = false; // > do it in the prefab > AttachToPlayer
 	public LevelElementOption[] prefabPredefinedArguments;
-
+	public bool randomPredefineds = false;
 	// public string genericName = "objekt";
 
 	public bool isGround = false;

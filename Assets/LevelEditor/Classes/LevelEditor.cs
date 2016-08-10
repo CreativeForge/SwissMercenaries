@@ -1425,6 +1425,7 @@ public class LevelEditor : MonoBehaviour {
 
 			geType.editorTileSize = el.editorTileSize;
 			geType.editorIsGround = el.isGround;
+			geType.randomPredefineds = el.randomPredefineds;
 			if (geType.editorIsGround) {
 				// Debug.Log("LevelEditor.RegisterLevelElements() // isGROUND: "+geType.type+"/"+geType.subtype);
 			}
@@ -2009,9 +2010,11 @@ public class LevelEditor : MonoBehaviour {
 							} 
 							else  {
 								// Debug.Log(". LeveLElementOption FOUND! "+elem.argument+" "+elem.prefabPredefinedArguments);
-
+								// editor ...
 								bool found=false;
 								LevelElementOption leo;
+								// editor: no random predefineds!
+								if (!elPrefab.randomPredefineds) {
 								for (int ix = 0; ix < elem.prefabPredefinedArguments.Length; ix ++) {
 									leo = elem.prefabPredefinedArguments[ix];
 									// Debug.Log(ix+". LeveLElementOption "+leo.argument+" vs "+elem.argument);
@@ -2034,7 +2037,34 @@ public class LevelEditor : MonoBehaviour {
 
 										}
 									}
-								} 
+								} }
+								// editor: random predefineds
+								if (elPrefab.randomPredefineds) {
+									int max = elem.prefabPredefinedArguments.Length;
+									if (elem.prefabPredefinedArguments.Length>0) {
+									int randomIndex = UnityEngine.Random.Range(0,max);
+										leo = elem.prefabPredefinedArguments[randomIndex];
+										if (leo.editorPrefab!=null) {
+												found=true;
+												go=Instantiate(leo.editorPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+												go.name = "FoundRandomPredefined";
+
+												// use normal gameobject if 
+												if (elPrefab.editorIsGround) {
+													if (editorSelected!=elem) {
+														// Debug.Log("IS GROUND!!! "+elPrefab.type);
+														// update with ingameobject ! as ground!!!
+														Destroy(go);
+														go=Instantiate(leo.gameobjectPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+														go.name = "editorXYZGROUNDVARIANT";	
+													} 
+												}
+
+											}
+										}
+								}
+
+								// found 
 								if (!found) {
 									go=Instantiate(elPrefab.prefabEditorDummyGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
 									go.name = "NotFoundDUMMY!";
@@ -2101,18 +2131,37 @@ public class LevelEditor : MonoBehaviour {
 							if (elem.prefabPredefinedArguments.Length>0) {
 								bool found=false;
 								LevelElementOption leo;
-								for (int ix = 0; ix < elem.prefabPredefinedArguments.Length; ix ++) {
-									leo = elem.prefabPredefinedArguments[ix];
-									// Debug.Log(ix+". LeveLElementOption "+leo.argument+" vs "+elem.argument);
-									if (leo.argument.Equals(elem.argument)) {
+
+								// ingame: predefineds
+								if (!elPrefab.randomPredefineds) {
+									for (int ix = 0; ix < elem.prefabPredefinedArguments.Length; ix ++) {
+										leo = elem.prefabPredefinedArguments[ix];
+										// Debug.Log(ix+". LeveLElementOption "+leo.argument+" vs "+elem.argument);
+										if (leo.argument.Equals(elem.argument)) {
+											if (leo.gameobjectPrefab!=null) {
+												found=true;
+												go=Instantiate(leo.gameobjectPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+												go.name = "NotFound9GameObject";
+
+											}
+										}
+									} 
+								}
+								// ingame: random predefineds
+								if (elPrefab.randomPredefineds) {
+									int max = elem.prefabPredefinedArguments.Length;
+									if (elem.prefabPredefinedArguments.Length>0) {
+										int randomIndex = UnityEngine.Random.Range(0,max);
+										leo = elem.prefabPredefinedArguments[randomIndex];
 										if (leo.gameobjectPrefab!=null) {
 											found=true;
 											go=Instantiate(leo.gameobjectPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-											go.name = "NotFound9GameObject";
+											go.name = "FoundRandomPredefined";
 
 										}
 									}
-								} 
+								}
+
 								if (!found) {
 									go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
 									go.name = "NotFoundDUMMY!";

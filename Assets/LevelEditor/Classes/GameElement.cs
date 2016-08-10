@@ -69,6 +69,7 @@ public class GameElement {
 
 	public float editorTileSize = 0.0f;
 	public bool editorIsGround = false;
+	public bool randomPredefineds = false;
 	// public int editorIndex = 1;
 
 	// add ons (only visual)
@@ -133,6 +134,7 @@ public class GameElement {
 
 		copyX.editorTileSize = editorTileSize;
 		copyX.editorIsGround = editorIsGround;
+		copyX.randomPredefineds = randomPredefineds;
 
 		copyX.editorRandom = editorRandom;
 		copyX.editorDisplaySize = editorDisplaySize;
