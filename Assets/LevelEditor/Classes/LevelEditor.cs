@@ -952,6 +952,9 @@ public class LevelEditor : MonoBehaviour {
 
 	void ClearLevel() {
 
+		// default settings
+		RenderSettings.fog = false;
+
 		EmptyEditorCursorPreview();
 
 		ClearElements ();
