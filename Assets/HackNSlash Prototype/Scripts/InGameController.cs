@@ -159,9 +159,10 @@ public class InGameController : GameElementBased {
 
 
 	void HandleHolyRageGUIVisualisation(){
+		if (playerS!=null) {
 		if(playerS.isInHolyRage){
 			AdjustHolyRageVisualisation();
-		}
+			}}
 	}
 
 	void HandleCheatInput(){
@@ -339,7 +340,9 @@ public class InGameController : GameElementBased {
 	}
 
 	public void AdjustMoneyVisualisation(){
-		notificationC.AdjustMoneyVisualisation(playerS.Money);
+		if (playerS!=null) {
+			notificationC.AdjustMoneyVisualisation(playerS.Money);
+		}
 	}
 		
 	public void AdjustMoneyVisualisation(float inDiff, Vector3 inPos){
@@ -352,7 +355,9 @@ public class InGameController : GameElementBased {
 	}
 
 	public void AdjustHolyRageVisualisation(){
-		notificationC.AdjustHolyRageVisualisation(playerS.holyRageEnergy);
+		if (playerS!=null) {
+			notificationC.AdjustHolyRageVisualisation(playerS.holyRageEnergy);
+		}
 	}
 
 	public void ShowInGameMessage(string inMessage, bool inCentered, float inDuration){

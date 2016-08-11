@@ -273,8 +273,8 @@ public class LevelEditor : MonoBehaviour {
 			if (strdirect.Equals("down")) direction =  new Vector3(0.0f, -speedObject*2.0f, 0.0f);
 			if (strdirect.Equals("left")) direction = new Vector3(-direction.z, 0.0f, direction.x);
 			if (strdirect.Equals("right")) direction =  new Vector3(direction.z, 0.0f, -direction.x);
-			if (strdirect.Equals("rotateforward")) { editorSelected.rotationForward = editorSelected.rotationForward + 5.0f;  isMovement= false; /* direction =  new Vector3(0.0f,0.0f,0.0f); AddEditorMessage("Not implemented for objects!"); */ }
-			if (strdirect.Equals("rotatebackward")) { editorSelected.rotationForward = editorSelected.rotationForward - 5.0f;  isMovement= false; /* direction =  new Vector3(0.0f,0.0f,0.0f); AddEditorMessage("Not implemented for objects!"); */ }
+			if (strdirect.Equals("rotateforward")) { editorSelected.rotationForward = editorSelected.rotationForward + 3.0f;  isMovement= false; /* direction =  new Vector3(0.0f,0.0f,0.0f); AddEditorMessage("Not implemented for objects!"); */ }
+			if (strdirect.Equals("rotatebackward")) { editorSelected.rotationForward = editorSelected.rotationForward - 3.0f;  isMovement= false; /* direction =  new Vector3(0.0f,0.0f,0.0f); AddEditorMessage("Not implemented for objects!"); */ }
 			if (strdirect.Equals("rotateleft")) { editorSelected.rotation = editorSelected.rotation + 5.0f; isMovement= false; }
 			if (strdirect.Equals("rotateright")) { editorSelected.rotation = editorSelected.rotation - 5.0f; isMovement= false; }
 			if (isMovement) {
@@ -1920,10 +1920,10 @@ public class LevelEditor : MonoBehaviour {
 						elem.position = new Vector3();
 					}
 				*/
-
+				 
 				// rotation 
 				Quaternion re = new Quaternion();
-				if (elem.rotation!=0.0f) {
+				if ((elem.rotation!=0.0f)||(elem.rotationForward!=0.0f)) {
 					re = Quaternion.Euler(elem.rotationForward, elem.rotation, 0);
 				}
 
@@ -6606,12 +6606,12 @@ public class LevelEditor : MonoBehaviour {
 						if ((Input.GetKey ("q"))) {
 							// scroll = scroll + 0.3f;
 							// editorSelected.rotation = editorSelected.rotation + 3.0f;
-							MoveObjectAlongEditorCamera("rotateright");
+							MoveObjectAlongEditorCamera("rotateleft");
 							UpdateElementVisual(editorSelected);
 						}
 						if ((Input.GetKey ("e"))) {
 							//							editorSelected.rotation = editorSelected.rotation - 3.0f;
-							MoveObjectAlongEditorCamera("rotateleft");
+							MoveObjectAlongEditorCamera("rotateright");
 							UpdateElementVisual(editorSelected);
 						}
 
