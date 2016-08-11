@@ -1,5 +1,15 @@
 <?php
 
+/*
+    # Reisläufer-Remote
+	Simple Store&Load Service
+
+*/
+
+$debugThis = false;
+
+$adminPassword = "----";
+
 class GameLevel {
 
 	var $id = "";
@@ -9,7 +19,7 @@ class GameLevel {
 	var $title = "";
 	var $level = 1;
 	var $argument = "";
-	var $password = "";
+	var $webpassword = "";
 	var $live = "";
 	var $created = "";
 	
@@ -35,6 +45,10 @@ class GameLevel {
  	if ($iservice=="getareaautors") $service = "getareaautors";
  	if ($iservice=="get") $service = "get";
  	if ($iservice=="set") $service = "set";
+
+ 	if ($iservice=="delete") $service = "delete";
+ 	if ($iservice=="new") $service = "new";
+
  }
  
   // echo("service: ".$service);
@@ -47,7 +61,7 @@ class GameLevel {
  $autor = "";
  $title = "";
  $level = -1;
- $ipassword = "";
+ $webpassword = "";
  $argument = "";
  $level = "-1";
  if ($service!="") {
@@ -59,7 +73,9 @@ class GameLevel {
  	$area = urlencode($iarea);
  	$iautor = "".$_REQUEST["autor"];
  	$autor = urlencode($iautor);
- 	$ipassword = urlencode("".$_REQUEST["password"]);
+ 	$ipassword = $_REQUEST["password"];
+	$webpassword = urlencode($ipassword);
+ 	
  	$ilevel = "".$_REQUEST["level"];
  	// echo($ilevel);
 	$level = urlencode($ilevel);
@@ -85,9 +101,15 @@ class GameLevel {
  
  if ($service!="") {
  
+ if ($debugThis) {
+	echo("<div style='padding-top: 30px; padding-bottom:30px'>");
+	echo("<br>service: $service");
+	echo("<br>password: $webpassword");
+	echo("</div>");
+}
  	$servername = "localhost";
 	$username = "swissme_process";
-	$password = "--------";
+	$password = "----";
 	$dbname = "swissme_processwire";
 
 	// Create connection
@@ -95,7 +117,7 @@ class GameLevel {
 	// Check connection
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
-	} 
+	}    
 
 	$sql = "SELECT * FROM gamelevel WHERE gamekey ='".$gamekey."'";
 
@@ -136,6 +158,9 @@ class GameLevel {
 				// json_decode
 				$obj = new GameLevel();
 				$obj->updateTo($row);
+				if ($obj->password!="") {
+					$obj->password = "x";
+				}
 				$arr[count($arr)] = $obj;
 			
 			}
@@ -147,8 +172,8 @@ class GameLevel {
 		$conn->close();
 	}	
 
-	if ($service=="get") {
-		$sql = "SELECT * FROM gamelevel WHERE gamekey ='".$gamekey."' AND area='".$area." AND level = '".$level."' ";
+	if ($service=="get") {  
+		$sql = "SELECT * FROM gamelevel WHERE gamekey ='".$gamekey."' AND area='".$area."' AND autor = '".$autor."' AND level = '".$level."' ORDER BY id DESC ";
 		// echo($sql);
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0) {
@@ -160,8 +185,14 @@ class GameLevel {
 				// json_decode
 				$obj = new GameLevel();
 				$obj->updateTo($row);
+				if ($obj->password!="") {
+					$obj->password = "x";
+				}
 				$arr[count($arr)] = $obj;
-				echo($obj->argument);
+				// version 1
+				// echo($obj->argument);
+				// version 2 
+				echo(URLDecode($obj->argument));
 				break;
 			}
 			$strJSON = json_encode( $arr );
@@ -174,16 +205,80 @@ class GameLevel {
 	} 
 	
 	if ($service=="set") {
+		$passwordLevel = ""; 
+		// get a level of this set ... is there a password?
+		$sql = "SELECT * FROM gamelevel WHERE gamekey ='".$gamekey."' AND area='".$area."' AND autor = '".$autor."' ORDER BY id DESC ";
+		echo($sql);
+		$result = $conn->query($sql);
+		if ($result->num_rows > 0) {
+			$arr =  array();
+			while($row = $result->fetch_assoc()) { 
+			$obj = new GameLevel();
+				$obj->updateTo($row);
+				$passwordLevel = $obj->password;
+				break;
+			}
+		}
+		echo("passwordLevel: ".$passwordLevel);
+		// password level 
+		$pass = "";
+		if ($passwordLevel!="") {
+			if ($passwordLevel==$adminPassword || $passwordLevel==$webpassword) {
+				$pass = $webpassword;
+				echo("correct password");
+			} else {
+				// error ... here
+				echo("[{\"result\":\"error\"},{\"comment\":\"not correct password\"]");
+				exit();
+			}			
+		}
+		
 		// replace ...
+		$argument = URLEncode($argument);
 		$sql = "insert into gamelevel (gamekey,area,autor,level,argument) values ('".$gamekey."','".$area."','".$autor."','".$level."','".$argument."') ";
-		echo("SQL: "$sql);   
-		echo("[{\"result\":\"done\"}]");
-		echo($argument);
+		// echo("SQL: ".$sql);   
+		// echo($argument);
 		$conn->query($sql);
+		echo("[{\"result\":\"done\"}]");
+		// do the update 
+		// $pass
+		// update passwords 
+		if ($webpassword!="") {
+			$sql = "update gamelevel set password = '".$webpassword."' where gamekey = '".$gamekey."' AND area = '".$area."' AND autor = '".$autor."' ";
+			echo($sql);
+			$conn->query($sql);  
+	 	}
 	 	$conn->close();   
+	 	echo("[{\"result\":\"done\"},{\"comment\":\"all fine\"]");
 		exit();
 	}	
+	
+	// admin 
+	// echo("<br>".urlencode($adminPassword)."==$password");
+	//if ($autor=="admin") {
+	if (urlencode($adminPassword)==$webpassword) {
+		 if ($service=="delete") {
+		 	// delete all ...
+		 	$sql = "delete from gamelevel where autor = '".urlencode($autor)."' AND level='".urlencode($level)."' ";
+			// echo("SQL: ".$sql);   
+			$conn->query($sql);
+		 	echo("[{\"result\":\"done\"}]");
+		 	exit();
+		 }
+		 if ($service=="new") {
+		 	$sql = "insert into gamelevel (gamekey,area,autor,level,argument) values ('".$gamekey."','".$area."','default','".$level."','[]') ";
+			// echo("SQL: ".$sql);   
+			echo("[{\"result\":\"done\"}]");
+			// echo($argument);
+			$conn->query($sql);
+		 }
 
+	} else {
+		echo("[{\"result\":\"error\"},{\"comment\":\"not correct login\"]");
+		 	exit();
+	}
+	// } 
+// echo("ysdfxxxdf");
 	
  }
 
