@@ -1010,6 +1010,9 @@ public class LevelEditor : MonoBehaviour {
 		// sky
 		editorPrefabY = AddGameElementAtName ("sky","1200", new Vector3(4.0f,2.0f,4.0f), "SKY");
 
+		// fog
+		editorPrefabY = AddGameElementAtName ("weather","fog", new Vector3(4.0f,2.0f,4.0f), "FOG");
+
 	}
 
 	void SetLevel( int iactualLevel ) {
@@ -1276,6 +1279,7 @@ public class LevelEditor : MonoBehaviour {
 
 	public LevelElement[] PathLevelElements = { new LevelElement ("tour"), new LevelElement ("waypoint"),  };
 
+	public LevelElement[] WeaponLevelElements = {  };
 	public LevelElement[] ItemsLevelElements = { new LevelElement ("meat") };
 	public LevelElement[] TriggerLevelElements = { new LevelElement ("playernotifcation") };
 
@@ -1363,6 +1367,9 @@ public class LevelEditor : MonoBehaviour {
 		RegisterLevelElements( "path", PathLevelElements );
 
 		RegisterLevelElements( "item", ItemsLevelElements );
+		RegisterLevelElements( "weapon", WeaponLevelElements );
+
+
 		RegisterLevelElements( "trigger", TriggerLevelElements );
 
 		RegisterLevelElements( "action", ActionElements );
