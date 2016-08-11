@@ -3166,13 +3166,14 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	void HandleMouseDownToCreate(){
-		HandleMouseDownToCreate( true );
+		HandleMouseDownToCreate( "mousepointer" );
 	}
 
-	void HandleMouseDownToCreate( bool createAtMousePosition ){
+	void HandleMouseDownToCreate( string createAtType ){
+		
 		if (!editorTool.Equals ("CREATE"))return;
 
-		if (createAtMousePosition) if (CheckMouseInEditor()) return;
+		if (createAtType.Equals("mousepointer")) if (CheckMouseInEditor()) return;
 
 		//	if (true) {
 
@@ -3249,17 +3250,42 @@ public class LevelEditor : MonoBehaviour {
 				}
 			}
 
-			if (!createAtMousePosition) {
+			// rotation
+			arg.rotation = editorDegree;
+
+			if (createAtType.Equals("null")) {
 				arg.position.x=0.0f;
 				arg.position.y=0.0f;
 				arg.position.z=0.0f;
 				UpdateElementVisual(arg);
 			}
+			if (createAtType.Equals("camera")) {
+				GameObject container=GameObject.Find ("editorCameraContainer");
+				GameObject editorcamera=GameObject.Find ("editorcamera");
 
-			arg.name = createName;
+				arg.position.x=container.transform.position.x;
+				arg.position.y=container.transform.position.y;
+				arg.position.z=container.transform.position.z;
+				// and transform
+				arg.rotation = 0 + container.transform.eulerAngles.y; //  - 180; 
+				arg.rotationForward = 0 + editorcamera.transform.eulerAngles.x;
 
-			// rotation
-			arg.rotation = editorDegree;
+				// Debug.Log("HandleMouseDownToCreate('camera) // "+arg.rotation; // +" "+arg.rotationForward);
+
+				UpdateElementVisual(arg); 
+			}
+
+
+			arg.name = createName; // or in case 
+
+
+
+			// clear ... add ...
+			if (arg.name.Equals("")) {
+				// add default !!!
+
+			}
+
 			UpdateElementVisual(arg);
 
 			// tool: add randomness
@@ -4844,6 +4870,7 @@ public class LevelEditor : MonoBehaviour {
 				inspectorXTmp = 10;
 
 
+
 			}
 
 
@@ -5027,9 +5054,33 @@ public class LevelEditor : MonoBehaviour {
 							inspectorYTmp = inspectorYTmp + 22; 
 							// inspectorYTmp = inspectorYTmp + 10;
 
+							inspectorXTmp = 10;
+
+							// take from camera
+							if (GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 180, 20), "TAKE FROM CAMERA", editorButtonStyle)) {
+								GameObject container=GameObject.Find ("editorCameraContainer");
+								GameObject editorcamera=GameObject.Find ("editorcamera");
+
+								editorSelected.position.x=container.transform.position.x;
+								editorSelected.position.y=container.transform.position.y;
+								editorSelected.position.z=container.transform.position.z;
+								// and transform
+								editorSelected.rotation = 0 + container.transform.eulerAngles.y; //  - 180; 
+								editorSelected.rotationForward = 0 + editorcamera.transform.eulerAngles.x;
+
+								// Debug.Log("HandleMouseDownToCreate('camera) // "+arg.rotation; // +" "+arg.rotationForward);
+
+								UpdateElementVisual(editorSelected); 
+								AddToEditorHistory("POSITION TAKEN FROM CAMERA");
+							}
+
+
+							inspectorYTmp = inspectorYTmp + 24;
+							inspectorXTmp = 10;
+
 							inspectorYTmp = inspectorYTmp + 10; 
 
-							inspectorXTmp = 10;
+
 
 							if (GUI.Button (new Rect(inspectorXTmp,inspectorYTmp,200,20),"TYPE: "+editorSelected.type+"/"+editorSelected.subtype,editorButtonStyle)) {
 
@@ -5186,10 +5237,16 @@ public class LevelEditor : MonoBehaviour {
 				inspectorYTmp = inspectorYTmp + 2;
 				inspectorXTmp = 10;
 
-				bool buttonClickedX = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 180, 20), "CREATE OBJECT AT (0,0,0)", editorButtonStyle);
+				bool buttonClickedX = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 140, 20), "CREATE AT NULL", editorButtonStyle);
 				if (buttonClickedX) {
-					HandleMouseDownToCreate( false );
+					HandleMouseDownToCreate( "null" );
 				}
+				inspectorXTmp = inspectorXTmp + 142;
+				buttonClickedX = GUI.Button (new Rect (inspectorXTmp , inspectorYTmp, 140, 20), "CREATE AT CAMERA", editorButtonStyle);
+				if (buttonClickedX) {
+					HandleMouseDownToCreate( "camera"  );
+				}
+				inspectorXTmp = inspectorXTmp + 142;
 
 			}
 
