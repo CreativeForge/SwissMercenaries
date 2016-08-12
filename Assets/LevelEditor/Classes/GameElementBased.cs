@@ -42,7 +42,7 @@ public class GameElementBased : MonoBehaviour {
 	// after set game element!
 	public virtual void OnGameElementInit() {
 
-		Debug.Log("GameElementBased.OnGameElementInit()");
+		// Debug.Log("GameElementBased.OnGameElementInit()");
 		OnGameElementInitPathFollowing();
 
 	}

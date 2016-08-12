@@ -13,7 +13,7 @@ public class Fog : GameElementBased {
 			RenderSettings.fogDensity = 0.0075f;
 			RenderSettings.fogStartDistance = 300.0f;
 			RenderSettings.fogColor = Color.black;
-			Debug.Log("Fog.FixedUpdate() // STARTED");
+			// Debug.Log("Fog.FixedUpdate() // STARTED");
 			}}
 	}
 }

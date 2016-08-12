@@ -1200,6 +1200,20 @@ public class LevelEditor : MonoBehaviour {
 
 	}
 
+	// update labels!
+	void EditorUpdateArgumentLabels(GameElement gobj) {
+		if (gobj!=null) {
+			GameElement prefabTemplateX = GetElementType (gobj.type,gobj.subtype);
+			if (prefabTemplateX!=null) {
+				gobj.guiLabel = prefabTemplateX.guiLabel;
+				gobj.guiDescription = prefabTemplateX.guiDescription;
+				gobj.guiBoolArgument = prefabTemplateX.guiBoolArgument;
+			}
+		}
+	}
+
+
+
 	// create
 	public GameElement CreateElementTypeAt ( string elementArea, string elementSubArea, Vector3 position  ) {
 
@@ -1259,6 +1273,8 @@ public class LevelEditor : MonoBehaviour {
 
 
 	// specific levelElements
+
+
 	public LevelElement[] BaseLevelElements = { new LevelElement ("town"), new LevelElement ("country") , new LevelElement ("test")  };
 	public LevelElement[] LightLevelElements= {  new LevelElement ("light")   };
 	public LevelElement[] SkyLevelElements = {    };
@@ -1289,6 +1305,8 @@ public class LevelEditor : MonoBehaviour {
 	public LevelElement[] WeatherElements = { new LevelElement ("light") };
 
 	public LevelElement[] CamCutElements = {  };
+	public LevelElement[] GUIMenuElements = {  };
+
 
 	public LevelElement[] RemarkElements = { new LevelElement ("comment") }; // yellow
 	public LevelElement[] EvaluationElements = { new LevelElement ("death") }; // 
@@ -1378,6 +1396,7 @@ public class LevelEditor : MonoBehaviour {
 		RegisterLevelElements( "weather", WeatherElements );
 
 		RegisterLevelElements( "camcut", CamCutElements );
+		RegisterLevelElements( "guimenu", GUIMenuElements );
 
 		RegisterLevelElements( "remark", RemarkElements );
 		RegisterLevelElements( "evaluation", EvaluationElements, false ); // mark this (user should no insert this manually)
@@ -2251,8 +2270,16 @@ public class LevelEditor : MonoBehaviour {
 	public void DeactivateElement( GameElement elem ) {
 		if (elem != null) {
 			elem.release = "wait";
-			if (elem.gameObject != null)
+			if (elem.gameObject != null) {
 				Destroy (elem.gameObject);
+			}
+		}
+	}
+
+	public void ActivateElement( GameElement elem ) {
+		if (elem!=null) {
+			elem.release = "";
+			UpdateElementVisual (elem);
 		}
 	}
 
@@ -5271,23 +5298,39 @@ public class LevelEditor : MonoBehaviour {
 				// todo: check for change!
 
 				// trigger (add some keys)
-				if (editorSelected!=null)
-				if (editorSelected.type.Equals("trigger")) {
-					GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,40,24),"Event:");
-					editorSelected.strevent=GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),editorSelected.strevent);
-					inspectorYTmp=inspectorYTmp+22;
+				if (editorSelected!=null) {
 
-					GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,40,24),"Target:");
-					editorSelected.target=GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),editorSelected.target);
-					inspectorYTmp=inspectorYTmp+22;
+					// use the original labels!
+					EditorUpdateArgumentLabels(editorSelected);
 
-					GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,40,24),"After:");
-					string strTimed =GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),""+editorSelected.timed);
-					if (!strTimed.Equals(""+editorSelected.timed)) {
-						editorSelected.timed  =   float.Parse( strTimed );
-						AddToEditorHistory("after")	;					
+					bool showExtendedNotificationInput = false;
+					if (editorSelected.type.Equals("trigger")) { 
+						if (editorSelected.subtype.Equals("notification")) { showExtendedNotificationInput = true; }
+						if (editorSelected.subtype.Equals("switchnotification")) { showExtendedNotificationInput = true; }
+						if (editorSelected.subtype.Equals("switcher")) { showExtendedNotificationInput = true; }
 					}
-					inspectorYTmp=inspectorYTmp+22;
+					if (editorSelected.type.Equals("action")) { 
+						if (editorSelected.subtype.Equals("notification")) { showExtendedNotificationInput = true; }
+						if (editorSelected.subtype.Equals("repeaternotification")) { showExtendedNotificationInput = true; }
+					}
+
+					if (showExtendedNotificationInput) {
+						GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,40,24),"Event:");
+						editorSelected.strevent=GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),editorSelected.strevent);
+						inspectorYTmp=inspectorYTmp+22;
+
+						GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,40,24),"Target:");
+						editorSelected.target=GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),editorSelected.target);
+						inspectorYTmp=inspectorYTmp+22;
+
+						GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,40,24),"After:");
+						string strTimed =GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),""+editorSelected.timed);
+						if (!strTimed.Equals(""+editorSelected.timed)) {
+							editorSelected.timed  =   float.Parse( strTimed );
+							AddToEditorHistory("after")	;					
+						}
+						inspectorYTmp=inspectorYTmp+22;
+					}
 				}
 
 				if (editorSelected!=null) {	
@@ -6774,6 +6817,11 @@ public class LevelEditor : MonoBehaviour {
 			}
 			if (gelement.type.Equals ("action")) {
 				if (gelement.subtype.Equals ("notification")) {
+					checkType="notification";
+				}
+			}
+			if (gelement.type.Equals ("action")) {
+				if (gelement.subtype.Equals ("repeaternotification")) {
 					checkType="notification";
 				}
 			}
