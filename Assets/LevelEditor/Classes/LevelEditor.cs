@@ -442,7 +442,7 @@ public class LevelEditor : MonoBehaviour {
 		error = false;
 		remoteSelection = false; 
 		// 		LoadLevel (actualLevel);
-		SetLevel(1);
+		SetLevel(0);
 	}
 	void RemoteDownload() {
 		error = false;
@@ -645,7 +645,7 @@ public class LevelEditor : MonoBehaviour {
 		loading = true;
 		loadingLabel = "DOWNLOADING LEVELS ";
 
-		for (int i=1;i<maxLevel;i++) {
+		for (int i=0;i<maxLevel;i++) {
 			loadingLabel = "DOWNLOADING LEVEL "+i+"/"+maxLevel;
 			string url = "http://www.swissmercenariesgame.com/services.php?service=get&area="+ WWW.EscapeURL(remoteAreaEdit)+"&autor="+WWW.EscapeURL(remoteAutorEdit)+"&level="+WWW.EscapeURL(""+i);
 			Debug.Log("LevelEditor.RemoteDownloadsDoGet() // url = "+url);
@@ -674,7 +674,7 @@ public class LevelEditor : MonoBehaviour {
 
 		loading = false;
 		remoteSelection = false; 
-		SetLevel(1);
+		SetLevel(0);
 	}
 
 	// remote upload
@@ -700,7 +700,7 @@ public class LevelEditor : MonoBehaviour {
 			loadingLabel = "CREATING EMPTY LEVELS FOR AUTOR ";
 		}
 
-		for (int i=1;i<maxLevel;i++) {
+		for (int i=0;i<maxLevel;i++) {
 			// only one level (very dirty version .-)
 			if (levelIndex!=-1) {
 				if (levelIndex!=i) {
@@ -801,7 +801,7 @@ public class LevelEditor : MonoBehaviour {
 		loading = true;
 		loadingLabel = "DELETING LEVELS";
 
-		for (int i=1;i<maxLevel;i++) {
+		for (int i=0;i<maxLevel;i++) {
 			loadingLabel = "DELETING LEVELS "+i+"/"+maxLevel;
 			string url = "http://www.swissmercenariesgame.com/services.php?service=delete&password="+WWW.EscapeURL(editorPassword)+"&area="+ WWW.EscapeURL(remoteAreaEdit)+"&autor="+WWW.EscapeURL(remoteAutorEdit)+"&level="+WWW.EscapeURL(""+i);
 			Debug.Log("LevelEditor.RemoteDeleteDo() // url = "+url);
@@ -3087,7 +3087,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		// start with level 1
-		SetLevel (1);
+		SetLevel (0);
 
 
 		// check for playerId
@@ -4458,7 +4458,7 @@ public class LevelEditor : MonoBehaviour {
 
 
 				// UPLOAD ALL
-					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), "UPLOAD LEVELS 1-"+(maxLevel-1), editorButtonActiveStyleWeb)) {
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), "UPLOAD LEVELS 0-"+(maxLevel-1), editorButtonActiveStyleWeb)) {
 					// SAVE IT ... 
 					RemoteUpload();
 				}
@@ -4495,7 +4495,7 @@ public class LevelEditor : MonoBehaviour {
 			toolsXTmp = toolsXTmp + 60;
 
 			// levels
-			for (int i=1; i<maxLevel; i++) {
+			for (int i=0; i<maxLevel; i++) {
 				string text = "" + i;
 				// actualLevel
 				GUIStyle gui = editorButtonStyle;
@@ -4538,7 +4538,7 @@ public class LevelEditor : MonoBehaviour {
 
 			if (flagShowSaveAs) {
 				// levels
-				for (int i=1; i<maxLevel; i++) {
+				for (int i=0; i<maxLevel; i++) {
 					string text = "" + i;
 					// actualLevel
 					GUIStyle gui = editorButtonStyle;
@@ -5308,6 +5308,8 @@ public class LevelEditor : MonoBehaviour {
 						if (editorSelected.subtype.Equals("notification")) { showExtendedNotificationInput = true; }
 						if (editorSelected.subtype.Equals("switchnotification")) { showExtendedNotificationInput = true; }
 						if (editorSelected.subtype.Equals("switcher")) { showExtendedNotificationInput = true; }
+						if (editorSelected.subtype.Equals("anykeynotification")) { showExtendedNotificationInput = true; }
+
 					}
 					if (editorSelected.type.Equals("action")) { 
 						if (editorSelected.subtype.Equals("notification")) { showExtendedNotificationInput = true; }

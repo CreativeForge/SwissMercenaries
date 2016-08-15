@@ -29,6 +29,14 @@ public class LanguageCenter : MonoBehaviour {
 
 			*/
 
+
+
+		}
+
+		// "abc" or
+		void Text( string textOrAt ) {
+
+
 		}
 
 
