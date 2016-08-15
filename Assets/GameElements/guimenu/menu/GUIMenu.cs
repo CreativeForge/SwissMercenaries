@@ -14,6 +14,20 @@ public class GUIMenu : GameElementBased {
 	string[] arrTexts;
 	string[] arrTargets;
 
+	string hoveredMenupoint = "";
+
+	// mouseover or ! selection
+	void HoverMenuPoint( string keypoint ) {
+
+	}
+	// activate menupoint
+	void ActivateMenuPoint( string keypoint ) {
+		
+	}
+
+
+	ArrayList arrButtons = new ArrayList();
+
 	// Update is called once per frame
 	void FixedUpdate () {
 
@@ -30,20 +44,26 @@ public class GUIMenu : GameElementBased {
 					arrTexts = gameElement.argument.Split(',');
 					arrTargets = gameElement.argumentsub .Split(',');
 
+					float startPointX = -200.0f;
+					float startPointY = 140.0f;
 					for (int z=0;z<arrMenuPoints.Length;z++) {
 						// do it
 						string strMenupoint = arrMenuPoints[z];
 						GameObject mp=Instantiate(menuPoint, new Vector3(0.0f,0.0f,0.0f), new Quaternion()) as GameObject;
 						GUIMenuPoint gmp = mp.GetComponent<GUIMenuPoint>();
+						RectTransform rt = mp.GetComponent<RectTransform>();
+						rt.anchoredPosition = new Vector3(startPointX, startPointY);
+						// .SetSize(size);
 						gmp.SetText(""+strMenupoint);
 						mp.name = "MENUFOUND"+strMenupoint;
 						// add ..
 						mp.transform.SetParent(menuCanvas.transform, false);
+						// arrButtons
+						arrButtons.Add(mp);
+
+						startPointY = startPointY - 70.0f;
 
 
-						RectTransform rt = mp.GetComponent<RectTransform>();
-						rt.anchoredPosition = new Vector3(-200.0f,140.0f+z*-70.0f);
-							// .SetSize(size);
 					}
 				}
 
