@@ -2,21 +2,25 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class GUIMenuText : GameElementBased {
+public class CamCutPicture : GameElementBased {
 
 	bool started = false;
 
-	public Text scriptText; 
+	/*
+	 * public Text scriptText; 
 	public Text scriptTextShadow; 
+	*/
 
 	// Update is called once per frame
 	void FixedUpdate () {
 
 		if (gameElement!=null) {
 			if (!started) {
-				started = true;
+				/*
+				 * started = true;
 				scriptText.text = gameElement.argument;
 				scriptTextShadow.text = gameElement.argument;
+				*/
 			} else {
 			}
 		}

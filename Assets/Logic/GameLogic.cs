@@ -192,7 +192,11 @@ public class GameLogic : MonoBehaviour {
 			// Debug.LogWarning("can't load _LevelEditor");
 			//}
 
+			// start now the game ...
+			// 
 
+			// ...
+			
 	}
 	public void LoadGameNextLevel( ) {
 

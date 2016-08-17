@@ -23,7 +23,7 @@ public class RepeaterActivatorMorph : GameElementBased {
 		float distCovered = (Time.time - startTime) * speed;
 		float fracJourney = distCovered / journeyLength;
 		transform.position = Vector3.Lerp(startMarker.position, endMarker.position, fracJourney);
-		Debug.Log("RepeaterActivatorMorph.UpdateMorph() journeyLength="+journeyLength);
+		//Debug.Log("RepeaterActivatorMorph.UpdateMorph() journeyLength="+journeyLength);
 	}
 
 	string actualName = "";

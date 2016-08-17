@@ -65,6 +65,18 @@ public class GameElement {
 	public float size = 1.0f;
 //	public Vector3 size=new Vector3(1.0f,1.0f,1.0f); // * not yet used
 
+	/*
+	 * Ingame
+	 * 
+	 * */
+	// coming from level
+	public string ingameSource = "self"; // "all" - extern level ... for example 
+
+	/*
+	 * Editor Things 
+	 * 
+	 * */
+
 	public float editorDisplaySize = 1.0f;
 
 	public float editorTileSize = 0.0f;
@@ -131,6 +143,8 @@ public class GameElement {
 		copyX.guiBoolArgument = guiBoolArgument;
 		copyX.guiDescription = guiDescription;
 		copyX.guiLabel = guiLabel;
+
+		copyX.ingameSource = ingameSource;
 
 		copyX.editorTileSize = editorTileSize;
 		copyX.editorIsGround = editorIsGround;

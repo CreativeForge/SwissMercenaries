@@ -81,6 +81,33 @@ public class LevelEditor : MonoBehaviour {
 	// float stateSpecialEditorScrollY=0.0f;
 
 	/*
+	 * INGAME
+	 * 
+	 * */
+	bool debugIngame = true;
+	public bool GetIngameDebug() {
+		return debugIngame;
+	}
+	float ingameStartTime = 0.0f;
+	// -1.0f loading ... | >0.0 ingame
+	public float GetIngameTime() {
+		if (ingameStartTime==-1.0f) {
+			return -1.0f;
+		}
+		if (ingameStartTime>=0.0f) {
+			return Time.time-ingameStartTime;
+		}
+		return -1.0f;
+	}
+	public void SetIngameTimeToLoading() {
+		ingameStartTime = -1.0f;
+	}
+	public void StartIngameTime() {
+		ingameStartTime = Time.time;
+	}
+
+
+	/*
 	 * editor
 	 * 
 	 * */
@@ -1128,6 +1155,19 @@ public class LevelEditor : MonoBehaviour {
 				if (gelement.subtype.Equals (elementSubArea)) {
 					count++;
 				}
+			}
+
+		}
+		return count;
+
+	}
+
+	public int CountElementsType( string elementArea ) {
+		int count = 0;
+		for (int a=0; a<arrLevel.Count; a++) {
+			GameElement gelement = (GameElement)arrLevel [a];
+			if (gelement.type.Equals (elementArea)) {
+					count++;
 			}
 
 		}
@@ -2309,6 +2349,63 @@ public class LevelEditor : MonoBehaviour {
 	}
 	*/
 
+	public ArrayList GetGameElementsByTypeAndSub( string type, string typesub ) {
+
+		ArrayList arr = new ArrayList ();
+
+		for (int i=0; i<arrLevel.Count; i++) {
+			GameElement gx=(GameElement) arrLevel[i];
+			if (gx.type.Equals (type)) {
+				if ((gx.subtype.Equals (typesub))||(typesub.Equals ("*"))) {
+					arr.Add (gx);
+				}
+			}
+		}
+
+		return arr;
+	}
+
+	public ArrayList GetGameElementsByTypeAndSubTimeSorted(  string type, string typesub ) {
+		ArrayList arr = GetGameElementsByTypeAndSub(  type,  typesub );
+		arr = ArraySortByTimed( arr );
+		return arr;
+	}
+
+	public ArrayList GetAllGameElementsByTypeAndSubTimeSorted( ) {
+		ArrayList arr = GetGameElementsByTypeAndSub(  "camcut",  "caption" );
+
+			ArrayList arrAdd = GetGameElementsByTypeAndSub(  "camcut",  "picture" );
+			for (int z=0;z<arrAdd.Count;z++) {
+				GameElement ge = (GameElement) arrAdd[z];
+				arr.Add(ge);
+			}
+
+		arr = ArraySortByTimed( arr );
+
+		return arr;
+	}
+
+		public ArrayList ArraySortByTimed( ArrayList arr ) {
+
+		if (arr.Count==0) return arr;
+			
+			GameElement a;
+			GameElement b;
+
+			for (int o = 0; o<arr.Count; o++) {
+				for (int oo = 0; oo<arr.Count; oo++) {
+					a =	(GameElement) arr[o];
+					b =	(GameElement) arr[oo];
+					if (a.timed<b.timed) {
+						arr[o] = b;
+						arr[oo] = a;
+					}
+				}
+			}
+
+			return arr;
+		}
+
 	public ArrayList GetGameElementsByNotCleanName( ) {
 
 		ArrayList arr = new ArrayList ();
@@ -2765,6 +2862,9 @@ public class LevelEditor : MonoBehaviour {
 
 	void LoadLevel( int level  ) {
 
+		// ingame time (if neede)
+		SetIngameTimeToLoading();
+
 		SetSelectedElement(null);
 
 		EmptyEditorCursorPreview();
@@ -2784,6 +2884,9 @@ public class LevelEditor : MonoBehaviour {
 		if (gameLogic && gameLogic.modal == GameLogic.GameLogicModal.Editor) {
 			AddToEditorHistory("LoadLevel");
 		}
+
+		// IngameTime
+		StartIngameTime();
 	}
 
 	void LoadEvaluationLevels( ) {
@@ -2889,8 +2992,23 @@ public class LevelEditor : MonoBehaviour {
 			// save it now ... 
 			SaveLevel ( 2001 );
 
+			// Game Start
+			// ok - now OnGameStart ...
+			GameElement gelement;
+			for (int a=0;a<arrLevel.Count;a++) {
+				gelement=(GameElement)arrLevel[a];
+				if (gelement.gameObject!=null) {
+					GameElementBased geb = gelement.gameObject.GetComponent<GameElementBased>();
+					// Debug.Log ("---"+trb.ToString ());
+					if (geb!=null) {
+						geb.OnGameStart( );
+					}
+				}
+			}
+
+
 		} catch( Exception e ) {
-			Debug.LogWarning("_LevelEditor.LoadGameLevel() // CouldNotLoadLevel "+level );
+			Debug.LogWarning("_LevelEditor.LoadGameLevel() // CouldNotLoadLevel "+level + " --- "+e );
 		}
 
 		// update visualisation
@@ -3392,6 +3510,13 @@ public class LevelEditor : MonoBehaviour {
 				SetSelectedElement( null );
 				gameLogic.SetGameState( GameLogic.GameLogicModal.Running );
 
+			}
+
+			// ingame 
+			if (debugIngame) {
+				float igt = GetIngameTime();
+				igt = (int)(igt*10.0f)/10.0f;
+				GUI.Label (new Rect (Screen.width - 160, 24, 80, 20), "L:"+actualLevel+" T:"+igt, guixt);
 			}
 
 			// EDITOR
@@ -5333,6 +5458,24 @@ public class LevelEditor : MonoBehaviour {
 						}
 						inspectorYTmp=inspectorYTmp+22;
 					}
+
+
+					// timed seperate
+					bool timedSeperate = false;
+					if (editorSelected.type.Equals("camcut")) { 
+						if (editorSelected.subtype.Equals("picture")) { timedSeperate = true; }
+						if (editorSelected.subtype.Equals("caption")) { timedSeperate = true; }
+					}
+					if (timedSeperate) {
+						// show it ...
+						GUI.Label (new Rect(inspectorXTmp,inspectorYTmp,40,24),"Timed:");
+						string strTimed =GUI.TextField (new Rect(inspectorXTmp+42,inspectorYTmp,160,20),""+editorSelected.timed);
+						if (!strTimed.Equals(""+editorSelected.timed)) {
+							editorSelected.timed  =   float.Parse( strTimed );
+							AddToEditorHistory("after")	;					
+						}
+						inspectorYTmp=inspectorYTmp+22;
+					}
 				}
 
 				if (editorSelected!=null) {	
@@ -5868,40 +6011,117 @@ public class LevelEditor : MonoBehaviour {
 			Rect selectionDialogeVisual = new Rect(0,0,0,0);
 			GameElement[] selectionAffectedElements = {};
 */
-				int selectionX = Screen.width -140;
+				int selectionX = Screen.width -220;
 				int selectionY = (int) (Screen.height * 0.2f);
 				int selectionYStart = selectionY;
 
 				selectionDialogeVisual.x = selectionX;
 				selectionDialogeVisual.y = selectionY;
-				selectionDialogeVisual.width = 140;
+				selectionDialogeVisual.width = 220;
 
 
 				// ADD IMPORTANT =NAMED THINGS ...
-
-
-				// show [EDIT][SELECTION]
+				// SELECTION
+				GUIStyle exo = editorButtonStyle;
+				if (selectFilter.Equals("")) exo = editorButtonActiveStyle;
 				ArrayList arrNames = GetGameElementsByNotCleanName();
-				GUI.Button (new Rect ( selectionX, selectionY, 140, 20), "NAMES "+arrNames.Count+"/"+arrLevel.Count, editorButtonActiveStyle);
-				selectionY = selectionY + 24;
-				for (int i=0; i<arrNames.Count; i++) {
-					GameElement gae = (GameElement)arrNames [i];
-					string text = "" + gae.name;
-					if (gae.name.Equals("")) {
-						text = text + "("+gae.subtype+")";
-					}
-					GUIStyle guix = editorButtonStyleNotActive;
-					if (editorSelected==gae) guix = editorButtonActiveStyle;
-					bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 140, 20), ""+text+"", guix);
-					if (buttonClicked) {
-						SetTool("EDIT");
-						SetSelectedElement(gae);
+				if (GUI.Button (new Rect ( selectionX, selectionY, 220, 20), "NAMES "+arrNames.Count+"/"+arrLevel.Count, exo)) {
+					selectFilter = "";
+				}
+				selectionY = selectionY + 22;
+				exo = editorButtonStyle;
+				if (selectFilter.Equals("selection")) exo = editorButtonActiveStyle;
+				if (GUI.Button (new Rect ( selectionX, selectionY, 220, 20), "SELECTION ("+filterType+"/"+filterTypeSub+")", exo)) {
+					selectFilter = "selection";
+				}
+				selectionY = selectionY + 22;
 
-					}
+				exo = editorButtonStyle;
+				if (selectFilter.Equals("timed")) exo = editorButtonActiveStyle;
+				if (GUI.Button (new Rect ( selectionX, selectionY, 220, 20), "TIMED ", exo)) {
+					selectFilter = "timed";	
+				}
+				selectionY = selectionY + 22;
+				exo = editorButtonStyle;
+				if (selectFilter.Equals("language")) exo = editorButtonActiveStyle;
+				if (GUI.Button (new Rect ( selectionX, selectionY, 220, 20), "LANGUAGE ", exo)) {
+					selectFilter = "language";	
+				}
+				selectionY = selectionY + 22;
+				selectionY = selectionY + 6;
+				// show [EDIT][SELECTION]
+				// types ...
+
+				// selectionY = selectionY + 24;
+				if (selectFilter.Equals("")) {
+					for (int i=0; i<arrNames.Count; i++) {
+						GameElement gae = (GameElement)arrNames [i];
+						string text = "" + gae.name;
+						if (gae.name.Equals("")) {
+							text = text + "("+gae.subtype+")";
+						}
+						GUIStyle guix = editorButtonStyleNotActive;
+						if (editorSelected==gae) guix = editorButtonActiveStyle;
+						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 220, 20), ""+text+"", guix);
+						if (buttonClicked) {
+							SetTool("EDIT");
+							SetSelectedElement(gae);
+
+						}
+						selectionY = selectionY + 20;
+						if (i>10) break;
+					} 
 					selectionY = selectionY + 20;
-					if (i>10) break;
 				} 
-				selectionY = selectionY + 20;
+				// selection
+				if (selectFilter.Equals("selection")) { 
+					ArrayList arrList = GetGameElementsByTypeAndSub(filterType,filterTypeSub);
+					for (int i=0; i<arrList.Count; i++) {
+						GameElement gae = (GameElement)arrList [i];
+						string text = "" + gae.name;
+						if (gae.name.Equals("")) {
+							// text = text + "("+gae.subtype+")";
+						}
+						GUIStyle guix = editorButtonStyleNotActive;
+						if (editorSelected==gae) guix = editorButtonActiveStyle;
+						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 220, 20), ""+text+" ("+gae.type+"/"+gae.subtype+")", guix);
+						if (buttonClicked) {
+							SetTool("EDIT");
+							SetSelectedElement(gae);
+
+						}
+						selectionY = selectionY + 20;
+						if (i>10) break;
+					} 
+					selectionY = selectionY + 20;
+				}
+				// timed?
+				if (selectFilter.Equals("timed")) { 
+					ArrayList arrList = GetAllGameElementsByTypeAndSubTimeSorted();
+					for (int i=0; i<arrList.Count; i++) {
+						GameElement gae = (GameElement)arrList [i];
+						string text = "" + gae.name;
+						if (gae.name.Equals("")) {
+							// text = text + "("+gae.subtype+")";
+						}
+						GUIStyle guix = editorButtonStyleNotActive;
+						if (editorSelected==gae) guix = editorButtonActiveStyle;
+						string timey = "";
+						timey = "["+gae.timed+"]";
+						string textzz = ""+gae.argument;
+						if (textzz.Length>5) textzz = textzz.Substring(0,5);
+						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, 220, 20), timey+" "+text+" "+textzz+"("+gae.type+"/"+gae.subtype+")", guix);
+						if (buttonClicked) {
+							SetTool("EDIT");
+							SetSelectedElement(gae);
+
+						}
+						selectionY = selectionY + 20;
+						if (i>10) break;
+					} 
+					selectionY = selectionY + 20;
+				}
+
 
 
 				// nearbyRect
@@ -6032,7 +6252,7 @@ public class LevelEditor : MonoBehaviour {
 
 			GUIStyle xyz = editorButtonStyleNotActive;
 			if (filterType.Equals("*"))  xyz = editorButtonActiveStyle;
-			if (GUI.Button (new Rect(0,filterY,60,20),"VIEW ALL" ,xyz)) {
+			if (GUI.Button (new Rect(0,filterY,60,20),"V.ALL" ,xyz)) {
 				filterType = "*";
 			}
 
@@ -6047,10 +6267,14 @@ public class LevelEditor : MonoBehaviour {
 				if (unique.type.Equals(filterType)) {
 					guix = editorButtonActiveStyle;
 				}
-				bool buttonClicked = GUI.Button (new Rect ( filterX + i * 50, filterY, 46, 20), ""+text+"", guix);
+				int acc = CountElementsType(unique.type);
+				string addon = "";
+				if (acc>0) addon = ""+acc+"/";
+				bool buttonClicked = GUI.Button (new Rect ( filterX + i * 50, filterY, 46, 20), addon+""+text+"", guix);
 				if (buttonClicked) {
 					filterType = unique.type;
 					filterTypeSub = "*";
+					selectFilter = "selection";
 				}
 				// delete objects
 				// CountElementsType( string elementArea, string elementSubArea )
@@ -6082,6 +6306,7 @@ public class LevelEditor : MonoBehaviour {
 					bool buttonClicked = GUI.Button (new Rect ( filterX + offset + a * 62, filterY, 58, 20), ""+text, guix);
 					if (buttonClicked) {
 						filterTypeSub = gelement.subtype;
+						selectFilter = "selection";
 					}
 				}	
 

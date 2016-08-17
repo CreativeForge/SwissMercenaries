@@ -67,13 +67,25 @@ public class GUIMenu : GameElementBased {
 					for (int z=0;z<arrMenuPoints.Length;z++) {
 						// do it
 						string strMenupoint = arrMenuPoints[z];
+						string strText = arrMenuPoints[z];
+						if (gameLogic.levelEditor.GetIngameDebug()) {
+							string addOn = "";
+							string deb = SearchCommandMenuPoint(strMenupoint);
+							if (deb!=null) {
+								addOn = " ["+deb+"]";
+							} else {
+								addOn = " [problems]";
+							}
+							strText = strText + addOn;
+						}
+						arrTexts[z] = strText;
 						if (debugThis) Debug.Log("GUIMenu.FixedUpdate() // CREATE MENUPOINTS "+strMenupoint);
 						GameObject mp=Instantiate(menuPointPrefab, new Vector3(0.0f,0.0f,0.0f), new Quaternion()) as GameObject;
 						GUIMenuPoint gmp = mp.GetComponent<GUIMenuPoint>(); // button
 						RectTransform rt = mp.GetComponent<RectTransform>();
 						rt.anchoredPosition = new Vector3(startPointX, startPointY);
 						// .SetSize(size);
-						gmp.SetText(""+strMenupoint);
+						gmp.SetText(""+strText);
 						mp.name = "MENUFOUND"+strMenupoint;
 						// add ..
 						mp.transform.SetParent(menuCanvas.transform, false);
@@ -177,8 +189,10 @@ public class GUIMenu : GameElementBased {
 		// it is a notification!
 		if (!parsed) {
 			// LOG
-			Debug.LogError("LevelEditor.GUIMEnu.ButtonAction("+menupoint+" > "+command+") // NOTIFICATION ");
-			
+			Debug.Log("LevelEditor.GUIMEnu.ButtonAction("+menupoint+" > "+command+") // NOTIFICATION ");
+			// ADD 
+			AddNotification( command, "self", 0.0f, "" );
+
 		}
 		
 		}
