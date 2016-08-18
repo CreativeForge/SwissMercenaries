@@ -71,7 +71,7 @@ public class GUIMenu : GameElementBased {
 
 	public void UpdateButtons() {
 
-		bool debugThis = true;
+		bool debugThis = false;
 
 		// targets
 		arrMenuPoints = gameElement.argument.Split(',');
@@ -182,7 +182,7 @@ public class GUIMenu : GameElementBased {
 			int levelToLoad = int.Parse(command);
 			parsed = true;
 			// gameLogic.levelEditor.LoadLevel(levelToLoad);
-			gameLogic.SetGameLevel(levelToLoad);
+			gameLogic.levelEditor.LoadInGameLevel(levelToLoad);
 		} catch {
 			
 		}
