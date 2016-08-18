@@ -150,10 +150,13 @@ public class GameLogic : MonoBehaviour {
 			levelEditor = levelEditorObject.GetComponent<LevelEditor>();
 		}
 	}
-	public int level = 1;
+	public int level = 0;
+
+
+
 
 	public void SetGameLevel( int ilevel ) {
-
+		Debug.LogError("SetGameLevel() DONT USE THIS > LEVELEDITOR");
 		PlayerPrefs.SetInt("LastEditedLevel", ilevel);
 		level = ilevel;
 		LoadGameLevel (level);
@@ -161,15 +164,19 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	public void LoadNextLevel() {
+		Debug.LogError("LoadNextLevel() DONT USE THIS > LEVELEDITOR");
 		level++;
 		SetGameLevel(level);
+
 	}
 
 	public void LoadActualLevel(  ) {
+		Debug.LogError("LoadActualLevel() DONT USE THIS > LEVELEDITOR");
 		LoadGameLevel (level);
 	}
 
 	public void ReloadLevel(){
+		Debug.LogError("ReloadLevel() DONT USE THIS > LEVELEDITOR");
 		Application.LoadLevel (Application.loadedLevel);
 	}
 

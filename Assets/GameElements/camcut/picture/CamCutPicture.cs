@@ -2,27 +2,52 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class CamCutPicture : GameElementBased {
+public class CamCutPicture : GameElementBasedTimed {
 
-	bool started = false;
+	public Sprite picturePrefab;
 
-	/*
-	 * public Text scriptText; 
-	public Text scriptTextShadow; 
-	*/
+	public Image imageScript;
 
-	// Update is called once per frame
-	void FixedUpdate () {
+	public override void OnInitGameElementTimed() {
 
-		if (gameElement!=null) {
-			if (!started) {
-				/*
-				 * started = true;
-				scriptText.text = gameElement.argument;
-				scriptTextShadow.text = gameElement.argument;
-				*/
-			} else {
+
+		// scriptText.text = ""+ gameElement.argument+""; 
+		if (picturePrefab!=null) {
+			if (imageScript!=null) {
+				imageScript.sprite = picturePrefab;
 			}
 		}
 	}
+
+	public override void OnAwakeGameElementTimed() {
+
+		if (visualGameObject!=null) {
+			visualGameObject.SetActive(false);
+		}
+	}
+
+	public override void OnActivateGameElementTimed() {
+
+		if (visualGameObject!=null) {
+			visualGameObject.SetActive(true);
+		}
+	}
+
+	public override void OnDeactivateGameElementTimed() {
+
+		if (visualGameObject!=null) {
+			visualGameObject.SetActive(false);
+		}
+
+	}
+
+	/*
+	public override void OnGameStart() {
+
+		// use this!!
+		base.OnGameStart();
+
+	}
+	*/
+
 }

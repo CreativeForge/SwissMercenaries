@@ -57,49 +57,9 @@ public class GUIMenu : GameElementBased {
 					if (debugThis) Debug.Log("GUIMenu.FixedUpdate() // Create new ...");
 
 
-					// targets
-					arrMenuPoints = gameElement.argument.Split(',');
-					arrTexts = gameElement.argument.Split(',');
-					arrCommands = gameElement.argumentsub .Split(',');
 
-					float startPointX = -200.0f;
-					float startPointY = 140.0f;
-					for (int z=0;z<arrMenuPoints.Length;z++) {
-						// do it
-						string strMenupoint = arrMenuPoints[z];
-						string strText = arrMenuPoints[z];
-						if (gameLogic.levelEditor.GetIngameDebug()) {
-							string addOn = "";
-							string deb = SearchCommandMenuPoint(strMenupoint);
-							if (deb!=null) {
-								addOn = " ["+deb+"]";
-							} else {
-								addOn = " [problems]";
-							}
-							strText = strText + addOn;
-						}
-						arrTexts[z] = strText;
-						if (debugThis) Debug.Log("GUIMenu.FixedUpdate() // CREATE MENUPOINTS "+strMenupoint);
-						GameObject mp=Instantiate(menuPointPrefab, new Vector3(0.0f,0.0f,0.0f), new Quaternion()) as GameObject;
-						GUIMenuPoint gmp = mp.GetComponent<GUIMenuPoint>(); // button
-						RectTransform rt = mp.GetComponent<RectTransform>();
-						rt.anchoredPosition = new Vector3(startPointX, startPointY);
-						// .SetSize(size);
-						gmp.SetText(""+strText);
-						mp.name = "MENUFOUND"+strMenupoint;
-						// add ..
-						mp.transform.SetParent(menuCanvas.transform, false);
-						// arrButtons
-						arrButtons.Add(mp);
+					// UpdateButtons();
 
-						// listener
-						Button buttonScript = mp.GetComponent<Button>();
-						buttonScript.onClick.AddListener(() => ButtonAction(""+strMenupoint));
-
-						startPointY = startPointY - 70.0f;
-
-						// 
-					}
 				}
 
 			} else {
@@ -107,6 +67,65 @@ public class GUIMenu : GameElementBased {
 			}
 		}
 	}
+
+	public override void OnGameStart() {
+		Debug.Log("GUIMEnu.OnGameStart()");
+		UpdateButtons();
+	}
+
+	public void UpdateButtons() {
+
+		bool debugThis = true;
+
+		// targets
+		arrMenuPoints = gameElement.argument.Split(',');
+		arrTexts = gameElement.argument.Split(',');
+		arrCommands = gameElement.argumentsub .Split(',');
+
+		float startPointX = -200.0f;
+		float startPointY = 140.0f;
+		for (int z=0;z<arrMenuPoints.Length;z++) {
+			// do it
+			string strMenupoint = arrMenuPoints[z];
+			string strText = arrMenuPoints[z];
+			// parse
+			strText=""+gameLogic.levelEditor.ParseText(""+strText);
+			// debug
+			if (gameLogic.levelEditor.GetIngameDebug()) {
+				string addOn = "";
+				string deb = SearchCommandMenuPoint(strMenupoint);
+				if (deb!=null) {
+					addOn = " ["+deb+"]";
+				} else {
+					addOn = " [problems]";
+				}
+				strText = strText + addOn;
+			}
+			arrTexts[z] = strText;
+			if (debugThis) Debug.Log("GUIMenu.FixedUpdate() // CREATE MENUPOINTS "+strMenupoint);
+			GameObject mp=Instantiate(menuPointPrefab, new Vector3(0.0f,0.0f,0.0f), new Quaternion()) as GameObject;
+			GUIMenuPoint gmp = mp.GetComponent<GUIMenuPoint>(); // button
+			RectTransform rt = mp.GetComponent<RectTransform>();
+			rt.anchoredPosition = new Vector3(startPointX, startPointY);
+			// .SetSize(size);
+			gmp.SetText(""+strText);
+			mp.name = "MENUFOUND"+strMenupoint;
+			// add ..
+			mp.transform.SetParent(menuCanvas.transform, false);
+			// arrButtons
+			arrButtons.Add(mp);
+
+			// listener
+			Button buttonScript = mp.GetComponent<Button>();
+			buttonScript.onClick.AddListener(() => ButtonAction(""+strMenupoint));
+
+			startPointY = startPointY - 70.0f;
+
+			// 
+		}
+
+	}
+
 
 
 	// destroy all ...

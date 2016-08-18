@@ -15,11 +15,15 @@ public class GameElementBased : MonoBehaviour {
 
 	// game logic
 	public GameLogic gameLogic;
+	public void SetGameLogic( GameLogic gl ) {
+		gameLogic = gl;
+	}
 
 	// overwrite this for activating path following!
 	public virtual bool FollowingPath() {
 		return false;
 	}
+		
 
 	// classics
 	public void Start() {
@@ -32,6 +36,14 @@ public class GameElementBased : MonoBehaviour {
 		if (gameLogic.CheckIngameState()) {
 			if (FollowingPath()) ProcessPathFollowing();
 		}
+	}
+
+	/*
+	 *  ingame
+	 * 
+	 * */
+	public bool CheckIngame() {
+		return gameLogic.CheckIngameState();
 	}
 
 	/*
@@ -48,6 +60,7 @@ public class GameElementBased : MonoBehaviour {
 	}
 
 	// on game start
+	// attention: called in one FixedUpdate (perhaps not yet init..)
 	public virtual void OnGameStart() {
 
 	}
