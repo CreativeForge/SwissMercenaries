@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
+// text parsing in GUIMenu
+
 public class GUIMenuPoint : MonoBehaviour {
 
 	public Text scriptText; 

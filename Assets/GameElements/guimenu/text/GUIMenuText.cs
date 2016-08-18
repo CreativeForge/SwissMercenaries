@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class GUIMenuText : GameElementBased {
 
+	// No parse Text 
+
 	bool started = false;
 
 	public Text scriptText; 
@@ -15,10 +17,21 @@ public class GUIMenuText : GameElementBased {
 		if (gameElement!=null) {
 			if (!started) {
 				started = true;
-				scriptText.text = gameElement.argument;
-				scriptTextShadow.text = gameElement.argument;
+				UpdateText();
 			} else {
 			}
 		}
 	}
+
+	public override void OnGameStart() {
+		// Debug.Log("GUIMEnu.OnGameStart()");
+		UpdateText();
+	}
+
+
+	void UpdateText() {
+		scriptTextShadow.text = gameLogic.levelEditor.ParseText(""+gameElement.argument);
+		scriptText.text = gameLogic.levelEditor.ParseText(""+gameElement.argument);
+	}
+
 }

@@ -55,11 +55,7 @@ public class GUIMenu : GameElementBased {
 				// ADD IT
 				if (menuPointPrefab!=null) {
 					if (debugThis) Debug.Log("GUIMenu.FixedUpdate() // Create new ...");
-
-
-
-					// UpdateButtons();
-
+					UpdateButtons();
 				}
 
 			} else {
@@ -69,7 +65,7 @@ public class GUIMenu : GameElementBased {
 	}
 
 	public override void OnGameStart() {
-		Debug.Log("GUIMEnu.OnGameStart()");
+		// Debug.Log("GUIMEnu.OnGameStart()");
 		UpdateButtons();
 	}
 
@@ -166,6 +162,10 @@ public class GUIMenu : GameElementBased {
 	{
 		Debug.Log("GUIMenu.ButtonAction()"+menupoint);
 
+		if (!gameLogic.CheckIngameState()) {
+			return;
+		}
+
 		// command
 		string command = SearchCommandMenuPoint( menupoint );
 		if (command==null) {
@@ -202,6 +202,15 @@ public class GUIMenu : GameElementBased {
 				Application.Quit()	;
 				parsed = true;
 			}
+		}
+
+		// case Languages
+		for (int i=0;i<gameLogic.levelEditor.arrLanguages.Length;i++) {
+				string lan = gameLogic.levelEditor.arrLanguages[i]	;
+				if (command.Equals(lan)) {
+					gameLogic.levelEditor.SetInGameLanguage(command,true);
+					parsed = true;
+				}
 		}
 
 		// case: notification

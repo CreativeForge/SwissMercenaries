@@ -109,10 +109,22 @@ public class LevelEditor : MonoBehaviour {
 	public string[] arrLanguages; //  = { "en", "de", "dech", "fr", "mhd" } ;
 
 	string ingameLanguage = "en"; // de | dech
-	void SetInGameLanguage( string ilanguage ) { // en | de | dech 
+	public void SetInGameLanguage( string ilanguage, bool reloadLevel ) { // en | de | dech 
 		ingameLanguage = ilanguage;
 		// reload level !!!
-		ReloadActualInGameLevel();
+		if (reloadLevel) ReloadActualInGameLevel();
+		// Store to Prefs
+		PlayerPrefs.SetString("language", ingameLanguage);
+	}
+	public string GetInGameLanguage() {
+		string lan = "en";
+
+		string slanguage = PlayerPrefs.GetString("language");
+		if(slanguage!=null) { 
+			if(!slanguage.Equals("")) { lan = slanguage; }
+		}
+
+		return lan;
 	}
 	string ingameNewLanguageKey = "@key";
 	string ingameNewLanguageText = "KEY";
@@ -159,10 +171,10 @@ public class LevelEditor : MonoBehaviour {
 			if (arrLevel.Count>0)
 			for (int i=0; i<arrLevel.Count; i++) {
 				gx=(GameElement) arrLevel[i];
-				if (gx.name.Equals(""+lankey)) {
+					if (gx.name.ToLower().Equals(""+lankey.ToLower())) {
 					if (gx.type.Equals ("language")) {
 						if (gx.subtype.Equals ("item")) {
-							if (gx.argument.Equals (""+languageKey)) {
+								if ((gx.argument.Equals (""+languageKey))||(gx.argument.Equals ("*"))) {
 									return gx.argumentsub;
 							}
 						}
@@ -193,7 +205,7 @@ public class LevelEditor : MonoBehaviour {
 					if (gx.name.Equals(""+lankey)) {
 						if (gx.type.Equals ("language")) {
 							if (gx.subtype.Equals ("item")) {
-								if (gx.argument.Equals (""+languageKey)) {
+								if ( (gx.argument.Equals (""+languageKey)) || (gx.argument.Equals ("*"))  ) {
 									return gx;
 								}
 							}
@@ -215,6 +227,8 @@ public class LevelEditor : MonoBehaviour {
 	string editorPassword = "";
 	string editorNewArea = "";
 
+
+
 	// overlay
 	bool cameraOverlayTypes = false;
 
@@ -224,8 +238,27 @@ public class LevelEditor : MonoBehaviour {
 
 	GameElement editorLastTouchedGameElement = null;
 
+	int actualEditorLevel = 0;
+
+	public void LoadEditorLevel( int newLevel ) {
+
+		actualEditorLevel = newLevel;
+		// todo: load level ... 
+		ClearLevel ();
+		LoadLevel (actualEditorLevel);
+
+		if (flagEvaluation) {
+			// in running mode!
+			NewSession (evaluationPlayer);
+		}
+
+	}
+
 	// load game level (used from GameLogic) 
+	// remove this!!!!
 	public void LoadGameLevel( int newLevel ) {
+
+		Debug.LogError("LevelEditor.LoadGameLevel: Use LoadEditorLevel or LoadIngameLevel");
 
 		actualLevel = newLevel;
 		// todo: load level ... 
@@ -1026,8 +1059,9 @@ public class LevelEditor : MonoBehaviour {
 	 * LevelEditor
 	 * 
 	 * */
-	int actualLevel=1;
+	int actualLevel=0;
 	int maxLevel=10;
+	int allLevel = 1789; // Level that will be loaded in all levels (> languages etc)
 
 	// toolsx
 	int toolsX = 10;
@@ -2487,7 +2521,7 @@ public class LevelEditor : MonoBehaviour {
 			gx=(GameElement) arrLevel[i];
 			if (gx.type.Equals (type)) {
 				if ((gx.subtype.Equals (typesub))||(typesub.Equals ("*"))) {
-					if (gx.argument.Equals(argument)) {
+					if ( (gx.argument.Equals (""+argument)) || (gx.argument.Equals ("*"))  ) {
 						// search ... add ...
 						if (search.Equals("*")) arr.Add (gx);
 						if (!search.Equals("*")) {
@@ -3042,10 +3076,6 @@ public class LevelEditor : MonoBehaviour {
 	}
 	*/
 
-	// load editor level
-	public void LoadEditorLevel( int ilevel ) {
-		LoadLevel (ilevel);
-	}
 
 
 	// base function
@@ -3359,6 +3389,10 @@ public class LevelEditor : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+		// Get Language
+		ingameLanguage = GetInGameLanguage();
+
 
 		// Get GameLogic
 		GetGameLogic ();
@@ -3718,7 +3752,7 @@ public class LevelEditor : MonoBehaviour {
 			if (debugIngame) {
 				float igt = GetIngameTime();
 				igt = (int)(igt*10.0f)/10.0f;
-				GUI.Label (new Rect (Screen.width - 160, 24, 80, 20), "L:"+actualLevel+" T:"+igt, guixt);
+				GUI.Label (new Rect (Screen.width - 160, 24, 80, 20), " "+ingameLanguage+" L:"+actualLevel+" T:"+igt, guixt);
 			}
 
 			// EDITOR
@@ -4777,11 +4811,11 @@ public class LevelEditor : MonoBehaviour {
 				toolsXTmp = toolsXTmp + 122;
 
 				// UPLOAD SELECTED LEVEL
-					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 120, 20), "UPLOAD LEVEL "+actualLevel, editorButtonActiveStyleWeb)) {
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), "UPLOAD LEVEL "+actualLevel, editorButtonActiveStyleWeb)) {
 					// SAVE IT ... 
 					RemoteUploadOnly(actualLevel);
 				}
-				toolsXTmp = toolsXTmp + 122;
+				toolsXTmp = toolsXTmp + 142;
 
 
 				// UPLOAD ALL
@@ -4821,6 +4855,24 @@ public class LevelEditor : MonoBehaviour {
 			}
 			toolsXTmp = toolsXTmp + 60;
 
+			// all level (imported first)
+			if (true) {
+				GUIStyle gui = editorButtonStyle;
+				if (actualLevel == allLevel) {
+					gui = editorButtonActiveStyle;
+					// text = ">" + text + "";
+				}
+				bool buttonClicked = GUI.Button (new Rect (toolsXTmp, toolsYTmp, 20, 20), "A", gui);
+				if (buttonClicked) {
+					// scroll=0.0f;
+					// EditorUpdateCameraToScroll(scroll);
+					//stateSpecialEditor="";
+					// SetLevel (i);
+						gameLogic.SetGameLevel( allLevel );
+				}
+			}
+			toolsXTmp = toolsXTmp + 22;
+
 			// levels
 			for (int i=0; i<maxLevel; i++) {
 				string text = "" + i;
@@ -4843,6 +4895,18 @@ public class LevelEditor : MonoBehaviour {
 				toolsXTmp = toolsXTmp + 22;
 			}
 
+				// MAX
+				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 40, 20), "+", editorButtonActiveStyle)) {
+					// toggle max
+					if (maxLevel==10) { 
+						maxLevel=20; 
+					}
+					else {
+						maxLevel=10; 
+					}
+				}
+				toolsXTmp = toolsXTmp + 40;
+
 			toolsXTmp = toolsXTmp + 2;
 
 			// COPY
@@ -4857,7 +4921,8 @@ public class LevelEditor : MonoBehaviour {
 			}
 			toolsXTmp = toolsXTmp + 62;
 
-			// COPYTO
+			// COPYTO > NOT ANYMORE USED > USE COPY/PASTE > YOU SEE WHAT YOU OVERWRITE!
+			/*
 			if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 60, 20), "SAVE AS ", editorButtonActiveStyle)) {
 				flagShowSaveAs = !flagShowSaveAs;
 			}
@@ -4879,7 +4944,7 @@ public class LevelEditor : MonoBehaviour {
 					toolsXTmp = toolsXTmp + 22;
 				}
 			}
-
+*/
 			if (toolsXTmp>toolsXTmpMax) toolsXTmpMax = toolsXTmp;
 
 			toolsYTmp = toolsYTmp + 26;
@@ -6238,12 +6303,6 @@ public class LevelEditor : MonoBehaviour {
 				}
 				selectionY = selectionY + 22;
 				exo = editorButtonStyle;
-				if (selectFilter.Equals("selection")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
-				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), "SELECTION ("+filterType+"/"+filterTypeSub+")", exo)) {
-					selectFilter = "selection";
-				}
-				selectionY = selectionY + 22;
-				exo = editorButtonStyle;
 				if (selectFilter.Equals("menu")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
 				ArrayList arrListMenu = GetGameElementsByTypeAndSub("guimenu","*");
 				string addonpx = "";
@@ -6279,9 +6338,18 @@ public class LevelEditor : MonoBehaviour {
 					selectFilter = "language";	
 				}
 				selectionY = selectionY + 22;
+				exo = editorButtonStyle;
+				if (selectFilter.Equals("selection")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
+				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), "SELECTION ("+filterType+"/"+filterTypeSub+")", exo)) {
+					selectFilter = "selection";
+				}
+				selectionY = selectionY + 22;
+
+
 				selectionY = selectionY + 6;
 				// show [EDIT][SELECTION]
 				// types ...
+
 
 				// selectionY = selectionY + 24;
 				if (selectFilter.Equals("")) {
@@ -6329,6 +6397,28 @@ public class LevelEditor : MonoBehaviour {
 				// selection
 				if (selectFilter.Equals("menu")) { 
 					ArrayList arrList = GetGameElementsByTypeAndSub("guimenu","*");
+					// AddGameElementAtName ("meta","title", new Vector3(0.0f,0.0f,0.0f), "TITLE" );
+					if (GUI.Button (new Rect ( selectionX, selectionY, 40, 20), "LOGO", editorButtonStyleNotActive)) {
+						GameElement ge = AddGameElementAtName ("guimenu","logo", new Vector3(0.0f,0.0f,0.0f), "logo" );
+						AddToEditorHistory();
+					}
+					if (GUI.Button (new Rect ( selectionX+45, selectionY, 40, 20), "SPLASH", editorButtonStyleNotActive)) {
+						GameElement ge = AddGameElementAtName ("guimenu","splashtext", new Vector3(0.0f,0.0f,0.0f), "splashtext" );
+						AddToEditorHistory();
+					}
+					if (GUI.Button (new Rect ( selectionX+90, selectionY, 40, 20), "MENU", editorButtonStyleNotActive)) {
+						GameElement ge = AddGameElementAtName ("guimenu","menu", new Vector3(0.0f,0.0f,0.0f), "menu" );
+						ge.argument = "@intro,@play,@setting,@webeditor,@exit";
+						ge.argumentsub = "0,2,4,http://www.swissmercenariesgame.com,exit";
+						AddToEditorHistory();
+					}
+					if (GUI.Button (new Rect ( selectionX+135, selectionY, 40, 20), "TEXT", editorButtonStyleNotActive)) {
+						GameElement ge = AddGameElementAtName ("guimenu","text", new Vector3(0.0f,0.0f,0.0f), "text" );
+						ge.argument = "@text";
+						AddToEditorHistory();
+					}
+					selectionY = selectionY + 24;
+					// list
 					for (int i=0; i<arrList.Count; i++) {
 						GameElement gae = (GameElement)arrList [i];
 						string text = "" + gae.name;
@@ -6355,18 +6445,22 @@ public class LevelEditor : MonoBehaviour {
 					if (GUI.Button (new Rect ( selectionX, selectionY, 30, 20), "CAP", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("camcut","caption", new Vector3(0.0f,0.0f,0.0f), "capx" );
 						ge.timed = 5.0f;
+						AddToEditorHistory();
 					}
 					if (GUI.Button (new Rect ( selectionX+34, selectionY, 30, 20), "PIC", editorButtonStyleNotActive)) {
-						GameElement ge = AddGameElementAtName ("camcut","timedpicture", new Vector3(0.0f,0.0f,0.0f), "capx" );
+						GameElement ge = AddGameElementAtName ("camcut","timedpicture", new Vector3(0.0f,0.0f,0.0f), "timedpicture" );
 						ge.timed = 5.0f;
+						AddToEditorHistory();
 					}
 					if (GUI.Button (new Rect ( selectionX+68, selectionY, 30, 20), "NOT", editorButtonStyleNotActive)) {
-						GameElement ge = AddGameElementAtName ("camcut","timednotification", new Vector3(0.0f,0.0f,0.0f), "capx" );
+						GameElement ge = AddGameElementAtName ("camcut","timednotification", new Vector3(0.0f,0.0f,0.0f), "timednotification" );
 						ge.timed = 5.0f;
+						AddToEditorHistory();
 					}
 					if (GUI.Button (new Rect ( selectionX+102, selectionY, 30, 20), "EXI", editorButtonStyleNotActive)) {
-						GameElement ge = AddGameElementAtName ("camcut","timedexit", new Vector3(0.0f,0.0f,0.0f), "capx" );
+						GameElement ge = AddGameElementAtName ("camcut","timedexit", new Vector3(0.0f,0.0f,0.0f), "timedexit" );
 						ge.timed = 5.0f;
+						AddToEditorHistory();
 					}
 					selectionY = selectionY + 24;
 
@@ -6422,7 +6516,8 @@ public class LevelEditor : MonoBehaviour {
 						GUIStyle guixx = editorButtonStyleNotActive;
 						if (ingameLanguage.Equals(arrLanguages[i])) guixx = editorButtonActiveStyle;
 						if (GUI.Button (new Rect ( selectionX + i*34, selectionY, 30, 20), ""+arrLanguages[i], guixx)) {
-							ingameLanguage = arrLanguages[i]	;
+							// ingameLanguage = arrLanguages[i]	;
+							SetInGameLanguage( arrLanguages[i], false );
 						}
 					}
 					selectionY = selectionY + 24;

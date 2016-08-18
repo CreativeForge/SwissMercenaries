@@ -20,12 +20,22 @@ public class GUIMenuTextSplash : GameElementBased {
 		if (gameElement!=null) {
 			if (!started) {
 				started = true;
-				scriptTextShadow.text = gameElement.argument;
-				scriptText.text = gameElement.argument+"";
+				UpdateText();
 			} else {
 				float alpha = Mathf.Abs(Mathf.Sin(Time.time-timer*10.0f));
 				scriptText.color = new Color(1.0f,1.0f,1.0f, alpha); // a = 0.5f; // Mathf.Sin(Time.time-timer);
 			}
 		}
+	}
+
+	public override void OnGameStart() {
+		// Debug.Log("GUIMEnu.OnGameStart()");
+		UpdateText();
+	}
+
+
+	void UpdateText() {
+		scriptTextShadow.text = gameLogic.levelEditor.ParseText(""+gameElement.argument);
+		scriptText.text = gameLogic.levelEditor.ParseText(""+gameElement.argument);
 	}
 }
