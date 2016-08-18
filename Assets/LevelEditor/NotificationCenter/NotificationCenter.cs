@@ -380,13 +380,14 @@ namespace GameLab.NotficationCenter
 			// Debug.Log("ProcessLevel()"+nt.argument);
 			if (nt.subtype.Equals("next")) {
 				// gameLogic.levelEditor.
-				gameLogic.LoadNextLevel();
+				gameLogic.levelEditor.LoadNextInGameLevel();
 			}
 			// take argument
 			if (nt.subtype.Equals("load")) {
 				// Debug.Log("NotificationCenter.ProcessLevel() // "+nt.argument);
 				int levelx = Int32.Parse(nt.argument);
-				gameLogic.LoadGameLevel(levelx);
+				gameLogic.levelEditor.LoadInGameLevel(levelx);
+
 			}
 		}
 

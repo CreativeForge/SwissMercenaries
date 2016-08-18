@@ -131,11 +131,11 @@ public class LevelEditor : MonoBehaviour {
 
 	// LoadNextGameLevel
 	public int ingameLevel = 0;
-	public void LoadNextGameLevel() {
+	public void LoadNextInGameLevel() {
 		ingameLevel++;
-		LoadIngGameLevel(ingameLevel);
+		LoadInGameLevel(ingameLevel);
 	}
-	public void LoadIngGameLevel( int ilevel ) {
+	public void LoadInGameLevel( int ilevel ) {
 		ingameLevel = ilevel;
 		LoadLevel(ilevel);
 	}
@@ -257,7 +257,7 @@ public class LevelEditor : MonoBehaviour {
 	// load game level (used from GameLogic) 
 	// remove this!!!!
 	public void LoadGameLevel( int newLevel ) {
-
+		 
 		Debug.LogError("LevelEditor.LoadGameLevel: Use LoadEditorLevel or LoadIngameLevel");
 
 		actualLevel = newLevel;
@@ -2556,6 +2556,11 @@ public class LevelEditor : MonoBehaviour {
 				arr.Add(ge);
 			}
 			arrAdd = GetGameElementsByTypeAndSub(  "camcut",  "timednotification" );
+			for (int z=0;z<arrAdd.Count;z++) {
+				GameElement ge = (GameElement) arrAdd[z];
+				arr.Add(ge);
+			}
+			arrAdd = GetGameElementsByTypeAndSub(  "camcut",  "timedloop" );
 			for (int z=0;z<arrAdd.Count;z++) {
 				GameElement ge = (GameElement) arrAdd[z];
 				arr.Add(ge);
@@ -5737,6 +5742,7 @@ public class LevelEditor : MonoBehaviour {
 						if (editorSelected.subtype.Equals("timedpicture")) { timedSeperate = true; }
 						if (editorSelected.subtype.Equals("timedexit")) { timedSeperate = true; }
 						if (editorSelected.subtype.Equals("timedsound")) { timedSeperate = true; }
+						if (editorSelected.subtype.Equals("timedloop")) { timedSeperate = true; }
 					}
 					if (timedSeperate) {
 						// show it ...
@@ -6457,7 +6463,12 @@ public class LevelEditor : MonoBehaviour {
 						ge.timed = 5.0f;
 						AddToEditorHistory();
 					}
-					if (GUI.Button (new Rect ( selectionX+102, selectionY, 30, 20), "EXI", editorButtonStyleNotActive)) {
+					if (GUI.Button (new Rect ( selectionX+102, selectionY, 30, 20), "LOP", editorButtonStyleNotActive)) {
+						GameElement ge = AddGameElementAtName ("camcut","timedloop", new Vector3(0.0f,0.0f,0.0f), "timedloop" );
+						ge.timed = 5.0f;
+						AddToEditorHistory();
+					}
+					if (GUI.Button (new Rect ( selectionX+136, selectionY, 30, 20), "EXI", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("camcut","timedexit", new Vector3(0.0f,0.0f,0.0f), "timedexit" );
 						ge.timed = 5.0f;
 						AddToEditorHistory();
