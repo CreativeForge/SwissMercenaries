@@ -124,7 +124,7 @@ public class LevelEditor : MonoBehaviour {
 			if(!slanguage.Equals("")) { lan = slanguage; }
 		}
 
-		return lan;
+		return lan; 
 	}
 	string ingameNewLanguageKey = "@key";
 	string ingameNewLanguageText = "KEY";
@@ -1038,8 +1038,10 @@ public class LevelEditor : MonoBehaviour {
 	 * LevelEditor
 	 * 
 	 * */
-	int actualLevel=0;
-	int maxLevel=10;
+	int actualLevel=0; // level editor level!!!!
+	int maxLevel=10; 
+	int minMaxLevel = 10;
+	int maxMaxLevel = 20;
 	int allLevel = 1789; // Level that will be loaded in all levels (> languages etc)
 
 	// toolsx
@@ -3170,7 +3172,7 @@ public class LevelEditor : MonoBehaviour {
 	// playerId, sessionId
 	void LoadLevelLowLevel( int level,  string playerId, string sessionId, string source ) {
 
-		bool debugThis = true ;
+		bool debugThis = false ;
 
 		bool flagEvaluationTemp = false; 
 		if (!playerId.Equals("")) {
@@ -3362,6 +3364,49 @@ public class LevelEditor : MonoBehaviour {
 
 		// Debug.Log(encodedString);
 
+	}
+
+	// REMOVE AND INSERT
+	void RemoveActualLevel() {
+		Debug.Log("LevelEditor.RemoveActualLevel() "+actualLevel);
+
+		for (int z=actualLevel;z<(maxMaxLevel-1);z++) {
+			string remoteAddOnPath = "";
+			if (CheckLevelTypeWeb()) {
+				remoteAddOnPath = GetRemotePath();
+			}
+			string path = remoteAddOnPath + "level"+(z+1)+".txt";
+			if (File.Exists(path)) {
+				// File.Delete(path);
+				string pathTo = remoteAddOnPath + "level"+z+".txt";
+				Debug.Log("LevelEditor.RemoveActualLevel() "+path+">"+pathTo);
+				if (File.Exists(pathTo)) {
+					File.Delete(pathTo);
+				}
+				File.Move(path,pathTo);
+			}
+		}
+	}
+	void InsertLevelAfterActualLevel() {
+		Debug.Log("LevelEditor.InsertLevelAfterActualLevel() "+actualLevel);
+		for (int z=(maxMaxLevel-1);z>actualLevel;z--) {
+			string remoteAddOnPath = "";
+			if (CheckLevelTypeWeb()) {
+				remoteAddOnPath = GetRemotePath();
+			}
+			string path = remoteAddOnPath + "level"+z+".txt";
+			if (File.Exists(path)) {
+					string pathTo = remoteAddOnPath + "level"+(z+1)+".txt";
+				if (File.Exists(pathTo)) {
+					File.Delete(pathTo);
+				}
+				File.Move(path,pathTo);
+				Debug.Log("LevelEditor.InsertLevelAfterActualLevel() "+path+">"+pathTo);
+
+			}
+		}
+		AddToEditorHistory();
+		AddEditorMessage("Inserted a level after "+actualLevel);
 	}
 
 	// Mouse to WorldPosition and reverse
@@ -4917,6 +4962,22 @@ public class LevelEditor : MonoBehaviour {
 				if (i == actualLevel) {
 					gui = editorButtonActiveStyle;
 					// text = ">" + text + "";
+					
+					// delete
+					if (i!=0) {
+						if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 10, 20), "-", editorButtonStyle)) {
+								RemoveActualLevel();
+								LoadEditorLevel(actualLevel);
+						}
+						toolsXTmp = toolsXTmp + 12;
+					}
+					// add
+						/*
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 10, 20), " ", editorButtonStyle)) {
+						InsertLevelBeforeActualLevel();
+					}
+					toolsXTmp = toolsXTmp + 12;
+*/
 				}
 
 				bool buttonClicked = GUI.Button (new Rect (toolsXTmp, toolsYTmp, 20, 20), text, gui);
@@ -4929,16 +4990,25 @@ public class LevelEditor : MonoBehaviour {
 				}
 
 				toolsXTmp = toolsXTmp + 22;
+
+					if (i == actualLevel) {
+						// add
+						if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 10, 20), "+", editorButtonStyle)) {
+							InsertLevelAfterActualLevel();
+						}
+						toolsXTmp = toolsXTmp + 12;
+
+					}
 			}
 
 				// MAX
 				if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 40, 20), "+", editorButtonActiveStyle)) {
 					// toggle max
-					if (maxLevel==10) { 
-						maxLevel=20; 
+					if (maxLevel==minMaxLevel) { 
+						maxLevel=maxMaxLevel; 
 					}
 					else {
-						maxLevel=10; 
+						maxLevel=maxMaxLevel; 
 					}
 				}
 				toolsXTmp = toolsXTmp + 40;
