@@ -115,6 +115,13 @@ public class LevelEditor : MonoBehaviour {
 		IngameOnChangeState();
 
 	}
+	public bool CheckState( string statex ) {
+		if (statex.Equals(ingameState)) {
+			return true;
+		}
+		return false;
+	}
+
 	// on change state!
 	void IngameOnLeaveState( ) {
 		GameElement gx;
@@ -1494,6 +1501,8 @@ public class LevelEditor : MonoBehaviour {
 	public LevelElement[] SkyLevelElements = {    };
 	public LevelElement[] MetaLevelElements= {   };
 
+	public LevelElement[] ChallengeLevelElements = { };
+
 	// tiles
 	public LevelElement[] TileLevelElements = {   };
 
@@ -1588,6 +1597,9 @@ public class LevelEditor : MonoBehaviour {
 
 
 		RegisterLevelElements( "meta", MetaLevelElements );
+		RegisterLevelElements( "challenge", ChallengeLevelElements );
+
+
 		RegisterLevelElements( "immovable", ImmovablesLevelElements );
 		RegisterLevelElements( "furniture", FurnitureLevelElements );
 
@@ -2343,6 +2355,7 @@ public class LevelEditor : MonoBehaviour {
 
 						} else {
 
+							if (elem.prefabPredefinedArguments!=null)
 							if (elem.prefabPredefinedArguments.Length>0) {
 								go=Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
 								go.name = "NOEDITORPREFABATALLPrefabEditor!!!";
@@ -3228,7 +3241,7 @@ public class LevelEditor : MonoBehaviour {
 	// playerId, sessionId
 	void LoadLevelLowLevel( int level,  string playerId, string sessionId, string source ) {
 
-		bool debugThis = false ;
+		bool debugThis = true ;
 
 		bool flagEvaluationTemp = false; 
 		if (!playerId.Equals("")) {
@@ -5748,6 +5761,7 @@ public class LevelEditor : MonoBehaviour {
 						if (editorSelected.subtype.Equals("switchnotification")) { showExtendedNotificationInput = true; }
 						if (editorSelected.subtype.Equals("switcher")) { showExtendedNotificationInput = true; }
 						if (editorSelected.subtype.Equals("anykeynotification")) { showExtendedNotificationInput = true; }
+						if (editorSelected.subtype.Equals("onstatenotification")) { showExtendedNotificationInput = true; }
 
 					}
 					if (editorSelected.type.Equals("action")) { 
@@ -6349,35 +6363,69 @@ public class LevelEditor : MonoBehaviour {
 				GUIStyle exo = editorButtonStyle;
 				if (selectFilter.Equals("")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
 				ArrayList arrNames = GetGameElementsByNotCleanName();
-				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), "NAMES "+arrNames.Count+"/"+arrLevel.Count, exo)) {
+				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize/2, 20), "NAMES "+arrNames.Count+"/"+arrLevel.Count, exo)) {
 					selectFilter = "";
 				}
+				exo = editorButtonStyle;
+				if (selectFilter.Equals("selection")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
+				if (GUI.Button (new Rect ( selectionX+selectionSize/2+2, selectionY, selectionSize/2, 20), "SELECTION ("+filterType+"/"+filterTypeSub+")", exo)) {
+					selectFilter = "selection";
+				}
+
 				selectionY = selectionY + 22;
 				exo = editorButtonStyle;
 				if (selectFilter.Equals("menu")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
 				ArrayList arrListMenu = GetGameElementsByTypeAndSub("guimenu","*");
 				string addonpx = "";
 				if (arrListMenu.Count>0) addonpx = "("+arrListMenu.Count+")";
-				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), "MENU "+addonpx, exo)) {
+				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize/2, 20), "MENU "+addonpx, exo)) {
 					selectFilter = "menu";	
 				}
-				selectionY = selectionY + 22;
+				// selectionY = selectionY + 22;
 				exo = editorButtonStyle;
-				if (selectFilter.Equals("timed")) { exo = editorButtonActiveStyle; selectionSize = 300; }
+				if (selectFilter.Equals("timed")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
 				ArrayList arrListTimed = GetAllGameElementsByTypeAndSubTimeSorted();
 				string addonp = "";
 				if (arrListTimed.Count>0) addonp = "("+arrListTimed.Count+")";
-				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), "TIMED "+addonp+"", exo)) {
+				if (GUI.Button (new Rect ( selectionX + selectionSize/2 +2 , selectionY, selectionSize/2, 20), "TIMED "+addonp+"", exo)) {
 					selectFilter = "timed";	
 				}
 				selectionY = selectionY + 22;
+				// triggers
+				exo = editorButtonStyle;
+				if (selectFilter.Equals("challenges")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
+				ArrayList arrListChallenges =  GetGameElementsByTypeAndSub("challenge","*");
+				addonp = "";
+				if (arrListChallenges.Count>0) addonp = "("+arrListChallenges.Count+")";
+				if (GUI.Button (new Rect ( selectionX + 0*selectionSize/3, selectionY, selectionSize/3-2, 20), "CHALLENG "+addonp, exo)) {
+					selectFilter = "challenges";	
+				}
+				// triggers
+				exo = editorButtonStyle;
+				if (selectFilter.Equals("triggers")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
+				ArrayList arrListTrigger =  GetGameElementsByTypeAndSub("trigger","*");
+				addonp = "";
+				if (arrListTrigger.Count>0) addonp = "("+arrListTrigger.Count+")";
+				if (GUI.Button (new Rect ( selectionX + 1*selectionSize/3, selectionY, selectionSize/3-2, 20), "TRIGGERS "+addonp, exo)) {
+					selectFilter = "triggers";	
+				}
+				// actions
 				exo = editorButtonStyle;
 				if (selectFilter.Equals("actions")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
 				ArrayList arrListLanguage =  GetGameElementsByTypeAndSub("action","*");
 				addonp = "";
 				if (arrListLanguage.Count>0) addonp = "("+arrListLanguage.Count+")";
-				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), "ACTIONS "+addonp, exo)) {
+				if (GUI.Button (new Rect ( selectionX + 2*selectionSize/3, selectionY, selectionSize/3, 20), "ACTIONS "+addonp, exo)) {
 					selectFilter = "actions";	
+				}
+				selectionY = selectionY + 22;
+				exo = editorButtonStyle;
+				if (selectFilter.Equals("remarks")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
+				ArrayList arrListRemark =  GetGameElementsByTypeAndSub("remark","*");
+				addonp = "";
+				if (arrListRemark.Count>0) addonp = "("+arrListRemark.Count+")";
+				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), "REMARKS "+addonp, exo)) {
+					selectFilter = "remarks";	
 				}
 				selectionY = selectionY + 22;
 				exo = editorButtonStyle;
@@ -6387,12 +6435,6 @@ public class LevelEditor : MonoBehaviour {
 				if (arrListX.Count>0) addonp = "("+arrListX.Count+")";
 				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), "LANGUAGE "+addonp, exo)) {
 					selectFilter = "language";	
-				}
-				selectionY = selectionY + 22;
-				exo = editorButtonStyle;
-				if (selectFilter.Equals("selection")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
-				if (GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), "SELECTION ("+filterType+"/"+filterTypeSub+")", exo)) {
-					selectFilter = "selection";
 				}
 				selectionY = selectionY + 22;
 
@@ -6449,30 +6491,106 @@ public class LevelEditor : MonoBehaviour {
 					} 
 					selectionY = selectionY + 20;
 				}
+				// remarks
+				if (selectFilter.Equals("remarks")) { 
+					ArrayList arrList = GetGameElementsByTypeAndSub("remark","*");
+					for (int i=0; i<arrList.Count; i++) {
+						GameElement gae = (GameElement)arrList [i];
+						string text = "" + gae.name;
+						if (gae.name.Equals("")) {
+							// text = text + "("+gae.subtype+")";
+						}
+						GUIStyle guix = editorButtonStyleNotActive;
+						if (editorSelected==gae) guix = editorButtonActiveStyle;
+						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), ""+text+" ("+gae.type+"/"+gae.subtype+")", guix);
+						if (buttonClicked) {
+							SetTool("EDIT");
+							SetSelectedElement(gae);
+
+						}
+						selectionY = selectionY + 20;
+						if (i>10) break;
+					} 
+					selectionY = selectionY + 20;
+				}
+				// triggers
+				if (selectFilter.Equals("triggers")) { 
+					ArrayList arrList = GetGameElementsByTypeAndSub("trigger","*");
+					for (int i=0; i<arrList.Count; i++) {
+						GameElement gae = (GameElement)arrList [i];
+						string text = "" + gae.name;
+						if (gae.name.Equals("")) {
+							// text = text + "("+gae.subtype+")";
+						}
+						GUIStyle guix = editorButtonStyleNotActive;
+						if (editorSelected==gae) guix = editorButtonActiveStyle;
+						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), ""+text+" ("+gae.type+"/"+gae.subtype+")", guix);
+						if (buttonClicked) {
+							SetTool("EDIT");
+							SetSelectedElement(gae);
+
+						}
+						selectionY = selectionY + 20;
+						if (i>10) break;
+					} 
+					selectionY = selectionY + 20;
+				}
+				// triggers
+				if (selectFilter.Equals("challenges")) { 
+					
+					if (GUI.Button (new Rect ( selectionX, selectionY, 50, 20), "TIMED", editorButtonStyleNotActive)) {
+						GameElement ge = AddGameElementAtName ("challenge","time", new Vector3(0.0f,0.0f,0.0f), "timechallenge" );
+						ge.argument = "60";
+						ge.argumentsub = "TIME LEFT";
+						AddToEditorHistory();
+					}
+					selectionY = selectionY + 24;
+
+					// challenges
+					ArrayList arrList = GetGameElementsByTypeAndSub("challenge","*");
+					for (int i=0; i<arrList.Count; i++) {
+						GameElement gae = (GameElement)arrList [i];
+						string text = "" + gae.name;
+						if (gae.name.Equals("")) {
+							// text = text + "("+gae.subtype+")";
+						}
+						GUIStyle guix = editorButtonStyleNotActive;
+						if (editorSelected==gae) guix = editorButtonActiveStyle;
+						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), ""+text+" ("+gae.type+"/"+gae.subtype+")", guix);
+						if (buttonClicked) {
+							SetTool("EDIT");
+							SetSelectedElement(gae);
+
+						}
+						selectionY = selectionY + 20;
+						if (i>10) break;
+					} 
+					selectionY = selectionY + 20;
+				}
 				// selection
 				if (selectFilter.Equals("menu")) { 
 					ArrayList arrList = GetGameElementsByTypeAndSub("guimenu","*");
 					// AddGameElementAtName ("meta","title", new Vector3(0.0f,0.0f,0.0f), "TITLE" );
-					if (GUI.Button (new Rect ( selectionX, selectionY, 40, 20), "LOGOSP", editorButtonStyleNotActive)) {
+					if (GUI.Button (new Rect ( selectionX, selectionY, 42, 20), "LOGOSP", editorButtonStyleNotActive)) {
+						GameElement ge = AddGameElementAtName ("guimenu","splashlogo", new Vector3(0.0f,0.0f,0.0f), "splashlogo" );
+						AddToEditorHistory();
+					}
+					if (GUI.Button (new Rect ( selectionX+45, selectionY, 42, 20), "TEXTSP", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("guimenu","splashtext", new Vector3(0.0f,0.0f,0.0f), "splashtext" );
 						AddToEditorHistory();
 					}
-					if (GUI.Button (new Rect ( selectionX+45, selectionY, 40, 20), "TEXTSP", editorButtonStyleNotActive)) {
-						GameElement ge = AddGameElementAtName ("guimenu","splashtext", new Vector3(0.0f,0.0f,0.0f), "splashtext" );
-						AddToEditorHistory();
-					}
-					if (GUI.Button (new Rect ( selectionX+45+45, selectionY, 40, 20), "LOGO", editorButtonStyleNotActive)) {
+					if (GUI.Button (new Rect ( selectionX+45+45, selectionY, 42, 20), "LOGO", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("guimenu","logo", new Vector3(0.0f,0.0f,0.0f), "logo" );
 						AddToEditorHistory();
 					}
 
-					if (GUI.Button (new Rect ( selectionX+45+45+45, selectionY, 40, 20), "MENU", editorButtonStyleNotActive)) {
+					if (GUI.Button (new Rect ( selectionX+45+45+45, selectionY, 42, 20), "MENU", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("guimenu","menu", new Vector3(0.0f,0.0f,0.0f), "menu" );
 						ge.argument = "@intro,@play,@setting,@webeditor,@exit";
 						ge.argumentsub = "0,2,4,http://www.swissmercenariesgame.com,exit";
 						AddToEditorHistory();
 					}
-					if (GUI.Button (new Rect ( selectionX+45+45+45+4, selectionY, 40, 20), "TEXT", editorButtonStyleNotActive)) {
+					if (GUI.Button (new Rect ( selectionX+45+45+45+45, selectionY, 42, 20), "TEXT", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("guimenu","text", new Vector3(0.0f,0.0f,0.0f), "text" );
 						ge.argument = "@text";
 						AddToEditorHistory();

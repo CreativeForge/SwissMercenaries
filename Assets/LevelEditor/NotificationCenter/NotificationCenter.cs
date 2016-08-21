@@ -365,7 +365,7 @@ namespace GameLab.NotficationCenter
 				gameLogic.levelEditor.SetIngameState("won");
 			}
 			if (nt.subtype.Equals("gameover")) {
-				gameLogic.levelEditor.SetIngameState("plunder");
+				gameLogic.levelEditor.SetIngameState("gameover");
 			}
 
 			// SetIngameState(--l-o 

@@ -42,8 +42,13 @@ public class GameElementBased : MonoBehaviour {
 	 *  ingame
 	 * 
 	 * */
+	// logic editor / game
 	public bool CheckIngame() {
 		return gameLogic.CheckIngameState();
+	}
+
+	public bool CheckState( string xlt ) {
+		return gameLogic.levelEditor.CheckState( xlt );
 	}
 
 	/*
