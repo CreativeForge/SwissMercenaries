@@ -65,6 +65,14 @@ public class GameElementBased : MonoBehaviour {
 
 	}
 
+	// on change state
+	public virtual void OnLeaveGameState( string oldstate ) {
+		
+	}
+	public virtual void OnChangeGameState( string newstate ) {
+
+	}
+
 	// on player hit
 	// you need just a trigger (hitbox / trigger)
 	public virtual void OnPlayerHit() {

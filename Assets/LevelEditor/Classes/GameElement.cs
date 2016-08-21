@@ -7,6 +7,7 @@ using System;
 public class GameElement {
 
 	// public string state = ""; // "": active-direct / "wait": wait > released
+	// > release
 
 	// 
 	public string id = "-1"; // id ... 
@@ -47,6 +48,21 @@ public class GameElement {
 			return "wait";
 		}
 		return "on";
+	}
+	public bool Active() {
+		if (release.Equals("")) {
+			return true;
+		}
+		return false;
+	}
+	public bool Internal() {
+		if (ingameSource.Equals("")) {
+			return true;
+		}
+		if (ingameSource.Equals("self")) {
+			return true;
+		}
+		return false;
 	}
 	// * not used ...
 	public float scrollX = 0.0f; // release on this ...

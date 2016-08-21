@@ -72,7 +72,7 @@ public class GameLogic : MonoBehaviour {
 
 		// prefs
 		int lastEditedLevel = PlayerPrefs.GetInt("LastEditedLevel");
-		if(lastEditedLevel>0) level = lastEditedLevel;
+		if(lastEditedLevel>=0) levelEditor.actualEditorLevel = lastEditedLevel;
 
 		// get web ...
 
@@ -97,15 +97,15 @@ public class GameLogic : MonoBehaviour {
 
 		// Attention: running > leveleditor
 		modal = newmodal;
-		
+
 		// ACTIVATE NEW MODEL
 		if (modal == GameLogic.GameLogicModal.Running) {
 			ActivateStateIngame();
-			LoadActualLevel();
+			levelEditor.LoadActualIngameEditorLevel();
 		}
 		if (modal == GameLogic.GameLogicModal.Editor) {
 			ActivateStateEditor();
-			LoadActualLevel();
+			levelEditor.LoadActualEditorLevel();
 		}
 		
 		
@@ -150,14 +150,15 @@ public class GameLogic : MonoBehaviour {
 			levelEditor = levelEditorObject.GetComponent<LevelEditor>();
 		}
 	}
-	public int level = 0;
 
+	/*
+	public int level = 0;
 
 
 
 	public void SetGameLevel( int ilevel ) {
 		Debug.LogError("SetGameLevel() DONT USE THIS > LEVELEDITOR");
-		PlayerPrefs.SetInt("LastEditedLevel", ilevel);
+		PlayerPrefs.SetInt("LastEditedLevel", levelEditor.actualEditorLevel);
 		level = ilevel;
 		LoadGameLevel (level);
 
@@ -170,9 +171,12 @@ public class GameLogic : MonoBehaviour {
 
 	}
 
-	public void LoadActualLevel(  ) {
-		Debug.LogError("LoadActualLevel() DONT USE THIS > LEVELEDITOR");
-		LoadGameLevel (level);
+	public void LoadActualIngameLevel(  ) {
+		levelEditor.LoadInGameLevel (level);
+	}
+
+	public void LoadActualEditorLevel(  ) {
+		levelEditor.LoadEditorLevel (level);
 	}
 
 	public void ReloadLevel(){
@@ -191,8 +195,7 @@ public class GameLogic : MonoBehaviour {
 		//try {
 
 			GetLevelEditor();
-
-			levelEditor.LoadGameLevel(level);
+			levelEditor.LoadEditorLevel(level);
 
 		//}
 			//catch {
@@ -210,6 +213,7 @@ public class GameLogic : MonoBehaviour {
 		level++;
 		LoadGameLevel (level);
 	}
+	*/
 
 	/*
 	 * 

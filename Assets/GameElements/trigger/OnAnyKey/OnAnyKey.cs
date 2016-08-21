@@ -10,7 +10,7 @@ public class OnAnyKey : GameElementBased {
 		// any key
 		if (Input.anyKeyDown) {
 			// load next level ...
-			gameLogic.LoadGameNextLevel();
+			gameLogic.levelEditor.LoadNextInGameLevel();
 		}
 	}
 }

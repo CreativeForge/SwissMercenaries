@@ -80,7 +80,7 @@ public class MenuScript : MonoBehaviour {
 			// User is able to skip -> next level
 			if(Input.GetKeyDown(KeyCode.Mouse0) || Input.GetButtonDown("Jump")) {
 
-				mainLogic.LoadGameNextLevel();
+				mainLogic.levelEditor.LoadNextInGameLevel();
 
 			}
 		
@@ -91,7 +91,7 @@ public class MenuScript : MonoBehaviour {
 	// Invoke LoadGameLevel of GameLogic
 	public void LoadLevel(int level) {
 
-		mainLogic.LoadGameLevel(level);
+		mainLogic.levelEditor.LoadInGameLevel(level);
 
 	}
 

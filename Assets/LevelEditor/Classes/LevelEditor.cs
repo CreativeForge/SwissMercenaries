@@ -104,6 +104,47 @@ public class LevelEditor : MonoBehaviour {
 	public void StartIngameTime() {
 		ingameStartTime = Time.time;
 	}
+	string ingameState = "";
+	string ingameStateSub = "";
+	public void SetIngameState( string newIngameState ) {
+		// on leave state
+		IngameOnLeaveState();
+		// do on all gameelements ...
+		ingameState = newIngameState;
+		// are there some events to trigger?
+		IngameOnChangeState();
+
+	}
+	// on change state!
+	void IngameOnLeaveState( ) {
+		GameElement gx;
+		if (arrLevel.Count>0)
+			for (int i=0; i<arrLevel.Count; i++) {
+				gx=(GameElement) arrLevel[i];
+				if (gx.Active())
+				if (gx.gameObject!=null) {
+				GameElementBased geb = gx.gameObject.GetComponent<GameElementBased>();
+				if (geb!=null) {
+					geb.OnLeaveGameState(ingameState);
+				}
+				}
+			} // /for
+	}
+	void IngameOnChangeState() {
+		GameElement gx;
+		if (arrLevel.Count>0)
+			for (int i=0; i<arrLevel.Count; i++) {
+				gx=(GameElement) arrLevel[i];
+				if (gx.Active())
+				if (gx.gameObject!=null) {
+					GameElementBased geb = gx.gameObject.GetComponent<GameElementBased>();
+				if (geb!=null) {
+					geb.OnChangeGameState(ingameState);
+				}
+				}
+			} // /for
+	}
+
 
 	// languages
 	public string[] arrLanguages; //  = { "en", "de", "dech", "fr", "mhd" } ;
@@ -142,6 +183,11 @@ public class LevelEditor : MonoBehaviour {
 
 	public void ReloadActualInGameLevel() {
 		LoadLevel(ingameLevel);
+	}
+
+	// switch from editor
+	public void LoadActualIngameEditorLevel() {
+		LoadInGameLevel(actualEditorLevel);
 	}
 
 
@@ -238,11 +284,13 @@ public class LevelEditor : MonoBehaviour {
 
 	GameElement editorLastTouchedGameElement = null;
 
-	int actualEditorLevel = 0;
-
 	public void LoadEditorLevel( int newLevel ) {
 
 		actualEditorLevel = newLevel;
+		// actualLevel = newLevel;
+
+		PlayerPrefs.SetInt("LastEditedLevel", actualEditorLevel);
+
 		// todo: load level ... 
 		ClearLevel ();
 		LoadLevel (actualEditorLevel);
@@ -254,9 +302,14 @@ public class LevelEditor : MonoBehaviour {
 
 	}
 
+	public void LoadActualEditorLevel() {
+		LoadEditorLevel( actualEditorLevel );
+	}
+
 	// load game level (used from GameLogic) 
 	// remove this!!!!
-	public void LoadGameLevel( int newLevel ) {
+	/*
+	 * public void LoadGameLevel( int newLevel ) {
 		 
 		Debug.LogError("LevelEditor.LoadGameLevel: Use LoadEditorLevel or LoadIngameLevel");
 
@@ -271,6 +324,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 	}
+	*/
 
 	// copy & paste
 	ArrayList arrClipBoardLevel = new ArrayList();
@@ -355,7 +409,7 @@ public class LevelEditor : MonoBehaviour {
 
 		// add now
 		LevelHistory lv = new LevelHistory();
-		lv.level = actualLevel;
+		lv.level = actualEditorLevel;
 		lv.message = msg;
 
 		// copy level ... 
@@ -369,7 +423,7 @@ public class LevelEditor : MonoBehaviour {
 		arrEditorHistory.Add(lv);
 
 		// store 
-		SaveLevel( actualLevel );
+		SaveLevel( actualEditorLevel );
 	}
 
 
@@ -379,7 +433,7 @@ public class LevelEditor : MonoBehaviour {
 		LevelHistory lv;
 		for (int i=0;i<arrEditorHistory.Count;i++) {
 			lv = (LevelHistory) arrEditorHistory[i];
-			if (lv.level==actualLevel) {
+			if (lv.level==actualEditorLevel) {
 				arr.Add(lv);
 			}
 		}
@@ -564,7 +618,7 @@ public class LevelEditor : MonoBehaviour {
 
 		UpdateShowEvaluationData ();
 
-		SaveLevel( actualLevel );
+		SaveLevel( actualEditorLevel );
 
 	}
 
@@ -1038,7 +1092,7 @@ public class LevelEditor : MonoBehaviour {
 	 * LevelEditor
 	 * 
 	 * */
-	int actualLevel=0; // level editor level!!!!
+	public int actualEditorLevel=0; // level editor level!!!!
 	int maxLevel=10; 
 	int minMaxLevel = 10;
 	int maxMaxLevel = 20;
@@ -1104,6 +1158,8 @@ public class LevelEditor : MonoBehaviour {
 
 		ClearElements ();
 
+		ingameState = "";
+
 		// Clear not taggeds .. 
 		// Resources.FindObjectsOfTypeAll(typeof(UnityEngine.Object)).Length
 		GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
@@ -1164,10 +1220,10 @@ public class LevelEditor : MonoBehaviour {
 
 		// Save History ...
 
-		actualLevel = iactualLevel;
+		actualEditorLevel = iactualLevel;
 		// todo: load level ... 
 		ClearLevel ();
-		LoadLevel (actualLevel);
+		LoadLevel (actualEditorLevel);
 	}
 
 	// scroll position
@@ -1924,7 +1980,7 @@ public class LevelEditor : MonoBehaviour {
 		AddElement( ge );
 
 		// save evaluation now .. 
-		SaveLevel( actualLevel, true ); 
+		SaveLevel( actualEditorLevel, true ); 
 
 	}
 
@@ -1998,10 +2054,10 @@ public class LevelEditor : MonoBehaviour {
 		// arrEvaluationSessions
 		arrEvaluationSessions = new ArrayList ();
 
-		string[] arrLevelFiles = GetExistingEvaluationLevelFiles (actualLevel);
+		string[] arrLevelFiles = GetExistingEvaluationLevelFiles (actualEditorLevel);
 		for (int i = 0; i < arrLevelFiles.Length; i++) {
 			string fileN = arrLevelFiles [i];
-			Match match = Regex.Match (fileN, @"level" + actualLevel + "_(\\d+)_(\\d+).", RegexOptions.IgnoreCase);
+			Match match = Regex.Match (fileN, @"level" + actualEditorLevel + "_(\\d+)_(\\d+).", RegexOptions.IgnoreCase);
 			if (match.Success) {
 				string playerId = match.Groups [1].Value;
 				string sessionId = match.Groups [2].Value;
@@ -3115,12 +3171,12 @@ public class LevelEditor : MonoBehaviour {
 		// Debug.Log("[LevelEditor]LoadEvaluationLevels()");
 
 		// search all local
-		string[] arrLevelFiles = GetExistingEvaluationLevelFiles( actualLevel );
+		string[] arrLevelFiles = GetExistingEvaluationLevelFiles( actualEditorLevel );
 		for (int i = 0; i < arrLevelFiles.Length; i++ ) {
 			string fileN = arrLevelFiles[i];
 			// Debug.Log(i+". "+fileN);
 
-			Match match = Regex.Match(fileN, @"level"+actualLevel+"_(\\d+)_(\\d+).", RegexOptions.IgnoreCase);
+			Match match = Regex.Match(fileN, @"level"+actualEditorLevel+"_(\\d+)_(\\d+).", RegexOptions.IgnoreCase);
 
 			if (!editorEvaluationFilter.Equals("all")) {
 
@@ -3128,7 +3184,7 @@ public class LevelEditor : MonoBehaviour {
 
 					// Debug.Log("editorEvaluationPlayerId: "+editorEvaluationPlayerId);
 
-					match = Regex.Match(fileN, @"level"+actualLevel+"_("+editorEvaluationPlayerId+")_(\\d+).", RegexOptions.IgnoreCase);
+					match = Regex.Match(fileN, @"level"+actualEditorLevel+"_("+editorEvaluationPlayerId+")_(\\d+).", RegexOptions.IgnoreCase);
 
 				}
 
@@ -3136,7 +3192,7 @@ public class LevelEditor : MonoBehaviour {
 				if (editorEvaluationFilter.Equals("player.session")) {
 
 					// Debug.Log("editorEvaluationPlayerId: player.session "+editorEvaluationPlayerId);
-					match = Regex.Match(fileN, @"level"+actualLevel+"_("+editorEvaluationPlayerId+")_("+editorEvaluationSessionId+").", RegexOptions.IgnoreCase);
+					match = Regex.Match(fileN, @"level"+actualEditorLevel+"_("+editorEvaluationPlayerId+")_("+editorEvaluationSessionId+").", RegexOptions.IgnoreCase);
 
 				}
 
@@ -3150,7 +3206,7 @@ public class LevelEditor : MonoBehaviour {
 				string sessionId = match.Groups[2].Value;
 				// Debug.Log("-"+i+". FOUND: ("+playerId+"/"+sessionId+")");
 
-				LoadLevel ( actualLevel, playerId, sessionId );
+				LoadLevel ( actualEditorLevel, playerId, sessionId );
 			}
 		}
 
@@ -3179,7 +3235,7 @@ public class LevelEditor : MonoBehaviour {
 			flagEvaluationTemp = true; 
 		}
 
-		editorLogText = ""+DateTime.Now.ToString("LOADED: HH:mm:ss");
+		editorLogText = ""+DateTime.Now.ToString("LOADED LEVEL "+level+": HH:mm:ss");
 		AddEditorMessage( editorLogText );
 
 		// add evaluation 
@@ -3368,9 +3424,9 @@ public class LevelEditor : MonoBehaviour {
 
 	// REMOVE AND INSERT
 	void RemoveActualLevel() {
-		Debug.Log("LevelEditor.RemoveActualLevel() "+actualLevel);
+		Debug.Log("LevelEditor.RemoveActualLevel() "+actualEditorLevel);
 
-		for (int z=actualLevel;z<(maxMaxLevel-1);z++) {
+		for (int z=actualEditorLevel;z<(maxMaxLevel-1);z++) {
 			string remoteAddOnPath = "";
 			if (CheckLevelTypeWeb()) {
 				remoteAddOnPath = GetRemotePath();
@@ -3388,8 +3444,8 @@ public class LevelEditor : MonoBehaviour {
 		}
 	}
 	void InsertLevelAfterActualLevel() {
-		Debug.Log("LevelEditor.InsertLevelAfterActualLevel() "+actualLevel);
-		for (int z=(maxMaxLevel-1);z>actualLevel;z--) {
+		Debug.Log("LevelEditor.InsertLevelAfterActualLevel() "+actualEditorLevel);
+		for (int z=(maxMaxLevel-1);z>actualEditorLevel;z--) {
 			string remoteAddOnPath = "";
 			if (CheckLevelTypeWeb()) {
 				remoteAddOnPath = GetRemotePath();
@@ -3406,7 +3462,7 @@ public class LevelEditor : MonoBehaviour {
 			}
 		}
 		AddToEditorHistory();
-		AddEditorMessage("Inserted a level after "+actualLevel);
+		AddEditorMessage("Inserted a level after "+actualEditorLevel);
 	}
 
 	// Mouse to WorldPosition and reverse
@@ -3833,7 +3889,15 @@ public class LevelEditor : MonoBehaviour {
 			if (debugIngame) {
 				float igt = GetIngameTime();
 				igt = (int)(igt*10.0f)/10.0f;
-				GUI.Label (new Rect (Screen.width - 160, 24, 80, 20), " "+ingameLanguage+" L:"+ingameLevel+" T:"+igt, guixt);
+				if (GUI.Button (new Rect (Screen.width - 160, 24, 100, 20), " "+ingameLanguage+" L:"+ingameLevel+" T:"+igt, guixt)) {
+					actualEditorLevel = ingameLevel;
+					gameLogic.SetGameState( GameLogic.GameLogicModal.Editor  );
+				}
+				// ingameState
+				if (GUI.Button (new Rect (Screen.width - 160, 44, 100, 20), " "+ingameState, guixt)) {
+					actualEditorLevel = ingameLevel;
+					gameLogic.SetGameState( GameLogic.GameLogicModal.Editor  );
+				}
 			}
 
 			// EDITOR
@@ -4892,9 +4956,9 @@ public class LevelEditor : MonoBehaviour {
 				toolsXTmp = toolsXTmp + 122;
 
 				// UPLOAD SELECTED LEVEL
-					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), "UPLOAD LEVEL "+actualLevel, editorButtonActiveStyleWeb)) {
+					if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 140, 20), "UPLOAD LEVEL "+actualEditorLevel, editorButtonActiveStyleWeb)) {
 					// SAVE IT ... 
-					RemoteUploadOnly(actualLevel);
+						RemoteUploadOnly(actualEditorLevel);
 				}
 				toolsXTmp = toolsXTmp + 142;
 
@@ -4932,14 +4996,14 @@ public class LevelEditor : MonoBehaviour {
 				ClearLevel ();  
 				// NewLevel();
 				DefaultElements();
-				SaveLevel (actualLevel);
+					SaveLevel (actualEditorLevel);
 			}
 			toolsXTmp = toolsXTmp + 60;
 
 			// all level (imported first)
 			if (true) {
 				GUIStyle gui = editorButtonStyle;
-				if (actualLevel == allLevel) {
+					if (actualEditorLevel == allLevel) {
 					gui = editorButtonActiveStyle;
 					// text = ">" + text + "";
 				}
@@ -4949,7 +5013,7 @@ public class LevelEditor : MonoBehaviour {
 					// EditorUpdateCameraToScroll(scroll);
 					//stateSpecialEditor="";
 					// SetLevel (i);
-						gameLogic.SetGameLevel( allLevel );
+						LoadEditorLevel( allLevel );
 				}
 			}
 			toolsXTmp = toolsXTmp + 22;
@@ -4959,7 +5023,7 @@ public class LevelEditor : MonoBehaviour {
 				string text = "" + i;
 				// actualLevel
 				GUIStyle gui = editorButtonStyle;
-				if (i == actualLevel) {
+					if (i == actualEditorLevel) {
 					gui = editorButtonActiveStyle;
 					// text = ">" + text + "";
 					
@@ -4967,7 +5031,7 @@ public class LevelEditor : MonoBehaviour {
 					if (i!=0) {
 						if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 10, 20), "-", editorButtonStyle)) {
 								RemoveActualLevel();
-								LoadEditorLevel(actualLevel);
+								LoadEditorLevel(actualEditorLevel);
 						}
 						toolsXTmp = toolsXTmp + 12;
 					}
@@ -4986,12 +5050,12 @@ public class LevelEditor : MonoBehaviour {
 					// EditorUpdateCameraToScroll(scroll);
 					//stateSpecialEditor="";
 					// SetLevel (i);
-					gameLogic.SetGameLevel( i );
+						LoadEditorLevel( i );
 				}
 
 				toolsXTmp = toolsXTmp + 22;
 
-					if (i == actualLevel) {
+					if (i == actualEditorLevel) {
 						// add
 						if (GUI.Button (new Rect (toolsXTmp, toolsYTmp, 10, 20), "+", editorButtonStyle)) {
 							InsertLevelAfterActualLevel();
@@ -6239,17 +6303,20 @@ public class LevelEditor : MonoBehaviour {
 
 			// the leveltitle
 			GameElement titleGE = GetGameElementByName("TITLE");
+			string xtitle = "";
 			if (titleGE!=null) {
-				string title = ""+titleGE.argument;
-				if (title.Equals("")) {
-					title = "[NOT YET A TITLE]";
-				}
-				if (GUI.Button ( new Rect(600,20,400,20), ""+title, editorTitleStyle)) {
+				xtitle = ""+titleGE.argument;
+			}
+			if (xtitle.Equals("")) {
+				xtitle = "[NOT YET A TITLE]";
+			}
+			xtitle = actualEditorLevel+ ": " + xtitle;
+			if (GUI.Button ( new Rect(600,20,400,20), ""+xtitle, editorTitleStyle)) {
 					// edit here
 					SetTool("EDIT");
 					SetSelectedElement( titleGE );
 				}
-			}
+			
 
 			// 	selectiondialoge
 			if (selectionDialoge) {
@@ -6336,23 +6403,27 @@ public class LevelEditor : MonoBehaviour {
 
 
 				// selectionY = selectionY + 24;
+				int coun = 0;
 				if (selectFilter.Equals("")) {
 					for (int i=0; i<arrNames.Count; i++) {
 						GameElement gae = (GameElement)arrNames [i];
-						string text = "" + gae.name;
-						if (gae.name.Equals("")) {
-							text = text + "("+gae.subtype+")";
-						}
-						GUIStyle guix = editorButtonStyleNotActive;
-						if (editorSelected==gae) guix = editorButtonActiveStyle;
-						bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), ""+text+"", guix);
-						if (buttonClicked) {
-							SetTool("EDIT");
-							SetSelectedElement(gae);
+						if (gae.Internal()) {
+							string text = "" + gae.name;
+							if (gae.name.Equals("")) {
+								text = text + "("+gae.subtype+")";
+							}
+							GUIStyle guix = editorButtonStyleNotActive;
+							if (editorSelected==gae) guix = editorButtonActiveStyle;
+							bool buttonClicked = GUI.Button (new Rect ( selectionX, selectionY, selectionSize, 20), ""+text+"", guix);
+							if (buttonClicked) {
+								SetTool("EDIT");
+								SetSelectedElement(gae);
 
+							}
+							selectionY = selectionY + 20;
+							coun ++;
+							if (i>10) break;
 						}
-						selectionY = selectionY + 20;
-						if (i>10) break;
 					} 
 					selectionY = selectionY + 20;
 				} 
@@ -6382,21 +6453,26 @@ public class LevelEditor : MonoBehaviour {
 				if (selectFilter.Equals("menu")) { 
 					ArrayList arrList = GetGameElementsByTypeAndSub("guimenu","*");
 					// AddGameElementAtName ("meta","title", new Vector3(0.0f,0.0f,0.0f), "TITLE" );
-					if (GUI.Button (new Rect ( selectionX, selectionY, 40, 20), "LOGO", editorButtonStyleNotActive)) {
-						GameElement ge = AddGameElementAtName ("guimenu","logo", new Vector3(0.0f,0.0f,0.0f), "logo" );
-						AddToEditorHistory();
-					}
-					if (GUI.Button (new Rect ( selectionX+45, selectionY, 40, 20), "SPLASH", editorButtonStyleNotActive)) {
+					if (GUI.Button (new Rect ( selectionX, selectionY, 40, 20), "LOGOSP", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("guimenu","splashtext", new Vector3(0.0f,0.0f,0.0f), "splashtext" );
 						AddToEditorHistory();
 					}
-					if (GUI.Button (new Rect ( selectionX+90, selectionY, 40, 20), "MENU", editorButtonStyleNotActive)) {
+					if (GUI.Button (new Rect ( selectionX+45, selectionY, 40, 20), "TEXTSP", editorButtonStyleNotActive)) {
+						GameElement ge = AddGameElementAtName ("guimenu","splashtext", new Vector3(0.0f,0.0f,0.0f), "splashtext" );
+						AddToEditorHistory();
+					}
+					if (GUI.Button (new Rect ( selectionX+45+45, selectionY, 40, 20), "LOGO", editorButtonStyleNotActive)) {
+						GameElement ge = AddGameElementAtName ("guimenu","logo", new Vector3(0.0f,0.0f,0.0f), "logo" );
+						AddToEditorHistory();
+					}
+
+					if (GUI.Button (new Rect ( selectionX+45+45+45, selectionY, 40, 20), "MENU", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("guimenu","menu", new Vector3(0.0f,0.0f,0.0f), "menu" );
 						ge.argument = "@intro,@play,@setting,@webeditor,@exit";
 						ge.argumentsub = "0,2,4,http://www.swissmercenariesgame.com,exit";
 						AddToEditorHistory();
 					}
-					if (GUI.Button (new Rect ( selectionX+135, selectionY, 40, 20), "TEXT", editorButtonStyleNotActive)) {
+					if (GUI.Button (new Rect ( selectionX+45+45+45+4, selectionY, 40, 20), "TEXT", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("guimenu","text", new Vector3(0.0f,0.0f,0.0f), "text" );
 						ge.argument = "@text";
 						AddToEditorHistory();

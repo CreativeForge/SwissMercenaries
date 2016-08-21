@@ -348,10 +348,27 @@ namespace GameLab.NotficationCenter
 		}
 
 		void ProcessInGame( Notification nt ) {
+			if (nt.subtype.Equals("intro")) {
+				gameLogic.levelEditor.SetIngameState("intro");
+			}
+			if (nt.subtype.Equals("")) {
+					gameLogic.levelEditor.SetIngameState("");
+			}
+			if (nt.subtype.Equals("ingame")) {
+				gameLogic.levelEditor.SetIngameState("");
+			}
 			if (nt.subtype.Equals("plunder")) {
 				gameLogic.levelEditor.ingameController.GameMode=1	;	
-				// playerS.Money+= 100;
+				gameLogic.levelEditor.SetIngameState("plunder");
 			}
+			if (nt.subtype.Equals("won")) {
+				gameLogic.levelEditor.SetIngameState("won");
+			}
+			if (nt.subtype.Equals("gameover")) {
+				gameLogic.levelEditor.SetIngameState("plunder");
+			}
+
+			// SetIngameState(--l-o 
 		}
 
 // dont' forget to register in unity3d editor ...
