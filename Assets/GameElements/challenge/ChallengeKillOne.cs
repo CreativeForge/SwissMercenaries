@@ -22,9 +22,16 @@ public class ChallengeKillOne : GUIMenuText {
 				GameObject obj = GameObject.Find(nameToFind);
 				if (obj!=null) {
 					// still doing
+					if (obj.transform.childCount==0) {
+						done = true;
+					}
 				} else {
+					// check if it is a just a gameobject without gameobjects
+					done = true;
+				}
+				if (done) {
 					// done
-					scriptText.text = gameLogic.levelEditor.ParseText(""+gameElement.argumentsub+" FOUND!");
+					scriptText.text = gameLogic.levelEditor.ParseText(""+gameElement.argumentsub)+" FOUND! ";
 					AddNotification( "ingame.won", "PLAYER", 0.0f, "" );
 					AddNotification( "level.next", "PLAYER", 5.0f, "" );
 					// load next level ... 
