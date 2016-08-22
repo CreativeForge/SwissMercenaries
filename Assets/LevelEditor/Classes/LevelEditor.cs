@@ -185,16 +185,16 @@ public class LevelEditor : MonoBehaviour {
 	}
 	public void LoadInGameLevel( int ilevel ) {
 		ingameLevel = ilevel;
-		LoadInGameLevel(ilevel);
+		LoadLevel(ilevel);
 	}
 
 	public void ReloadActualInGameLevel() {
-		LoadInGameLevel(ingameLevel);
+		LoadLevel(ingameLevel);
 	}
 
 	// switch from editor
 	public void LoadActualIngameEditorLevel() {
-		LoadEditorLevel(actualEditorLevel);
+		LoadInGameLevel(actualEditorLevel);
 	}
 
 
