@@ -70,9 +70,6 @@ public class GameLogic : MonoBehaviour {
 
 		// get autor 
 
-		// prefs
-		int lastEditedLevel = PlayerPrefs.GetInt("LastEditedLevel");
-		if(lastEditedLevel>=0) levelEditor.actualEditorLevel = lastEditedLevel;
 
 		// get web ...
 
@@ -101,7 +98,8 @@ public class GameLogic : MonoBehaviour {
 		// ACTIVATE NEW MODEL
 		if (modal == GameLogic.GameLogicModal.Running) {
 			ActivateStateIngame();
-			levelEditor.LoadActualIngameEditorLevel();
+			// switch to actual levelEditorLevel
+			levelEditor.LoadActualEditorLevelIngame();
 		}
 		if (modal == GameLogic.GameLogicModal.Editor) {
 			ActivateStateEditor();

@@ -183,17 +183,33 @@ public class LevelEditor : MonoBehaviour {
 		ingameLevel++;
 		LoadInGameLevel(ingameLevel);
 	}
-	public void LoadInGameLevel( int ilevel ) {
-		ingameLevel = ilevel;
-		LoadLevel(ilevel);
+
+	public void LoadInGameLevel( int newLevel ) {
+
+		ingameLevel = newLevel;
+		// actualLevel = newLevel;
+
+		// PlayerPrefs.SetInt("LastEditedLevel", actualEditorLevel);
+
+		// todo: load level ... 
+		ClearLevel ();
+		LoadLevel (ingameLevel);
+
+		if (flagEvaluation) {
+			// in running mode!
+			NewSession (evaluationPlayer);
+		}
+
 	}
+
 
 	public void ReloadActualInGameLevel() {
-		LoadLevel(ingameLevel);
+		LoadInGameLevel(ingameLevel);
 	}
 
-	// switch from editor
-	public void LoadActualIngameEditorLevel() {
+	// switch from editor to game
+	public void LoadActualEditorLevelIngame() {
+		// load it ...
 		LoadInGameLevel(actualEditorLevel);
 	}
 
@@ -309,8 +325,9 @@ public class LevelEditor : MonoBehaviour {
 
 	}
 
+	// SWITCH FROM INGAME
 	public void LoadActualEditorLevel() {
-		LoadEditorLevel( actualEditorLevel );
+		LoadEditorLevel( ingameLevel );
 	}
 
 	// load game level (used from GameLogic) 
@@ -3600,9 +3617,14 @@ public class LevelEditor : MonoBehaviour {
 		// start with level 1
 		SetLevel (0);
 
+		// prefs
+		int lastEditedLevel = PlayerPrefs.GetInt("LastEditedLevel");
+		if(lastEditedLevel>=0) actualEditorLevel = lastEditedLevel;
+
 
 		// check for playerId
 		// > generate playerId
+		ingameLevel = 0;
 
 	}
 
