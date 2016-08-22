@@ -639,7 +639,7 @@ public class LevelEditor : MonoBehaviour {
 		// ok let's check ... 
 		// confusing
 		// LoadLevel( actualLevel );
-		LoadLevel( 1 );
+		LoadLevel( 0 );
 		// remoteSelection = true;
 	}
 
