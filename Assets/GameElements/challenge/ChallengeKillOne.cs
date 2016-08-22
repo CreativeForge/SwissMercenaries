@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ChallengeKillOne : GUIMenuText {
 
-	bool started = false;
+	bool startedX = false;
 	string nameToFind = "xyz";
 
 	// Use this for initialization
@@ -14,7 +14,7 @@ public class ChallengeKillOne : GUIMenuText {
 	// Update is called once per frame
 	void FixedUpdate () {
 		// found?
-		if (started) {
+		if (startedX) {
 			// in action
 			if (CheckState("")) {
 				// done
@@ -41,7 +41,7 @@ public class ChallengeKillOne : GUIMenuText {
 	}
 
 	public override void OnGameStart() {
-		started = true;
+		startedX = true;
 		nameToFind = gameElement.argument;
 		UpdateText();
 	}

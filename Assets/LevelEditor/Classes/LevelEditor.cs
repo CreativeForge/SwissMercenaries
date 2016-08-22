@@ -185,16 +185,16 @@ public class LevelEditor : MonoBehaviour {
 	}
 	public void LoadInGameLevel( int ilevel ) {
 		ingameLevel = ilevel;
-		LoadLevel(ilevel);
+		LoadInGameLevel(ilevel);
 	}
 
 	public void ReloadActualInGameLevel() {
-		LoadLevel(ingameLevel);
+		LoadInGameLevel(ingameLevel);
 	}
 
 	// switch from editor
 	public void LoadActualIngameEditorLevel() {
-		LoadInGameLevel(actualEditorLevel);
+		LoadEditorLevel(actualEditorLevel);
 	}
 
 
@@ -2516,6 +2516,13 @@ public class LevelEditor : MonoBehaviour {
 	public void ActivateElement( GameElement elem ) {
 		if (elem!=null) {
 			elem.release = "";
+			if (elem.gameObject!=null) {
+				GameElementBased geb = elem.gameObject.GetComponent<GameElementBased>();
+				// Debug.Log ("---"+trb.ToString ());
+				if (geb!=null) {
+					geb.OnGameStart( );
+				}
+			} 
 			UpdateElementVisual (elem);
 		}
 	}
