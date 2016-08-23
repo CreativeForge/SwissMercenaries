@@ -59,7 +59,9 @@ public class DestructibleScript : MonoBehaviour {
 	}
 
 	void Start(){
+		if (InGameController.i!=null) {
 		InGameController.i.RegistrateLootableEnemy(this);
+		}
 	}
 
 	// Update is called once per frame

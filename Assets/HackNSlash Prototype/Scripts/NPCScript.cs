@@ -4,28 +4,30 @@ using System.Collections.Generic;
 
 public class NPCScript : MonoBehaviour {
 
+	// enemies (enemy,fugitives) & friendly npcs
+
 	public bool isEnemy = true;
 	public float speed = 1;
 	public Rigidbody rB;
-	public DestructibleScript dS;
-	public HitterScript hS;
+	public DestructibleScript dS; // component hitable < same like player
+	public HitterScript hS;  // component hit the other < same like player
 
-	public bool lookAtPlayer = false;
-	public bool smoothLookAtPlayer = false;
-	public bool stopNearPlayer = false;
-	public float stopNearPlayerDistance = 2;
-	public bool startAttackingWhenPlayerEntersTrigger = false;
-	public bool fleeWhenPlayerInTrigger = false;
-	bool isMoving = false;
-	public bool isStandingStill = false;
-	public bool playerIsInTrigger = false;
+	public bool lookAtPlayer = false;  // rotate to player
+	public bool smoothLookAtPlayer = false; // delayed rotate to player
+	public bool stopNearPlayer = false; // wait before the player 
+	public float stopNearPlayerDistance = 2; // distance
+	public bool startAttackingWhenPlayerEntersTrigger = false; // player in trigger
+	public bool fleeWhenPlayerInTrigger = false; // flee > fugitve
+	bool isMoving = false; // for checking is moving
+	public bool isStandingStill = false; // for checking stands still
+	public bool playerIsInTrigger = false; // for checking player is in detecter trigger
 
-	public Animator anim;
+	public Animator anim; // animation of the npc
 
-	int checkForEnemiesCounter = 0;
-	int enemyCounterFreq = 30;
-	List<NPCScript> enemiesInTrigger = new List<NPCScript>();
-	public Transform attackTargetT;
+	int checkForEnemiesCounter = 0; // how many npcs in trigger
+	int enemyCounterFreq = 30; // 
+	List<NPCScript> enemiesInTrigger = new List<NPCScript>(); // list of  ( isEnemy )
+	public Transform attackTargetT; // attack ( isEnemy )
 
 	// Use this for initialization
 	void Start () {
@@ -33,7 +35,7 @@ public class NPCScript : MonoBehaviour {
 		if(!isEnemy) {
 			isMoving= true;
 		}
-		attackTargetT = InGameController.i.playerS.transform;
+		attackTargetT = InGameController.i.playerS.transform; // default kill player
 	}
 
 	void Update(){
@@ -84,12 +86,14 @@ public class NPCScript : MonoBehaviour {
 
 	void FixedUpdate () {
 
-		if(dS && dS.IsDead)return;
+		if(dS && dS.IsDead)return; // are you dead ... 
+
+		// movement of the npc (enemy or friendly enemy)
 
 		// if (InGameController!=null) {
-		HandleRotation(InGameController.i.playerS.transform);
+		HandleRotation(InGameController.i.playerS.transform); // rotation
 
-		HandleMovement(InGameController.i.playerS.transform);
+		HandleMovement(InGameController.i.playerS.transform); // handle movement ...
 		//}
 	}
 
@@ -168,7 +172,7 @@ public class NPCScript : MonoBehaviour {
 		if(fleeWhenPlayerInTrigger)isMoving = false;
 	}
 		
-	public void NPCEnteredTrigger(NPCScript inNPC){
+	public void NPCEnteredTrigger(NPCScript inNPC){ // other npc enters trigger
 		//if(isEnemy && !fleeWhenPlayerInTrigger)return;
 
 		if(inNPC.dS && !inNPC.dS.IsDead && !enemiesInTrigger.Contains(inNPC)){
