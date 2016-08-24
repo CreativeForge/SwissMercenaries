@@ -35,10 +35,16 @@ public class NPCScript : MonoBehaviour {
 		if(!isEnemy) {
 			isMoving= true;
 		}
-		attackTargetT = InGameController.i.playerS.transform; // default kill player
+		if (InGameController.i!=null) {
+			attackTargetT = InGameController.i.playerS.transform; // default kill player
+		}
 	}
 
 	void Update(){
+
+		if (InGameController.i==null) {
+			attackTargetT = InGameController.i.playerS.transform; // default kill player
+		}
 		
 		//if(isEnemy && !fleeWhenPlayerInTrigger)return;
 		checkForEnemiesCounter++;
@@ -91,10 +97,9 @@ public class NPCScript : MonoBehaviour {
 		// movement of the npc (enemy or friendly enemy)
 
 		// if (InGameController!=null) {
-		HandleRotation(InGameController.i.playerS.transform); // rotation
-
-		HandleMovement(InGameController.i.playerS.transform); // handle movement ...
-		//}
+			HandleRotation(InGameController.i.playerS.transform); // rotation
+			HandleMovement(InGameController.i.playerS.transform); // handle movement ...
+		// }
 	}
 
 	void HandleMovement(Transform inPlayerT){
@@ -119,6 +124,8 @@ public class NPCScript : MonoBehaviour {
 	}
 
 	void HandleRotation(Transform inPlayerT){
+
+		if (attackTargetT==null) return;
 
 		if(isEnemy){
 			if(fleeWhenPlayerInTrigger){

@@ -28,7 +28,7 @@ public class HitBoxScript : MonoBehaviour {
 	void OnTriggerEnter(Collider inC){
 		DestructibleScript dS = inC.GetComponent<DestructibleScript>();
 		if(dS){
-
+			Debug.Log("ds entered: "+inC.name);
 			if(!parentHitterScript){
 				Debug.LogWarning("hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent);
 				Debug.LogWarning("hitterscript: "+parentHitterScript + "self: "+name+" self.parent: "+transform.parent.name);

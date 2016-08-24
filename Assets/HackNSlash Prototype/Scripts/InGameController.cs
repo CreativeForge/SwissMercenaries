@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class InGameController : GameElementBased {
 
-	public static InGameController i;
+	public static InGameController i; // singleton
 	public PlayerScript playerS;
 
 	private int gameMode = 0; // GameModes: 0 Kill, 1 Plunder
@@ -39,7 +39,7 @@ public class InGameController : GameElementBased {
 	void Awake () {
 		i = this;
 
-		if(!normalSkyBoxMat)normalSkyBoxMat=RenderSettings.skybox;
+		if(!normalSkyBoxMat) normalSkyBoxMat=RenderSettings.skybox;
 
 		playerS = FindObjectOfType<PlayerScript>();
 		notificationC = GetComponent<NotificationCenterPrototype>();
