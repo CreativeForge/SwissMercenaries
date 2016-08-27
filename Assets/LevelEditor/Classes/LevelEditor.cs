@@ -13,7 +13,7 @@
 
 	// new LevelObjects > levelElements
 
-	using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 using GameLab.NotficationCenter;
@@ -39,6 +39,8 @@ public class LevelEditor : MonoBehaviour {
 		// scale all the 
 
 		ScalerSetUp();
+
+
 	}
 	void ScalerSetUp() {
 		// set scale
@@ -50,6 +52,7 @@ public class LevelEditor : MonoBehaviour {
 		int fontSize = (int) (16.0f * scaleFont * 0.9f);
 
 		editorDefault.fontSize = fontSize;
+		editorLabel.fontSize = fontSize;
 		editorBackground.fontSize = fontSize;
 		editorWebLevels.fontSize = fontSize;
 		editorInspectorBackground.fontSize = fontSize;
@@ -74,6 +77,47 @@ public class LevelEditor : MonoBehaviour {
 		editorElementType.fontSize = fontSize;
 		guiEvaluation.fontSize = fontSize;
 		editorTitleStyle.fontSize = fontSize;
+
+		if (arrSensButtons.Count>0) {
+
+			for (int i=0;i<arrSensButtons.Count;i++) {
+
+			}
+			arrSensButtons.Clear();
+		}
+
+		// set cursor
+		cursorX = GUIScalerScreenWidth()-300; // (int)((float)(Screen.width - 300)*scaleX);
+		cursorY = GUIScalerScreenHeight()-200; //(int)((float)(Screen.height - 200)*scaleY);
+
+		// transform
+		int inspectorXTmp = cursorX;
+		int inspectorYTmp = cursorY;
+
+		AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateForward, "rotateforward" );
+		inspectorXTmp = inspectorXTmp + 30;
+		AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateLeft, "rotateleft" );
+		inspectorXTmp = inspectorXTmp + 30;
+		AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconForward, "forward" );
+		inspectorXTmp = inspectorXTmp + 30;
+		AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateRight, "rotateright" );
+		inspectorXTmp = inspectorXTmp + 30;
+		AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconUp, "up" );
+		inspectorYTmp = inspectorYTmp + 30; 
+		inspectorXTmp = cursorX; 
+		AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateBackward, "rotatebackward" );
+		inspectorXTmp = inspectorXTmp + 30;
+		AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconLeft, "left" );
+		inspectorXTmp = inspectorXTmp + 30;
+		AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconBackward, "backward" );
+		inspectorXTmp = inspectorXTmp + 30;
+		AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRight, "right" );
+		inspectorXTmp = inspectorXTmp + 30;
+		AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconDown, "down" );
+
+
+
+		// 
 	}
 	// simulate this ..
 	int GUIScalerScreenWidth() {
@@ -2631,6 +2675,7 @@ public class LevelEditor : MonoBehaviour {
 			if (elem.gameObject != null) {
 				Destroy (elem.gameObject);
 			}
+			elem.gameObject= null;
 		}
 	}
 
@@ -2654,6 +2699,7 @@ public class LevelEditor : MonoBehaviour {
 		if (elem != null) {
 			if (elem.gameObject != null) {
 				Destroy (elem.gameObject);
+				elem.gameObject = null;
 			}
 			arrLevel.Remove (elem);
 		}
@@ -3146,6 +3192,9 @@ public class LevelEditor : MonoBehaviour {
 	// GameElement editorChangeToSelection = new GameElement(); // [EDIT]: change element type to ... 
 
 	public GUIStyle editorDefault;
+
+	public GUIStyle editorLabel;
+
 	public GUIStyle editorBackground;
 	public GUIStyle editorWebLevels;
 	public GUIStyle editorInspectorBackground;
@@ -3274,6 +3323,8 @@ public class LevelEditor : MonoBehaviour {
 
 	// base function
 	void LoadLevel( int level  ) {
+
+		AddEditorMessage("LoadLevel("+level+")");
 
 		// ingame time (if neede)
 		SetIngameTimeToLoading();
@@ -3743,7 +3794,7 @@ public class LevelEditor : MonoBehaviour {
 
 	bool CheckMouseInEditor() {
 		float mouseX=Input.mousePosition.x;
-		float mouseY=GUIScalerScreenHeight()-Input.mousePosition.y;
+		float mouseY=Screen.height-Input.mousePosition.y;
 
 		/*
 		if ((mouseX>editorPrefX)&&(mouseX<(editorPrefX+editorWidth))&&(mouseY>editorPrefY)&&(mouseY<(editorPrefY+editorHeight))) {
@@ -3753,70 +3804,70 @@ public class LevelEditor : MonoBehaviour {
 		}
 		*/
 
-		if ((mouseX>(GUIScalerScreenWidth()-200))&&(mouseX<(GUIScalerScreenWidth()))
+		if ((mouseX>(Screen.width-200*scaleX))&&(mouseX<(Screen.width))
 			&&
-			(mouseY>=0)&&(mouseY<(20))) {
+			(mouseY>=0)&&(mouseY<(20*scaleX))) {
 			return true;
 		}
 
 
-		if ((mouseX>cursorRect.x)&&(mouseX<(cursorRect.x+cursorRect.width))
+		if ((mouseX>cursorRect.x*scaleX)&&(mouseX<(cursorRect.x*scaleX+cursorRect.width*scaleX))
 			&&
-			(mouseY>cursorRect.y)&&(mouseY<(cursorRect.y+cursorRect.height))) {
+			(mouseY>cursorRect.y*scaleY)&&(mouseY<(cursorRect.y+cursorRect.height*scaleY))) {
 			return true;
 		}
 
 		// inspectorRect
-		if ((mouseX>inspectorRect.x)&&(mouseX<(inspectorRect.x+inspectorRect.width))
+			if ((mouseX>inspectorRect.x*scaleX)&&(mouseX<(inspectorRect.x*scaleX+inspectorRect.width*scaleX))
 			&&
-			(mouseY>inspectorRect.y)&&(mouseY<(inspectorRect.y+inspectorRect.height))) {
+				(mouseY>inspectorRect.y*scaleY)&&(mouseY<(inspectorRect.y*scaleY+inspectorRect.height*scaleY))) {
 			return true;
 		}
 
-		if ((mouseX>filterTypeVisual.x)&&(mouseX<(filterTypeVisual.x+filterTypeVisual.width))
+			if ((mouseX>filterTypeVisual.x*scaleX)&&(mouseX<(filterTypeVisual.x*scaleX+filterTypeVisual.width*scaleX))
 			&&
-			(mouseY>filterTypeVisual.y)&&(mouseY<(filterTypeVisual.y+filterTypeVisual.height))) {
+				(mouseY>filterTypeVisual.y*scaleY)&&(mouseY<(filterTypeVisual.y*scaleY+filterTypeVisual.height*scaleY))) {
 			return true;
 		}
-		if ((mouseX>filterTypeSubVisual.x)&&(mouseX<(filterTypeSubVisual.x+filterTypeSubVisual.width))
+			if ((mouseX>filterTypeSubVisual.x*scaleX)&&(mouseX<(filterTypeSubVisual.x*scaleX+filterTypeSubVisual.width*scaleX))
 			&&
-			(mouseY>filterTypeSubVisual.y)&&(mouseY<(filterTypeSubVisual.y+filterTypeSubVisual.height))) {
-			return true;
-		}
-
-		if ((mouseX>selectionDialogeVisual.x)&&(mouseX<(selectionDialogeVisual.x+selectionDialogeVisual.width))
-			&&
-			(mouseY>selectionDialogeVisual.y)&&(mouseY<(selectionDialogeVisual.y+selectionDialogeVisual.height))) {
+				(mouseY>filterTypeSubVisual.y*scaleY)&&(mouseY<(filterTypeSubVisual.y*scaleY+filterTypeSubVisual.height*scaleY))) {
 			return true;
 		}
 
-		if ((mouseX>undoVisual.x)&&(mouseX<(undoVisual.x+undoVisual.width))
+			if ((mouseX>selectionDialogeVisual.x*scaleX)&&(mouseX<(selectionDialogeVisual.x*scaleX+selectionDialogeVisual.width*scaleX))
 			&&
-			(mouseY>undoVisual.y)&&(mouseY<(undoVisual.y+undoVisual.height))) {
+				(mouseY>selectionDialogeVisual.y*scaleY)&&(mouseY<(selectionDialogeVisual.y*scaleY+selectionDialogeVisual.height*scaleY))) {
 			return true;
 		}
 
-		if ((mouseX>notificationVisual.x)&&(mouseX<(notificationVisual.x+notificationVisual.width))
+			if ((mouseX>undoVisual.x*scaleX)&&(mouseX<(undoVisual.x*scaleX+undoVisual.width*scaleX))
 			&&
-			(mouseY>notificationVisual.y)&&(mouseY<(notificationVisual.y+notificationVisual.height))) {
+				(mouseY>undoVisual.y*scaleY)&&(mouseY<(undoVisual.y*scaleY+undoVisual.height*scaleY))) {
 			return true;
 		}
 
-		if ((mouseX>nearbyRect.x)&&(mouseX<(nearbyRect.x+nearbyRect.width))
+			if ((mouseX>notificationVisual.x*scaleX)&&(mouseX<(notificationVisual.x*scaleX+notificationVisual.width*scaleX))
 			&&
-			(mouseY>nearbyRect.y)&&(mouseY<(nearbyRect.y+nearbyRect.height))) {
+				(mouseY>notificationVisual.y*scaleY)&&(mouseY<(notificationVisual.y*scaleY+notificationVisual.height*scaleY))) {
 			return true;
 		}
 
-		if ((mouseX>toolsRect.x)&&(mouseX<(toolsRect.x+toolsRect.width))
+			if ((mouseX>nearbyRect.x*scaleX)&&(mouseX<(nearbyRect.x*scaleX+nearbyRect.width*scaleX))
 			&&
-			(mouseY>toolsRect.y)&&(mouseY<(toolsRect.y+toolsRect.height))) {
+				(mouseY>nearbyRect.y*scaleY)&&(mouseY<(nearbyRect.y*scaleY+nearbyRect.height*scaleY))) {
 			return true;
 		}
 
-		if ((mouseX>typeselectionRect.x)&&(mouseX<(typeselectionRect.x+typeselectionRect.width))
+			if ((mouseX>toolsRect.x*scaleX)&&(mouseX<(toolsRect.x*scaleX+toolsRect.width*scaleX))
 			&&
-			(mouseY>typeselectionRect.y)&&(mouseY<(typeselectionRect.y+typeselectionRect.height))) {
+				(mouseY>toolsRect.y*scaleY)&&(mouseY<(toolsRect.y*scaleY+toolsRect.height*scaleY))) {
+			return true;
+		}
+
+			if ((mouseX>typeselectionRect.x*scaleX)&&(mouseX<(typeselectionRect.x*scaleX+typeselectionRect.width*scaleX))
+			&&
+				(mouseY>typeselectionRect.y*scaleY)&&(mouseY<(typeselectionRect.y*scaleY+typeselectionRect.height*scaleY))) {
 			return true;
 		}
 
@@ -3824,14 +3875,16 @@ public class LevelEditor : MonoBehaviour {
 		return false;
 	}
 
+	/*
 	bool GameElementInEditor( float x, float y ) {
 		float mouseX=x;
-		float mouseY=GUIScalerScreenHeight()-y;
+		float mouseY=Sceen.height-y;
 		if ((mouseX>editorPrefX)&&(mouseX<(editorPrefX+editorWidth))&&(mouseY>editorPrefY)&&(mouseY<(editorPrefY+editorHeight))) {
 			return true;
 		}
 		return false;
 	}
+	*/
 
 	void HandleMouseDownToCreate(){
 		HandleMouseDownToCreate( "mousepointer" );
@@ -4276,8 +4329,8 @@ public class LevelEditor : MonoBehaviour {
 
 						// visible?
 						// if (!GameElementInEditor(screenPos.x,screenPos.y))
-						if ((screenPos.x > 0) && (screenPos.x < GUIScalerScreenWidth())) 
-						if ((screenPos.y > 0) && (screenPos.y < GUIScalerScreenHeight())) 
+						if ((screenPos.x > 0) && (screenPos.x < Screen.width)) 
+						if ((screenPos.y > 0) && (screenPos.y < Screen.height)) 
 						{
 
 
@@ -4303,7 +4356,7 @@ public class LevelEditor : MonoBehaviour {
 								strType = ""+gaelement.subtype;
 							}
 							if (!showInfo) {
-								GUIScalerLabel (new Rect (screenPos.x+20, GUIScalerScreenHeight() - screenPos.y , 200, 80),""+waiting+" "+strType,editorElementType );
+								GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y , 200*scaleX, 80*scaleY),""+waiting+" "+strType,editorElementType );
 							}
 							if (showInfo) {
 								// GUIScalerLabel (new Rect (screenPos.x+20, GUIScalerScreenHeight() - screenPos.y, 200, 80),+"        "+strType,editorElementType );
@@ -4311,20 +4364,20 @@ public class LevelEditor : MonoBehaviour {
 								if (str.Equals("")) {
 									str = strType;
 								}
-								GUIScalerLabel (new Rect (screenPos.x+20, GUIScalerScreenHeight() - screenPos.y, 200, 80),waiting+""+str);
+								GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y, 200*scaleX, 80*scaleY),waiting+""+str,editorLabel);
 							}
 
 							// edit ?
 							if (editorTool.Equals ("EDIT")) {
-								if (GUIScalerButton (new Rect (screenPos.x, GUIScalerScreenHeight() - screenPos.y, 20, 20), editorEditImage, editorIconGUI)) {
+								if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20*scaleX, 20*scaleY), editorEditImage, editorIconGUI)) {
 									if (!CheckMouseInEditor()) {
 										SetSelectedElement(gaelement);
 									}
 								}
 								if (editorSelected==gaelement) {
-									GUIScalerLabel (new Rect (screenPos.x-10, GUIScalerScreenHeight() - screenPos.y-10, 40, 40), editorSelectedImage, editorIconGUI);
+									GUI.Label (new Rect (screenPos.x-10, Screen.height - screenPos.y-10, 40*scaleX, 40*scaleY), editorSelectedImage, editorIconGUI);
 									nearbyX = (int ) (screenPos.x - 125);
-									nearbyY = (int) (GUIScalerScreenHeight() - screenPos.y);
+									nearbyY = (int) (Screen.height - screenPos.y);
 								} 
 							}
 
@@ -4336,19 +4389,19 @@ public class LevelEditor : MonoBehaviour {
 
 
 								if (!gaelement.type.Equals("base")) {
-									if (GUIScalerButton (new Rect (screenPos.x, GUIScalerScreenHeight() - screenPos.y, 20, 20), editorMoveImage, editorIconGUI)) {
+									if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20*scaleX, 20*scaleY), editorMoveImage, editorIconGUI)) {
 										// SetSelectedElement(gaelement);
 										//		Debug.Log("Move Pressed");
 
 									}
 								} else {
-									if (GUIScalerButton (new Rect (screenPos.x, GUIScalerScreenHeight() - screenPos.y, 20, 20), editorEditImage, editorIconGUI)) {
+									if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20*scaleX, 20*scaleY), editorEditImage, editorIconGUI)) {
 										SetSelectedElement(gaelement);
 										SetTool("EDIT");
 									}
 								}
 								if (editorSelected==gaelement) {
-									GUIScalerLabel (new Rect (screenPos.x-10, GUIScalerScreenHeight() - screenPos.y-10, 40, 40), editorSelectedImage, editorIconGUI);
+									GUI.Label (new Rect (screenPos.x-10, Screen.height - screenPos.y-10, 40*scaleX, 40*scaleY), editorSelectedImage, editorIconGUI);
 								} 
 							}
 
@@ -4356,14 +4409,14 @@ public class LevelEditor : MonoBehaviour {
 							if (editorTool.Equals ("MOVE")) {
 
 								float buttonX=screenPos.x;
-								float buttonY=GUIScalerScreenHeight()-screenPos.y;
+								float buttonY=Screen.height-screenPos.y;
 								float buttonWidth=20.0f;
 
 								if (!gaelement.type.Equals("base"))
 								if (
-									(mouseX>buttonX)&&(mouseX<(buttonX+buttonWidth)) 
+									(mouseX>buttonX)&&(mouseX<(buttonX+buttonWidth*scaleX)) 
 									&&
-									(mouseY>buttonY)&&(mouseY<(buttonY+buttonWidth)) 
+									(mouseY>buttonY)&&(mouseY<(buttonY+buttonWidth*scaleX)) 
 								)
 								{
 									if (Input.GetMouseButtonDown(0)) {
@@ -4432,7 +4485,7 @@ public class LevelEditor : MonoBehaviour {
 
 							// delete ?
 							if (editorTool.Equals ("DELETE")) {
-								if (GUIScalerButton (new Rect (screenPos.x, GUIScalerScreenHeight() - screenPos.y, 20, 20), editorDeleteImage, editorIconGUI)) {
+								if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20*scaleX*0.9f, 20*scaleY*0.90f), editorDeleteImage, editorIconGUI)) {
 									// delete it now ..
 									RemoveElement (gaelement);
 
@@ -4447,13 +4500,13 @@ public class LevelEditor : MonoBehaviour {
 							// check if possible!
 							GameElement gelem=GetElementType(gaelement.type, gaelement.subtype);
 							if (gelem==null) {
-								GUIScalerLabel (new Rect (screenPos.x, GUIScalerScreenHeight() - screenPos.y+20, 300, 20), "[NOTFOUND:" + gaelement.type + "/" + gaelement.subtype+"]");
+								GUI.Label (new Rect (screenPos.x, Screen.height - screenPos.y+20, 300, 20), "[NOTFOUND:" + gaelement.type + "/" + gaelement.subtype+"]");
 							}
 							else {					
 
 								GameObject rep = gaelement.gameObject;
 								if (rep == null) {
-									GUIScalerLabel (new Rect (screenPos.x, GUIScalerScreenHeight() - screenPos.y+20, 100, 20), "(" /* + gaelement.type + "/" */ + gaelement.subtype+")");
+									GUI.Label (new Rect (screenPos.x, Screen.height - screenPos.y+20, 100, 20), "(" /* + gaelement.type + "/" */ + gaelement.subtype+")");
 								}
 
 							}
@@ -6357,32 +6410,7 @@ public class LevelEditor : MonoBehaviour {
 			GUIScalerLabel ( new Rect(cursorRect.x-5,cursorRect.y-5,cursorRect.width+5,cursorRect.height+10), "", editorBackground);
 
 
-			// transform
-			inspectorXTmp = cursorX;
-			inspectorYTmp = cursorY;
-			if (arrSensButtons.Count==0) {
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateForward, "rotateforward" );
-				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateLeft, "rotateleft" );
-				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconForward, "forward" );
-				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateRight, "rotateright" );
-				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconUp, "up" );
-				inspectorYTmp = inspectorYTmp + 30; 
-				inspectorXTmp = cursorX; 
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRotateBackward, "rotatebackward" );
-				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconLeft, "left" );
-				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconBackward, "backward" );
-				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconRight, "right" );
-				inspectorXTmp = inspectorXTmp + 30;
-				AddSensButton(inspectorXTmp,inspectorYTmp, 28,28, cursorIconDown, "down" );
 
-			}
 
 			if (true) {
 				// render the specials
@@ -6391,8 +6419,6 @@ public class LevelEditor : MonoBehaviour {
 				for (int i=0;i<arrSensButtons.Count;i++) {
 					sb = (SensButton) arrSensButtons[i];
 					GUIScalerLabel ( sb.rect, sb.icon, editorButtonStyle);
-
-
 				}
 
 			}
@@ -7167,11 +7193,11 @@ public class LevelEditor : MonoBehaviour {
 			if (true) { // }Input.GetMouseButton(1)) {
 				SensButton sb;
 				float mouseXT=Input.mousePosition.x;
-				float mouseYT=GUIScalerScreenHeight()-Input.mousePosition.y;
+				float mouseYT=(Screen.height-Input.mousePosition.y);
 				for (int i=0;i<arrSensButtons.Count;i++) {
 					sb = (SensButton) arrSensButtons[i];
-					if ((mouseXT>sb.rect.x)&&(mouseXT<(sb.rect.x+sb.rect.width))) {
-						if ((mouseYT>sb.rect.y)&&(mouseYT<(sb.rect.y+sb.rect.height))) {
+					if ((mouseXT>sb.rect.x*scaleX)&&(mouseXT<(sb.rect.x+sb.rect.width)*scaleX)) {
+						if ((mouseYT>sb.rect.y*scaleY)&&(mouseYT<(sb.rect.y+sb.rect.height)*scaleY)) {
 							// Debug.Log("LevelEditor.OnGUI() // sens mouse handler");
 							if (Input.GetMouseButton(0)) { 
 								DoSensButton( sb, "down" );
@@ -7309,10 +7335,10 @@ public class LevelEditor : MonoBehaviour {
 
 			// generate new objects
 			float mouseX=Input.mousePosition.x;
-			float mouseY=GUIScalerScreenHeight()-Input.mousePosition.y;
+			float mouseY=Screen.height-Input.mousePosition.y;
 
 			// hot edges
-			if ((mouseX<20)||(mouseX>(GUIScalerScreenWidth()-20))||(mouseY<20)||(mouseY>(GUIScalerScreenHeight()-20))) {
+			if ((mouseX<20)||(mouseX>(Screen.width-20*scaleX))||(mouseY<20*scaleY)||(mouseY>(Screen.height-20*scaleY))) {
 
 				// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // HOT EDGES");
 
@@ -7326,17 +7352,17 @@ public class LevelEditor : MonoBehaviour {
 
 					float rotatex = 1.0f;
 					float rotatey = 1.0f;
-					if ((mouseY>=0)&&(mouseY<20)) {
+					if ((mouseY>=0)&&(mouseY<20*scaleY)) {
 						xeditorcamera.transform.Rotate( -rotatey, 0.0f, 0.0f );
 					}
-					if ((mouseY>(GUIScalerScreenHeight()-20))&&(mouseY<=(GUIScalerScreenHeight()))) {
+					if ((mouseY>(Screen.height-20*scaleY))&&(mouseY<=(Screen.height))) {
 						xeditorcamera.transform.Rotate( +rotatey, 0.0f,  0.0f );
 					}
 
-					if ((mouseX>=0)&&(mouseX<20)) {
+					if ((mouseX>=0)&&(mouseX<20*scaleX)) {
 						xcontainer.transform.Rotate( 0.0f, -rotatex, 0.0f );
 					}
-					if ((mouseX<=(GUIScalerScreenWidth()))&&(mouseX>(GUIScalerScreenWidth()-20))) {
+					if ((mouseX<=(Screen.width))&&(mouseX>(Screen.width-20*scaleX))) {
 						xcontainer.transform.Rotate( 0.0f, rotatex, 0.0f );
 					}
 					/*
@@ -7417,9 +7443,21 @@ public class LevelEditor : MonoBehaviour {
 		} // /editor
 	}
 
+	// editor change?
+	int screenWidth = Screen.width;
+	int screenHeightChange = Screen.height;
 
 	// Update is called once per frame
 	void FixedUpdate () {
+
+		/*
+		 * ScreenChange
+		 * 
+		 * */
+		if ((screenWidth!=Screen.width)||(screenHeightChange!=Screen.height)) {
+			ScalerSetUp();
+			// cursorsetup
+		}
 
 		/*
 		 *  NOTIFICATION CENTER

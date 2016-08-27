@@ -160,7 +160,7 @@ public class GUIMenu : GameElementBased {
 
 	void ButtonAction( string menupoint )
 	{
-		Debug.Log("GUIMenu.ButtonAction()"+menupoint);
+		// Debug.Log("GUIMenu.ButtonAction()"+menupoint);
 
 		if (!gameLogic.CheckIngameState()) {
 			return;
