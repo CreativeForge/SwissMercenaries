@@ -136,6 +136,11 @@ public class GameElementBased : MonoBehaviour {
 		gameLogic.levelEditor.notificationCenter.AddNotification(  type, subtype,  targetName,  timed,  argument, pos );
 	}
 
+	// local at the position of the gameobject
+	public void AddNotificationHere( string type, string subtype, float timed, string argument, Vector3 offset ) {
+		gameLogic.levelEditor.notificationCenter.AddNotification(  type, subtype,  "vector",  timed,  argument, transform.position+offset );
+	}
+
 	public GameElement gameElement; 
 	public void SetGameElement( GameElement ga ) {
 		gameElement = ga;

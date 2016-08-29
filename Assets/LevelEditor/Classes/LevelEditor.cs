@@ -8,7 +8,29 @@
 * 
 * DirtyCode: No entry for heaven
 	* NextToDo: Refactoring
-	* 
+	*
+
+	// WORKFLOW: CREATE NPC
+	// 
+	// Architecture:
+
+	// NPCObject
+	// [NPCScript] 
+	// -- RB [RigidBocy] < NPCObject 
+	// -- DS [DestructionScript] < NPCObject 
+	// -- HS [NPCScript] < NPCObject 
+	// -- HitIntervalTime !!
+	// [HitterScript] 
+	// -- HitBox1 [GameObject] < [HitBox-GameObject+HitBoxScript]
+	// -- ES [RigidBody] < NPCObject 
+	// [HitBox-GameObject] HitBox-GameObject  
+	// -- [HitBoxScript]
+	// -- [Collider] Trigger!
+
+	// Examples:
+	// - spearwall (
+	// - barricade
+
 	* */
 
 	// new LevelObjects > levelElements
@@ -5911,7 +5933,7 @@ public class LevelEditor : MonoBehaviour {
 					HandleMouseDownToCreate( "null" );
 				}
 				inspectorXTmp = inspectorXTmp + 142;
-				buttonClickedX = GUIScalerButton (new Rect (inspectorXTmp , inspectorYTmp, 140, 20), "CREATE AT CAMERA", editorButtonStyle);
+				buttonClickedX = GUIScalerButton (new Rect (inspectorXTmp , inspectorYTmp, 180, 20), "CREATE AT CAMERA", editorButtonStyle);
 				if (buttonClickedX) {
 					HandleMouseDownToCreate( "camera"  );
 				}
@@ -6468,6 +6490,8 @@ public class LevelEditor : MonoBehaviour {
 			}
 			if (GUIScalerButton (new Rect (inspectorXTmp, inspectorYTmp, 34, 28), cursorIconObject, guixxx)) {
 				cursorObject = true;
+				SetTool("EDIT" +
+					"");
 			}
 			cursorRect.x = cursorX;
 			cursorRect.y = cursorY;

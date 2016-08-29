@@ -24,12 +24,13 @@ public class TimedSpear : GameElementBasedInterval {
 		}
 		if (intervalCounter%2==1) {
 			// inside
-			SetPosition(4.0f);
+			SetPosition(2.0f);
+			AddNotificationHere("visual","woodexplosion",0.0f,"",new Vector3(0.5f,0.0f,0.0f));
 		}
 
 	}
 
 	void SetPosition( float post ) {
-		spear.transform.localPosition = new Vector3( 0.0f,  0.0f, position.z + post );
+		spear.transform.localPosition = new Vector3( position.x,  position.y, position.z + post );
 	}
 }
