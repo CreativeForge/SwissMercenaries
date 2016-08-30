@@ -2346,10 +2346,14 @@ public class LevelEditor : MonoBehaviour {
 		if (elem != null) {
 			if (elem.gameObject != null) {
 				Destroy (elem.gameObject);
+				elem.gameObject = null;
 			}
 
 			GameElement elPrefab = GetElementType (elem.type,elem.subtype);
-			if (elPrefab==null) { Debug.Log("Error: Could not find Type("+elem.type+"/"+elem.subtype+")"); return; } 
+			if (elPrefab==null) { 
+				Debug.Log("Error: Could not find Type("+elem.type+"/"+elem.subtype+")"); 
+				return; 
+			}; 
 			if (elPrefab!=null) { 
 				// Debug.LogError("Could find Type("+elem.type+"/"+elem.subtype+")");
 				// elPrefab.prefabGameObject=
@@ -3443,7 +3447,7 @@ public class LevelEditor : MonoBehaviour {
 	// playerId, sessionId
 	void LoadLevelLowLevel( int level,  string playerId, string sessionId, string source ) {
 
-		bool debugThis = true ;
+		bool debugThis = false ;
 
 		bool flagEvaluationTemp = false; 
 		if (!playerId.Equals("")) {
@@ -4318,7 +4322,7 @@ public class LevelEditor : MonoBehaviour {
 
 				// visualize the objects with no gameobject
 				float mouseX=Input.mousePosition.x;
-				float mouseY=GUIScalerScreenHeight()-Input.mousePosition.y;
+				float mouseY=Screen.height-Input.mousePosition.y;
 
 				if (arrLevel.Count>0)
 					for (int i=0; i<arrLevel.Count; i++) {
@@ -4413,7 +4417,7 @@ public class LevelEditor : MonoBehaviour {
 								if (!gaelement.type.Equals("base")) {
 									if (GUI.Button (new Rect (screenPos.x, Screen.height - screenPos.y, 20*scaleX, 20*scaleY), editorMoveImage, editorIconGUI)) {
 										// SetSelectedElement(gaelement);
-										//		Debug.Log("Move Pressed");
+										Debug.Log("LevelEditor.OnGUI() // Pressed Button!");
 
 									}
 								} else {
@@ -4434,15 +4438,20 @@ public class LevelEditor : MonoBehaviour {
 								float buttonY=Screen.height-screenPos.y;
 								float buttonWidth=20.0f;
 
-								if (!gaelement.type.Equals("base"))
+								// Debug.Log("LevelEditor // EDITORTOOL:"+editorTool);
+
+								// if (!gaelement.type.Equals("base"))
 								if (
 									(mouseX>buttonX)&&(mouseX<(buttonX+buttonWidth*scaleX)) 
 									&&
 									(mouseY>buttonY)&&(mouseY<(buttonY+buttonWidth*scaleX)) 
 								)
 								{
+									Debug.Log("LevelEditor.OnGUI() // MOVE: Mouse over");
 									if (Input.GetMouseButtonDown(0)) {
+										Debug.Log("LevelEditor.OnGUI() // MOVE 1 : MouseDown");
 										if (editorToolMove.Equals ("")) {
+											Debug.Log("LevelEditor.OnGUI() // MOVE 1: MouseDown");
 											// move
 											SetSelectedElement(gaelement);
 											editorToolMove="drag";
@@ -4456,6 +4465,8 @@ public class LevelEditor : MonoBehaviour {
 									if (gaelement==editorSelected) {
 										// move
 										if (editorToolMove.Equals ("drag")) {
+											// Debug.Log("LevelEditor.OnGUI() // MOVE: Dragging");
+
 											// Debug.Log("Moving "+mouseX);
 											UpdateGameElementToPosition(gaelement,Input.mousePosition);
 
@@ -4470,6 +4481,8 @@ public class LevelEditor : MonoBehaviour {
 									if (editorSelected!=null) {
 
 										// Debug.Log("LevelEditor.OnGUI() // MouseButtonUp(0)");
+										// Debug.Log("LevelEditor.OnGUI() // MOVE: Mouse up (Drop)");
+
 
 										float raster=GetRaster();
 										// Debug.Log ("raster: "+raster);
@@ -4490,11 +4503,11 @@ public class LevelEditor : MonoBehaviour {
 
 												UpdateElementVisual(editorSelected);
 
-
+												AddToEditorHistory("[GUI][OBJECT][MOVE]");
 											}
 										}
 
-										AddToEditorHistory("[GUI][OBJECT][MOVE]");
+
 
 										// move
 										SetSelectedElement(null);

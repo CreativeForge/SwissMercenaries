@@ -81,7 +81,7 @@ public class GameElementBased : MonoBehaviour {
 	// on player hit
 	// you need just a trigger (hitbox / trigger)
 	public virtual void OnPlayerHit() {
-		Debug.Log("GameElementBased.OnPlayerHit()");
+		// Debug.Log("GameElementBased.OnPlayerHit()");
 	}
 
 
