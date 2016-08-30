@@ -7315,9 +7315,7 @@ public class LevelEditor : MonoBehaviour {
 				// rot
 			}
 
-			GameObject preview = GameObject.Find("editorpreview");
-			preview.transform.Rotate(0.0f, 1.0f, 0.0f);
-
+		
 			// todo: with a array or case
 			/*
 			if (Input.GetKeyDown ("w")) {
@@ -7377,52 +7375,7 @@ public class LevelEditor : MonoBehaviour {
 			float mouseX=Input.mousePosition.x;
 			float mouseY=Screen.height-Input.mousePosition.y;
 
-			// hot edges
-			if ((mouseX<20)||(mouseX>(Screen.width-20*scaleX))||(mouseY<20*scaleY)||(mouseY>(Screen.height-20*scaleY))) {
 
-				// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // HOT EDGES");
-
-				GameObject xcontainer=GameObject.Find ("editorCameraContainer");
-				GameObject xeditorcamera=GameObject.Find ("editorcamera");
-
-				if (enabledEditorEdges) 
-				if (!CheckMouseInEditor())
-				{
-
-
-					float rotatex = 1.0f;
-					float rotatey = 1.0f;
-					if ((mouseY>=0)&&(mouseY<20*scaleY)) {
-						xeditorcamera.transform.Rotate( -rotatey, 0.0f, 0.0f );
-					}
-					if ((mouseY>(Screen.height-20*scaleY))&&(mouseY<=(Screen.height))) {
-						xeditorcamera.transform.Rotate( +rotatey, 0.0f,  0.0f );
-					}
-
-					if ((mouseX>=0)&&(mouseX<20*scaleX)) {
-						xcontainer.transform.Rotate( 0.0f, -rotatex, 0.0f );
-					}
-					if ((mouseX<=(Screen.width))&&(mouseX>(Screen.width-20*scaleX))) {
-						xcontainer.transform.Rotate( 0.0f, rotatex, 0.0f );
-					}
-					/*
-					if (menu==4) {
-						xcontainer.transform.Translate( 0.0f, 0.0f , 0.1f);
-					}
-					if (menu==5) {
-						xcontainer.transform.Translate( 0.0f,   0.0f, -0.1f );
-					}
-					if (menu==6) {
-						xcontainer.transform.Translate( 0.0f, 0.1f, 0.0f );
-					}
-					if (menu==7) {
-						xcontainer.transform.Translate( 0.0f,  -0.1f,   0.0f );
-					}
-					*/
-
-				}
-
-			}
 
 			// IN SCENE
 			if (!CheckMouseInEditor()) {
@@ -7532,6 +7485,64 @@ public class LevelEditor : MonoBehaviour {
 
 		// editor
 		if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor) {
+
+			// rotate preview
+			GameObject preview = GameObject.Find("editorpreview");
+			preview.transform.Rotate(0.0f, 1.0f, 0.0f);
+
+
+			// edges
+			// generate new objects
+			float mouseXX=Input.mousePosition.x;
+			float mouseYY=Screen.height-Input.mousePosition.y;
+
+			// hot edges
+			if ((mouseXX<20)||(mouseXX>(Screen.width-20*scaleX))||(mouseYY<20*scaleY)||(mouseYY>(Screen.height-20*scaleY))) {
+
+				// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // HOT EDGES");
+
+				GameObject xcontainer=GameObject.Find ("editorCameraContainer");
+				GameObject xeditorcamera=GameObject.Find ("editorcamera");
+
+				if (enabledEditorEdges) 
+				if (!CheckMouseInEditor())
+				{
+
+
+					float rotatex = 1.0f;
+					float rotatey = 1.0f;
+					if ((mouseYY>=0)&&(mouseYY<20*scaleY)) {
+						xeditorcamera.transform.Rotate( -rotatey, 0.0f, 0.0f );
+					}
+					if ((mouseYY>(Screen.height-20*scaleY))&&(mouseYY<=(Screen.height))) {
+						xeditorcamera.transform.Rotate( +rotatey, 0.0f,  0.0f );
+					}
+
+					if ((mouseXX>=0)&&(mouseXX<20*scaleX)) {
+						xcontainer.transform.Rotate( 0.0f, -rotatex, 0.0f );
+					}
+					if ((mouseXX<=(Screen.width))&&(mouseXX>(Screen.width-20*scaleX))) {
+						xcontainer.transform.Rotate( 0.0f, rotatex, 0.0f );
+					}
+					/*
+					if (menu==4) {
+						xcontainer.transform.Translate( 0.0f, 0.0f , 0.1f);
+					}
+					if (menu==5) {
+						xcontainer.transform.Translate( 0.0f,   0.0f, -0.1f );
+					}
+					if (menu==6) {
+						xcontainer.transform.Translate( 0.0f, 0.1f, 0.0f );
+					}
+					if (menu==7) {
+						xcontainer.transform.Translate( 0.0f,  -0.1f,   0.0f );
+					}
+					*/
+
+				}
+
+			}
+
 
 			// no physics
 			// Time.timeScale = 0.0f; // move etc is not working too!
