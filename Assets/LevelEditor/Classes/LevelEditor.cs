@@ -1308,6 +1308,7 @@ public class LevelEditor : MonoBehaviour {
 
 	int selectionSize = 300;
 	int minSelectionSize = 300;
+	int selectionMaxElements = 15;
 
 	// inspector
 	int inspectorX = 10;
@@ -4447,11 +4448,11 @@ public class LevelEditor : MonoBehaviour {
 									(mouseY>buttonY)&&(mouseY<(buttonY+buttonWidth*scaleX)) 
 								)
 								{
-									Debug.Log("LevelEditor.OnGUI() // MOVE: Mouse over");
+									// Debug.Log("LevelEditor.OnGUI() // MOVE: Mouse over");
 									if (Input.GetMouseButtonDown(0)) {
-										Debug.Log("LevelEditor.OnGUI() // MOVE 1 : MouseDown");
+										// Debug.Log("LevelEditor.OnGUI() // MOVE 1 : MouseDown");
 										if (editorToolMove.Equals ("")) {
-											Debug.Log("LevelEditor.OnGUI() // MOVE 1: MouseDown");
+											// Debug.Log("LevelEditor.OnGUI() // MOVE 1: MouseDown");
 											// move
 											SetSelectedElement(gaelement);
 											editorToolMove="drag";
@@ -4462,6 +4463,8 @@ public class LevelEditor : MonoBehaviour {
 								}
 								// dragging
 								if (Input.GetMouseButton(0)) {
+									if (editorSelected!=null)
+									if (gaelement!=null)
 									if (gaelement==editorSelected) {
 										// move
 										if (editorToolMove.Equals ("drag")) {
@@ -4477,7 +4480,7 @@ public class LevelEditor : MonoBehaviour {
 
 								// mouse up
 								if (Input.GetMouseButtonUp(0)) {
-
+									if (gaelement!=null)
 									if (editorSelected!=null) {
 
 										// Debug.Log("LevelEditor.OnGUI() // MouseButtonUp(0)");
@@ -6664,7 +6667,7 @@ public class LevelEditor : MonoBehaviour {
 							}
 							selectionY = selectionY + 20;
 							coun ++;
-							if (i>10) break;
+							if (i>selectionMaxElements) break;
 						}
 					} 
 					selectionY = selectionY + 20;
@@ -6687,7 +6690,7 @@ public class LevelEditor : MonoBehaviour {
 
 						}
 						selectionY = selectionY + 20;
-						if (i>10) break;
+						if (i>selectionMaxElements) break;
 					} 
 					selectionY = selectionY + 20;
 				}
@@ -6709,7 +6712,7 @@ public class LevelEditor : MonoBehaviour {
 
 						}
 						selectionY = selectionY + 20;
-						if (i>10) break;
+						if (i>selectionMaxElements) break;
 					} 
 					selectionY = selectionY + 20;
 				}
@@ -6731,7 +6734,7 @@ public class LevelEditor : MonoBehaviour {
 
 						}
 						selectionY = selectionY + 20;
-						if (i>10) break;
+						if (i>selectionMaxElements) break;
 					} 
 					selectionY = selectionY + 20;
 				}
@@ -6763,7 +6766,7 @@ public class LevelEditor : MonoBehaviour {
 
 						}
 						selectionY = selectionY + 20;
-						if (i>10) break;
+						if (i>selectionMaxElements) break;
 					} 
 					selectionY = selectionY + 20;
 				}
@@ -6812,7 +6815,7 @@ public class LevelEditor : MonoBehaviour {
 
 						}
 						selectionY = selectionY + 20;
-						if (i>10) break;
+						if (i>selectionMaxElements) break;
 					} 
 					selectionY = selectionY + 20;
 				}
@@ -6868,7 +6871,7 @@ public class LevelEditor : MonoBehaviour {
 
 						}
 						selectionY = selectionY + 20;
-						if (i>10) break;
+						if (i>selectionMaxElements) break;
 					} 
 					selectionY = selectionY + 20;
 				}
@@ -6889,7 +6892,7 @@ public class LevelEditor : MonoBehaviour {
 							SetSelectedElement(gae);
 						}
 						selectionY = selectionY + 20;
-						if (i>10) break;
+						if (i>selectionMaxElements) break;
 					} 
 					selectionY = selectionY + 20;
 				}
@@ -6959,7 +6962,7 @@ public class LevelEditor : MonoBehaviour {
 
 
 						selectionY = selectionY + 20;
-						if (i>10) break;
+						if (i>selectionMaxElements) break;
 					} 
 					selectionY = selectionY + 20;
 				}
