@@ -71,7 +71,7 @@ public class LevelEditor : MonoBehaviour {
 		scaleFont = scaleX; // Screen.width/GUIScalerScreenHeight;
 
 		// update GUIStyles ... 
-		int fontSize = (int) (16.0f * scaleFont * 0.9f);
+		int fontSize = (int) (16.0f * scaleFont * 0.75f);
 
 		editorDefault.fontSize = fontSize;
 		editorLabel.fontSize = fontSize;
@@ -6774,16 +6774,16 @@ public class LevelEditor : MonoBehaviour {
 				if (selectFilter.Equals("menu")) { 
 					ArrayList arrList = GetGameElementsByTypeAndSub("guimenu","*");
 					// AddGameElementAtName ("meta","title", new Vector3(0.0f,0.0f,0.0f), "TITLE" );
-					if (GUIScalerButton (new Rect ( selectionX, selectionY, 42, 20), "LOGOSP", editorButtonStyleNotActive)) {
+					if (GUIScalerButton (new Rect ( selectionX, selectionY, 42, 20), "SLOGO", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("guimenu","splashlogo", new Vector3(0.0f,0.0f,0.0f), "splashlogo" );
 						AddToEditorHistory();
 					}
-					if (GUIScalerButton (new Rect ( selectionX+45, selectionY, 42, 20), "TEXTSP", editorButtonStyleNotActive)) {
+					if (GUIScalerButton (new Rect ( selectionX+45, selectionY, 42, 20), "SCLAIM", editorButtonStyleNotActive)) {
 						GameElement ge = AddGameElementAtName ("guimenu","splashtext", new Vector3(0.0f,0.0f,0.0f), "splashtext" );
 						AddToEditorHistory();
 					}
 					if (GUIScalerButton (new Rect ( selectionX+45+45, selectionY, 42, 20), "LOGO", editorButtonStyleNotActive)) {
-						GameElement ge = AddGameElementAtName ("guimenu","logo", new Vector3(0.0f,0.0f,0.0f), "logo" );
+						GameElement ge = AddGameElementAtName ("guimenu","biglogo", new Vector3(0.0f,0.0f,0.0f), "logo" );
 						AddToEditorHistory();
 					}
 
