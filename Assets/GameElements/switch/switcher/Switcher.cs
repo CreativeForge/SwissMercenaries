@@ -9,7 +9,7 @@ public class Switcher : GameElementBased {
 	public GameObject gameObjectOff;
 
 	public override void OnPlayerHit() {
-		Debug.Log("Switcher.OnPlayerHit()");
+		// Debug.Log("Switcher.OnPlayerHit()");
 
 		if (gameElement!=null) {
 			// Debug.Log("TriggerNotification().OnActivateTrigger() // TriggerType: "+triggerType+"/timed: "+gameElement.timed+"/target: "+gameElement.target+"/argument: "+gameElement.argument+"/argumentsub: "+gameElement.argumentsub);

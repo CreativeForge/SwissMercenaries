@@ -111,7 +111,10 @@ public class GameElementBased : MonoBehaviour {
 	public virtual void OnPlayerHit() {
 		// Debug.Log("GameElementBased.OnPlayerHit()");
 	}
-
+	// attention: npcs are also triggered!
+	public virtual void OnEnemyHit() {
+		// Debug.Log("GameElementBased.OnPlayerHit()");
+	}
 
 
 	/*
@@ -125,7 +128,14 @@ public class GameElementBased : MonoBehaviour {
 
 		// dirty
 		if (other.gameObject.name.IndexOf("HitBox")!=-1) {
-			OnPlayerHit();
+			if (other.gameObject.transform.parent.name.Equals("PLAYER")) {
+				// Debug.Log("GameElementBased.OnTriggerEnter() "+other.gameObject.name+"  "+other.gameObject.transform.parent.name);
+				OnPlayerHit();
+			}
+			if (!other.gameObject.transform.parent.name.Equals("PLAYER")) {
+				// Debug.Log("GameElementBased.OnTriggerEnter() "+other.gameObject.name+"  "+other.gameObject.transform.parent.name);
+				OnEnemyHit();
+			}
 		}
 	}
 

@@ -26,6 +26,8 @@
 	// [HitBox-GameObject] HitBox-GameObject  
 	// -- [HitBoxScript]
 	// -- [Collider] Trigger!
+	// /xyz/CapsuleAlive/abc > ANIMATIONS!
+
 
 	// Examples:
 	// - spearwall (
@@ -41,7 +43,9 @@
 	// - Farmer/Bauer mit Mistgabel oder schlecht ausgerüsteter Soldate > Kill no reaction / no hitten or minimal
 	// 
 
-
+	// Addons:
+	// - running - adding hitbox an both sides > running through ... 
+	// 
 	* */
 
 	// new LevelObjects > levelElements

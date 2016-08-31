@@ -1,0 +1,199 @@
+fileFormatVersion: 2
+guid: faacb9603307041bfa17281fe0b5fed2
+timeCreated: 1472653088
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Blueisland
+    100002: Chest
+    100004: Head
+    100006: Hips
+    100008: L_Foot
+    100010: L_Hand
+    100012: L_IndexDistal
+    100014: L_IndexIntermediate
+    100016: L_IndexProximal
+    100018: L_LittleDistal
+    100020: L_LittleIntermediate
+    100022: L_LittleProximal
+    100024: L_LowerArm
+    100026: L_LowerArm_Twist_01
+    100028: L_LowerLeg
+    100030: L_LowerLeg_Twist_01
+    100032: L_MiddleDistal
+    100034: L_MiddleIntermediate
+    100036: L_MiddleProximal
+    100038: L_RingDistal
+    100040: L_RingIntermediate
+    100042: L_RingProximal
+    100044: L_Shoulder
+    100046: L_ThumbDistal
+    100048: L_ThumbIntermediate
+    100050: L_ThumbProximal
+    100052: L_Toes
+    100054: L_UpperArm
+    100056: L_UpperArm_Twist_01
+    100058: L_UpperLeg
+    100060: L_UpperLeg_Twist_01
+    100062: Neck
+    100064: R_Foot
+    100066: R_Hand
+    100068: R_IndexDistal
+    100070: R_IndexIntermediate
+    100072: R_IndexProximal
+    100074: R_LittleDistal
+    100076: R_LittleIntermediate
+    100078: R_LittleProximal
+    100080: R_LowerArm
+    100082: R_LowerArm_Twist_01
+    100084: R_LowerLeg
+    100086: R_LowerLeg_Twist_01
+    100088: R_MiddleDistal
+    100090: R_MiddleIntermediate
+    100092: R_MiddleProximal
+    100094: R_RingDistal
+    100096: R_RingIntermediate
+    100098: R_RingProximal
+    100100: R_Shoulder
+    100102: R_ThumbDistal
+    100104: R_ThumbIntermediate
+    100106: R_ThumbProximal
+    100108: R_Toes
+    100110: R_UpperArm
+    100112: R_UpperArm_Twist_01
+    100114: R_UpperLeg
+    100116: R_UpperLeg_Twist_01
+    100118: root
+    100120: Spine
+    100122: //RootNode
+    400000: Blueisland
+    400002: Chest
+    400004: Head
+    400006: Hips
+    400008: L_Foot
+    400010: L_Hand
+    400012: L_IndexDistal
+    400014: L_IndexIntermediate
+    400016: L_IndexProximal
+    400018: L_LittleDistal
+    400020: L_LittleIntermediate
+    400022: L_LittleProximal
+    400024: L_LowerArm
+    400026: L_LowerArm_Twist_01
+    400028: L_LowerLeg
+    400030: L_LowerLeg_Twist_01
+    400032: L_MiddleDistal
+    400034: L_MiddleIntermediate
+    400036: L_MiddleProximal
+    400038: L_RingDistal
+    400040: L_RingIntermediate
+    400042: L_RingProximal
+    400044: L_Shoulder
+    400046: L_ThumbDistal
+    400048: L_ThumbIntermediate
+    400050: L_ThumbProximal
+    400052: L_Toes
+    400054: L_UpperArm
+    400056: L_UpperArm_Twist_01
+    400058: L_UpperLeg
+    400060: L_UpperLeg_Twist_01
+    400062: Neck
+    400064: R_Foot
+    400066: R_Hand
+    400068: R_IndexDistal
+    400070: R_IndexIntermediate
+    400072: R_IndexProximal
+    400074: R_LittleDistal
+    400076: R_LittleIntermediate
+    400078: R_LittleProximal
+    400080: R_LowerArm
+    400082: R_LowerArm_Twist_01
+    400084: R_LowerLeg
+    400086: R_LowerLeg_Twist_01
+    400088: R_MiddleDistal
+    400090: R_MiddleIntermediate
+    400092: R_MiddleProximal
+    400094: R_RingDistal
+    400096: R_RingIntermediate
+    400098: R_RingProximal
+    400100: R_Shoulder
+    400102: R_ThumbDistal
+    400104: R_ThumbIntermediate
+    400106: R_ThumbProximal
+    400108: R_Toes
+    400110: R_UpperArm
+    400112: R_UpperArm_Twist_01
+    400114: R_UpperLeg
+    400116: R_UpperLeg_Twist_01
+    400118: root
+    400120: Spine
+    400122: //RootNode
+    4300000: Blueisland
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: Blueisland
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
