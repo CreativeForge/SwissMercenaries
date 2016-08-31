@@ -9,7 +9,7 @@ public class DestroyableElement : GameElementBased {
 
 	public override void OnPlayerHit() {
 
-		Debug.Log("DestroyableElement.OnPlayerHit() ");
+		// Debug.Log("DestroyableElement.OnPlayerHit() ");
 
 		if (gameElement!=null) {
 			if (index<arrElements.Length) {

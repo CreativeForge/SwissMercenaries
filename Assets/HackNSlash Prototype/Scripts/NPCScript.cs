@@ -42,6 +42,8 @@ public class NPCScript : MonoBehaviour {
 
 	void Update(){
 
+		if (InGameController.i==null) return;
+
 		if (InGameController.i==null) {
 			attackTargetT = InGameController.i.playerS.transform; // default kill player
 		}
@@ -91,6 +93,10 @@ public class NPCScript : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
+
+		if (dS==null) return;
+		if (InGameController.i==null) return;
+		if (InGameController.i.playerS==null) return;
 
 		if(dS && dS.IsDead)return; // are you dead ... 
 

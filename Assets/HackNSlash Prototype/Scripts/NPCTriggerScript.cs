@@ -15,6 +15,9 @@ public class NPCTriggerScript : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter (Collider inC) {
+		if (inC==null) return;
+		if (InGameController.i==null) return;
+		if (InGameController.i.playerS==null) return;
 		NPCScript npcS = inC.GetComponent<NPCScript>();
 		if(InGameController.i.playerS.transform == inC.transform){
 			parentNPCS.PlayerEnteredTrigger();
@@ -24,6 +27,8 @@ public class NPCTriggerScript : MonoBehaviour {
 	}
 
 	void OnTriggerExit (Collider inC) {
+		if (inC!=null) return;
+		if (InGameController.i!=null) return;
 		NPCScript npcS = inC.GetComponent<NPCScript>();
 		if(InGameController.i.playerS.transform == inC.transform){
 			parentNPCS.PlayerLeftTrigger();

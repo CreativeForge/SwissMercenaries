@@ -36,7 +36,35 @@ public class GameElementBased : MonoBehaviour {
 		if (gameLogic.CheckIngameState()) {
 			if (FollowingPath()) ProcessPathFollowing();
 		}
+
+		// update back !!
+		UpdatePositionToElement();
 	}
+
+	// update element to ...
+	public void UpdatePositionToElement(  ) {
+		if (gameElement!=null) {
+			if (gameElement.gameObject!=null) {
+				gameElement.position.x = gameElement.gameObject.transform.position.x;
+				gameElement.position.y = gameElement.gameObject.transform.position.y;
+				gameElement.position.z = gameElement.gameObject.transform.position.z;
+			}
+		}
+	}
+	public void Destroyed() {
+		if (gameElement!=null) {
+			if (gameLogic!=null) {
+				gameLogic.levelEditor.RemoveElement( gameElement );
+			}
+		}
+	}
+
+	void OnDestroy() {
+		// don't do this automatic
+		// updatevisualelements also destroys object!!!
+		// Destroyed();
+	}
+
 
 	/*
 	 *  ingame

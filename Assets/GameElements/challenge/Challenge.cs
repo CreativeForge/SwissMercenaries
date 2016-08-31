@@ -31,6 +31,9 @@ public class Challenge : GUIMenuText {
 
 
 	void UpdateText() {
+		if (scriptTextShadow!=null) return;
+		if (scriptText!=null) return;
+
 		scriptTextShadow.text = ""; // gameLogic.levelEditor.ParseText(""+gameElement.argumentsub+"/"+);
 		if (CheckState("")) {
 			localTimed = timeLeft+startTime - Time.time;

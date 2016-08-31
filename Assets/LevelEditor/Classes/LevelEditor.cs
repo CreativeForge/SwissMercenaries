@@ -31,6 +31,17 @@
 	// - spearwall (
 	// - barricade
 
+	// SwissMercenaries
+	// 
+	// Mechanics: to decide: 
+	// A: Getroffen werden und taummeln (jetzt) 
+	// B: oder getroffen werden, aber weiterhin zuschlägen können!
+	// 
+	// GameElemtentsToDo:
+	// - Farmer/Bauer mit Mistgabel oder schlecht ausgerüsteter Soldate > Kill no reaction / no hitten or minimal
+	// 
+
+
 	* */
 
 	// new LevelObjects > levelElements
@@ -471,7 +482,7 @@ public class LevelEditor : MonoBehaviour {
 
 
 	// overlay
-	bool cameraOverlayTypes = false;
+	bool cameraOverlayTypes = true;
 
 	public GameObject dummyEditorPrefab;
 
@@ -4382,6 +4393,15 @@ public class LevelEditor : MonoBehaviour {
 								// strType = ""+gaelement.type+"\n -"+gaelement.subtype;
 								strType = ""+gaelement.subtype;
 							}
+							// edit showinfo
+							if (editorTool.Equals ("EDIT")) {
+								if (editorSelected!=null)
+								if (gaelement!=null)
+								if (editorSelected==gaelement) {
+									showInfo = true;
+								}
+							}
+
 							if (!showInfo) {
 								GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y , 200*scaleX, 80*scaleY),""+waiting+" "+strType,editorElementType );
 							}
@@ -7457,7 +7477,7 @@ public class LevelEditor : MonoBehaviour {
 		 * 
 		 * */
 		if (Input.GetKeyDown("p")) {
-			Debug.Log("LevelEditor.OnGUI() // notificationDialog: "+notificationDialog);
+			// Debug.Log("LevelEditor.OnGUI() // notificationDialog: "+notificationDialog);
 			notificationDialog = !notificationDialog;
 		}
 

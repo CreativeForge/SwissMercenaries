@@ -201,7 +201,7 @@ namespace GameLab.NotficationCenter
 			if (nt.prefabGameObject!=null) {
 				// Debug.Log("NotificationCenter.CreateInstantiatePrefab() // Prefab existing");
 				GameObject go=Instantiate(nt.prefabGameObject, position, new Quaternion()) as GameObject;
-				go.name = "NotFound.Notification10";
+				go.name = "NotFound.Notification10_"+nt.type;
 				GameObject level = GameObject.Find("level");
 				if (level!=null) {
 					go.transform.parent = level.transform;
@@ -297,13 +297,21 @@ namespace GameLab.NotficationCenter
 						}
 					}
 
-					// argument
-					if (nt.subtype.Equals("setargument")) {
+					// argument update visuals
+					if (nt.subtype.Equals("setargument")) { 
 						if (ge.gameObject!=null) {
-							ge.argument = nt.argument;
+							ge.argument = nt.argument; 
 							gameLogic.levelEditor.UpdateElementVisual(ge);
 						}
 					}
+
+					// setargumentraw only argument
+					if (nt.subtype.Equals("setargumentraw")) {
+						if (ge.gameObject!=null) {
+							Debug.Log("NotificationCenter.Command (object.setargumentraw)"+ge.argument);
+							ge.argument = ""+nt.argument;
+						} 
+					}  
 
 					// incargument
 					if (nt.subtype.Equals("incargument")) {
