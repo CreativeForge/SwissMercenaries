@@ -4427,7 +4427,7 @@ public class LevelEditor : MonoBehaviour {
 							}
 
 							if (!showInfo) {
-								GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y , 200*scaleX, 80*scaleY),""+waiting+" "+strType,editorElementType );
+								GUI.Label (new Rect (screenPos.x+40, Screen.height - screenPos.y , 200*scaleX, 80*scaleY),""+waiting+" "+strType,editorElementType );
 							}
 							if (showInfo) {
 								// GUIScalerLabel (new Rect (screenPos.x+20, GUIScalerScreenHeight() - screenPos.y, 200, 80),+"        "+strType,editorElementType );
@@ -4435,7 +4435,7 @@ public class LevelEditor : MonoBehaviour {
 								if (str.Equals("")) {
 									str = strType;
 								}
-								GUI.Label (new Rect (screenPos.x+20, Screen.height - screenPos.y, 200*scaleX, 80*scaleY),waiting+""+str,editorLabel);
+								GUI.Label (new Rect (screenPos.x+40, Screen.height - screenPos.y, 200*scaleX, 80*scaleY),waiting+""+str,editorLabel);
 							}
 
 							// edit ?
