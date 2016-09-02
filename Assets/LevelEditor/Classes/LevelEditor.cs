@@ -124,7 +124,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		// set cursor
-		cursorX = GUIScalerScreenWidth()-300; // (int)((float)(Screen.width - 300)*scaleX);
+		cursorX = GUIScalerScreenWidth()-600; // (int)((float)(Screen.width - 300)*scaleX);
 		cursorY = GUIScalerScreenHeight()-200; //(int)((float)(Screen.height - 200)*scaleY);
 
 		// transform
@@ -5314,11 +5314,11 @@ public class LevelEditor : MonoBehaviour {
 
 						// delete
 						if (i!=0) {
-							if (GUIScalerButton (new Rect (toolsXTmp, toolsYTmp, 10, 20), "-", editorButtonStyle)) {
+							if (GUIScalerButton (new Rect (toolsXTmp-4, toolsYTmp + 22, 24, 20), "DEL", editorButtonStyle)) {
 								RemoveActualLevel();
 								LoadEditorLevel(actualEditorLevel);
 							}
-							toolsXTmp = toolsXTmp + 12;
+							// toolsXTmp = toolsXTmp + 12;
 						}
 						// add
 						/*
@@ -5342,10 +5342,10 @@ public class LevelEditor : MonoBehaviour {
 
 					if (i == actualEditorLevel) {
 						// add
-						if (GUIScalerButton (new Rect (toolsXTmp, toolsYTmp, 10, 20), "+", editorButtonStyle)) {
+						if (GUIScalerButton (new Rect (toolsXTmp, toolsYTmp+22, 22, 20), "INS", editorButtonStyle)) {
 							InsertLevelAfterActualLevel();
 						}
-						toolsXTmp = toolsXTmp + 12;
+						// toolsXTmp = toolsXTmp + 12;
 
 					}
 				}
@@ -5376,6 +5376,8 @@ public class LevelEditor : MonoBehaviour {
 				}
 				toolsXTmp = toolsXTmp + 62;
 
+			
+
 				// COPYTO > NOT ANYMORE USED > USE COPY/PASTE > YOU SEE WHAT YOU OVERWRITE!
 				/*
 			if (GUIScalerButton (new Rect (toolsXTmp, toolsYTmp, 60, 20), "SAVE AS ", editorButtonActiveStyle)) {
@@ -5401,6 +5403,8 @@ public class LevelEditor : MonoBehaviour {
 			}
 */
 				if (toolsXTmp>toolsXTmpMax) toolsXTmpMax = toolsXTmp;
+
+				toolsYTmp = toolsYTmp + 22;
 
 				toolsYTmp = toolsYTmp + 26;
 
@@ -6638,7 +6642,7 @@ public class LevelEditor : MonoBehaviour {
 					selectFilter = "timed";	
 				}
 				selectionY = selectionY + 22;
-				// triggers
+				// CHALLENGES / TRIGGERS / ACTIONS
 				exo = editorButtonStyle;
 				if (selectFilter.Equals("challenges")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
 				ArrayList arrListChallenges =  GetGameElementsByTypeAndSub("challenge","*");
@@ -6665,6 +6669,41 @@ public class LevelEditor : MonoBehaviour {
 				if (GUIScalerButton (new Rect ( selectionX + 2*selectionSize/3, selectionY, selectionSize/3, 20), "ACTIONS "+addonp, exo)) {
 					selectFilter = "actions";	
 				}
+				// ENEMIES / PATHS / CAMS
+				selectionY = selectionY + 22;
+				// ENEMIES
+				exo = editorButtonStyle;
+				ArrayList arrListEditorsX =  GetGameElementsByTypeAndSub("enemy","*");
+				addonp = "";
+				if (arrListEditorsX.Count>0) addonp = "("+arrListEditorsX.Count+")";
+				if (GUIScalerButton (new Rect ( selectionX + 0*selectionSize/3, selectionY, selectionSize/3-2, 20), "ENEMIES "+addonp, exo)) {
+					// selectFilter = "challenges";	
+					selectFilter = "selection";
+					filterType = "enemy";
+					filterTypeSub = "*";
+				}
+				// PATHS
+				arrListEditorsX =  GetGameElementsByTypeAndSub("path","*");
+				addonp = "";
+				if (arrListEditorsX.Count>0) addonp = "("+arrListEditorsX.Count+")";
+				if (GUIScalerButton (new Rect ( selectionX + 1*selectionSize/3, selectionY, selectionSize/3-2, 20), "PATHS "+addonp, exo)) {
+					// selectFilter = "challenges";	
+					selectFilter = "selection";
+					filterType = "path";
+					filterTypeSub = "*";
+				}
+				// CMS
+				arrListEditorsX =  GetGameElementsByTypeAndSub("cam","*");
+				addonp = "";
+				if (arrListEditorsX.Count>0) addonp = "("+arrListEditorsX.Count+")";
+				if (GUIScalerButton (new Rect ( selectionX + 2*selectionSize/3, selectionY, selectionSize/3-2, 20), "CAMS "+addonp, exo)) {
+					// selectFilter = "challenges";	
+					selectFilter = "selection";
+					filterType = "cam";
+					filterTypeSub = "*";
+				}
+
+				// REMAKRS
 				selectionY = selectionY + 22;
 				exo = editorButtonStyle;
 				if (selectFilter.Equals("remarks")) { exo = editorButtonActiveStyle; selectionSize = minSelectionSize; }
@@ -6674,6 +6713,7 @@ public class LevelEditor : MonoBehaviour {
 				if (GUIScalerButton (new Rect ( selectionX, selectionY, selectionSize, 20), "REMARKS "+addonp, exo)) {
 					selectFilter = "remarks";	
 				}
+				// LANGUAGES
 				selectionY = selectionY + 22;
 				exo = editorButtonStyle;
 				if (selectFilter.Equals("language")) { exo = editorButtonActiveStyle; selectionSize = 400; }
