@@ -4534,7 +4534,7 @@ public class LevelEditor : MonoBehaviour {
 										float raster=GetRaster();
 										// Debug.Log ("raster: "+raster);
 										if (raster!=0.0f) {
-											if (editorSelected!=null) {
+										//	if (editorSelected!=null) {
 												// Debug.Log ("Selected: "+editorSelected.position.x+"/"+editorSelected.position.y);
 
 
@@ -4548,12 +4548,12 @@ public class LevelEditor : MonoBehaviour {
 												editorSelected.position.x=(Mathf.Floor((editorSelected.position.x+offsetX)/raster))*raster;
 												editorSelected.position.z=(Mathf.Floor((editorSelected.position.z+offsetY)/raster))*raster;
 
-												UpdateElementVisual(editorSelected);
-
-												AddToEditorHistory("[GUI][OBJECT][MOVE]");
-											}
+										//	}
 										}
 
+										UpdateElementVisual(editorSelected);
+
+										AddToEditorHistory("[GUI][OBJECT][MOVE]");
 
 
 										// move
@@ -6176,7 +6176,7 @@ public class LevelEditor : MonoBehaviour {
 					}
 					// description?
 					if (!editorSelected.guiDescription.Equals ("")) {
-						GUIScalerLabel (new Rect(inspectorXTmp+42,inspectorYTmp,240,20),editorSelected.guiDescription);
+						GUIScalerLabel (new Rect(inspectorXTmp+42,inspectorYTmp,340,20),editorSelected.guiDescription);
 						inspectorYTmp=inspectorYTmp+22*1;
 					}
 					// argumentsub
