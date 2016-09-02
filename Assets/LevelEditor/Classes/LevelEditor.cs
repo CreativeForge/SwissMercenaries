@@ -2388,6 +2388,7 @@ public class LevelEditor : MonoBehaviour {
 				}
 
 				// elPrefab.prefabGameObject // .prefabEditor
+				if (false)
 				if (elPrefab.prefabGameObject==null) {
 					// take the dummy object
 					if (gameLogic !=null && gameLogic.modal==GameLogic.GameLogicModal.Editor ) {
@@ -2412,11 +2413,13 @@ public class LevelEditor : MonoBehaviour {
 						// Debug.Log("LevelEditor.UpdateElementVisual().AddSkybox");
 						Camera cam = Camera.main;
 						if (cam!=null) {
+							// version1 1
 							Skybox skyBox = cam.GetComponent<Skybox>();
 							if (skyBox!=null) {
 								skyBox.material = 	elem.skyBoxMaterial	;						
-								RenderSettings.skybox = elem.skyBoxMaterial;
 							}
+							// version 2
+							RenderSettings.skybox = elem.skyBoxMaterial;
 						} else {
 							Debug.Log("No cam found!")	;
 						}
@@ -2501,11 +2504,11 @@ public class LevelEditor : MonoBehaviour {
 														// Debug.Log("IS GROUND!!! "+elPrefab.type);
 														// update with ingameobject ! as ground!!!
 														Destroy(go);
-														go=Instantiate(leo.gameobjectPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+														go=Instantiate(dummyEditorPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
 														go.name = "editorXYZGROUNDVARIANT";	
 													} 
 												}
-
+												 
 											}
 										}
 									} }
@@ -2594,8 +2597,14 @@ public class LevelEditor : MonoBehaviour {
 							GameObject go=null;
 
 							if (elem.prefabPredefinedArguments.Length==0) {
-								go = Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
-								go.name = "NotFound2";
+								if (elPrefab.prefabGameObject!=null) {
+									go = Instantiate(elPrefab.prefabGameObject, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+									go.name = "NotFound2";
+								} else {    
+									go = Instantiate(dummyEditorPrefab, new Vector3(elem.position.x,elem.position.y,elem.position.z), re) as GameObject;
+									go.name = "GAME:NoPrefabGAmeOBjecTFOUND!For "+elem.type+"/"+elem.subtype;
+
+								}
 							}
 
 							// are there some alternatives?
@@ -3494,42 +3503,53 @@ public class LevelEditor : MonoBehaviour {
 				// Debug.Log ("Load().Size="+jsonObj.list.Count);
 				int counter = 0;
 				foreach(JSONObject listObj in jsonObj.list){
-					GameElement ge=new GameElement();
-					// get the default members
-					GameElement typege=new GameElement();
-					typege.GetObjectFromJSON(listObj);
+					string xtype = "";
+					string ytype = "";
+					try {
+						GameElement ge=new GameElement();
+						// get the default members
+						GameElement typege=new GameElement();
+						typege.GetObjectFromJSON(listObj);
 
-					// ingame 
-					bool foundType = false;
-					GameElement gaType = GetElementType ( typege.type, typege.subtype );
-					if (gaType != null) {
-						ge = gaType.Copy ();
-						ge.GetObjectFromJSON(listObj);
-						foundType = true;
-					} else {
-						// what happens to the not recognized?
-						// take as normal!
-						ge = new GameElement();
-						ge.GetObjectFromJSON(listObj);
-						// ok an now ..
-						ge.descError = "NotFound";
-						if (debugThis) 	Debug.Log("LoadLevel() // ---- element("+typege.type+","+typege.subtype+") ");
-					}
-					// source
-					if (source.Equals("")) {
-						ge.ingameSource = "self";
-					} else {
-						ge.ingameSource = ""+source;
-					}
+						xtype = typege.type;
+						ytype = typege.subtype;
 
-					if (debugThis) Debug.Log("LoadLevel() // "+counter+". "+ge.type+"/"+ge.subtype+" [source: "+ge.ingameSource+"]-- found // "+foundType);
 
-					// add it
-					bool flagAdd = false;
-					if (!flagEvaluationTemp) { if (!ge.type.Equals ("evaluation")) { flagAdd=true; } }
-					if (flagEvaluationTemp) { if (ge.type.Equals ("evaluation")) { flagAdd=true; } } 
-					if (flagAdd) {
-						AddElement (ge);
+						// ingame 
+						bool foundType = false;
+						GameElement gaType = GetElementType ( typege.type, typege.subtype );
+						if (gaType != null) {
+							ge = gaType.Copy ();
+							ge.GetObjectFromJSON(listObj);
+							foundType = true;
+						} else {
+							// what happens to the not recognized?
+							// take as normal!
+							ge = new GameElement();
+							ge.GetObjectFromJSON(listObj);
+							// ok an now ..
+							ge.descError = "NotFound";
+							if (debugThis) 	Debug.Log("LoadLevel() // ---- element("+typege.type+","+typege.subtype+") ");
+						}
+						// source
+						if (source.Equals("")) {
+							ge.ingameSource = "self";
+						} else {
+							ge.ingameSource = ""+source;
+						}
+
+						if (debugThis) Debug.Log("LoadLevel() // "+counter+". "+ge.type+"/"+ge.subtype+" [source: "+ge.ingameSource+"]-- found // "+foundType);
+
+						// add it
+						bool flagAdd = false;
+						if (!flagEvaluationTemp) { if (!ge.type.Equals ("evaluation")) { flagAdd=true; } }
+						if (flagEvaluationTemp) { if (ge.type.Equals ("evaluation")) { flagAdd=true; } } 
+						if (flagAdd) {
+							AddElement (ge);
+						}
+
+					} catch( Exception e ) {
+						Debug.LogError("_LevelEditor.LoadGameLevel() (2) element("+xtype+"/"+ytype+") // ERROR: .LOAD()"+e  );
 					}
 
 					counter++;
