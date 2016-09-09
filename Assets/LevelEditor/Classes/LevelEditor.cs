@@ -1605,6 +1605,21 @@ public class LevelEditor : MonoBehaviour {
 
 	}
 
+	public ArrayList GetElementTypesIndexOf( string elementArea ) {
+
+		ArrayList arr = new ArrayList ();
+
+		for (int a=0; a<arrGameElementTypes.Count; a++) {
+			GameElement gelement = (GameElement)arrGameElementTypes [a];
+			if ((gelement.type.IndexOf (elementArea)!=-1)||(gelement.subtype.IndexOf (elementArea)!=-1)) {
+				arr.Add (gelement);
+			}
+		}
+
+		return arr;
+
+	}
+
 	// arrLevel
 
 	public GameElement GetElementType( string elementArea, string elementSubArea ) {
@@ -1766,6 +1781,9 @@ public class LevelEditor : MonoBehaviour {
 	string selectFilter = ""; // names etc.  #name types ...  !abc.* !
 	Rect selectionDialogeVisual = new Rect(0,0,0,0);
 	GameElement[] selectionAffectedElements = {};
+
+	// search for 
+	string searchFor = "";
 
 	// notifcations
 	bool notificationDialog = false;
@@ -5869,9 +5887,37 @@ public class LevelEditor : MonoBehaviour {
 				//				inspectorXTmp = inspectorXTmp + 124;
 				//				GUIScalerLabel (new Rect (inspectorXTmp, inspectorYTmp, 120, 20), "SETTINGS:* (NIGHT,PLUNDER) ", editorButtonStyle);
 
+				// search for!!!
+				if (GUIScalerButton (new Rect (inspectorXTmp+140+122, inspectorYTmp, 40, 20), "X ", editorButtonStyle)) {
+					searchFor = "";
+				}
+				searchFor = GUIScalerTextField(new Rect (inspectorXTmp+140, inspectorYTmp, 120, 20),  searchFor );
+				if (!searchFor.Equals("")) {
+					// search for ...	
+					inspectorXTmp = 10;
+					inspectorYTmp = inspectorYTmp + 22;
+
+					ArrayList arrxx = GetElementTypesIndexOf(searchFor);
+					for (int i=0; i<arrxx.Count; i++) {
+						GameElement elem = (GameElement)arrxx [i];
+						bool buttonClicked = GUIScalerButton (new Rect (inspectorXTmp, inspectorYTmp, 120, 20), elem.type+"/"+elem.subtype);
+						if (buttonClicked) {
+							SetEditorArea(elem.type);
+							SetSubEditorArea (elem.subtype);
+						}
+						// inspectorXTmp = inspectorXTmp + 40;
+						inspectorYTmp = inspectorYTmp + 22;
+					}
+					// inspector
+					inspectorXTmp = 10;
+					inspectorYTmp = inspectorYTmp + 22;
+				}
+
+				// next
 				inspectorXTmp = 10;
 				inspectorYTmp = inspectorYTmp + 22;
 
+				// search for ...
 
 
 				string selectedEditorArea=""+editorArea;
