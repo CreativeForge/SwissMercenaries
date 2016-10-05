@@ -6,7 +6,7 @@
 * 
 * LevelElement (Editor-CreateElementTypeAtInspector) > GameElement (InEditor)
 * 
-* DirtyCode: No entry for heaven
+* DirtyCode: No entry for heavenOnGUI
 	* NextToDo: Refactoring
 	*
 
@@ -50,7 +50,7 @@
 
 	// new LevelObjects > levelElements
 
-using UnityEngine;
+	using UnityEngine;
 using System.Collections;
 using System;
 using GameLab.NotficationCenter;
@@ -483,6 +483,20 @@ public class LevelEditor : MonoBehaviour {
 	string editorPassword = "";
 	string editorNewArea = "";
 
+	// some stuff
+	public GameObject editorContainer; 
+	public GameObject editorCamera; 
+	public GameObject GetEditorContainer() {
+		return editorContainer;
+	}
+	public GameObject GetEditorCamera() {
+		return editorCamera;
+	}
+	public void ActivateEditorCamera( bool activate ) {
+		GameObject camera = GetEditorCamera();
+		camera.SetActive( activate );
+	}
+
 
 
 	// overlay
@@ -684,8 +698,8 @@ public class LevelEditor : MonoBehaviour {
 	void MoveObjectAlongEditorCamera( string strdirect ) {
 		// Debug.Log("LevelEditor.MoveObjectAlongEditorCamera() // "+strdirect);
 		if (editorSelected!=null) {
-			GameObject container=GameObject.Find ("editorCameraContainer");
-			GameObject editorcamera=GameObject.Find ("editorcamera");
+			GameObject container=GetEditorContainer();
+			GameObject editorcamera=GetEditorCamera();
 
 			Vector3 direction = container.transform.forward;
 			direction.Normalize();
@@ -713,8 +727,8 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	void DoSensButton( SensButton bu, string strevent) {
-		GameObject container=GameObject.Find ("editorCameraContainer");
-		GameObject editorcamera=GameObject.Find ("editorcamera");
+		GameObject container=GetEditorContainer();
+		GameObject editorcamera=GetEditorCamera();
 
 		// Debug.Log("LevelEditor.DoSensButton("+strevent+")");
 
@@ -1457,7 +1471,7 @@ public class LevelEditor : MonoBehaviour {
 
 		// Debug.Log ("DoEditorScroll( "+ dx +", "+ dy +", "+ dz +" )");
 
-		GameObject container=GameObject.Find ("editorCameraContainer");
+		GameObject container=GetEditorContainer();
 		// Debug.Log (""+container);
 		Vector3 pos = new Vector3 (container.transform.position.x, container.transform.position.y, container.transform.position.z);
 		pos = pos + new Vector3 (dx, dy, dz);
@@ -2526,7 +2540,7 @@ public class LevelEditor : MonoBehaviour {
 														go.name = "editorXYZGROUNDVARIANT";	
 													} 
 												}
-												 
+
 											}
 										}
 									} }
@@ -3744,7 +3758,7 @@ public class LevelEditor : MonoBehaviour {
 
 		RaycastHit hit;
 		Camera cam  = Camera.main;
-		cam = GameObject.Find ("editorcamera").GetComponent<Camera>();
+		cam = GetEditorCamera().GetComponent<Camera>();
 		Ray ray = cam.ScreenPointToRay(vecPosition);   
 		if (Physics.Raycast(ray,out hit)) {
 
@@ -3832,7 +3846,7 @@ public class LevelEditor : MonoBehaviour {
 		// gameLogic.SetGameState ( GameLogic.GameLogicModal.Editor );
 
 		// store container reset
-		GameObject container=GameObject.Find ("editorCameraContainer");
+		GameObject container=GetEditorContainer();
 		positionReset = new Vector3( container.transform.position.x, container.transform.position.y, container.transform.position.z );
 		rotationReset = Quaternion.Euler( container.transform.localRotation.eulerAngles.x ,container.transform.localRotation.eulerAngles.y, container.transform.localRotation.eulerAngles.z );
 
@@ -3864,6 +3878,7 @@ public class LevelEditor : MonoBehaviour {
 		// check for playerId
 		// > generate playerId
 		ingameLevel = 0;
+
 
 	}
 
@@ -3898,56 +3913,56 @@ public class LevelEditor : MonoBehaviour {
 		}
 
 		// inspectorRect
-			if ((mouseX>inspectorRect.x*scaleX)&&(mouseX<(inspectorRect.x*scaleX+inspectorRect.width*scaleX))
+		if ((mouseX>inspectorRect.x*scaleX)&&(mouseX<(inspectorRect.x*scaleX+inspectorRect.width*scaleX))
 			&&
-				(mouseY>inspectorRect.y*scaleY)&&(mouseY<(inspectorRect.y*scaleY+inspectorRect.height*scaleY))) {
+			(mouseY>inspectorRect.y*scaleY)&&(mouseY<(inspectorRect.y*scaleY+inspectorRect.height*scaleY))) {
 			return true;
 		}
 
-			if ((mouseX>filterTypeVisual.x*scaleX)&&(mouseX<(filterTypeVisual.x*scaleX+filterTypeVisual.width*scaleX))
+		if ((mouseX>filterTypeVisual.x*scaleX)&&(mouseX<(filterTypeVisual.x*scaleX+filterTypeVisual.width*scaleX))
 			&&
-				(mouseY>filterTypeVisual.y*scaleY)&&(mouseY<(filterTypeVisual.y*scaleY+filterTypeVisual.height*scaleY))) {
+			(mouseY>filterTypeVisual.y*scaleY)&&(mouseY<(filterTypeVisual.y*scaleY+filterTypeVisual.height*scaleY))) {
 			return true;
 		}
-			if ((mouseX>filterTypeSubVisual.x*scaleX)&&(mouseX<(filterTypeSubVisual.x*scaleX+filterTypeSubVisual.width*scaleX))
+		if ((mouseX>filterTypeSubVisual.x*scaleX)&&(mouseX<(filterTypeSubVisual.x*scaleX+filterTypeSubVisual.width*scaleX))
 			&&
-				(mouseY>filterTypeSubVisual.y*scaleY)&&(mouseY<(filterTypeSubVisual.y*scaleY+filterTypeSubVisual.height*scaleY))) {
-			return true;
-		}
-
-			if ((mouseX>selectionDialogeVisual.x*scaleX)&&(mouseX<(selectionDialogeVisual.x*scaleX+selectionDialogeVisual.width*scaleX))
-			&&
-				(mouseY>selectionDialogeVisual.y*scaleY)&&(mouseY<(selectionDialogeVisual.y*scaleY+selectionDialogeVisual.height*scaleY))) {
+			(mouseY>filterTypeSubVisual.y*scaleY)&&(mouseY<(filterTypeSubVisual.y*scaleY+filterTypeSubVisual.height*scaleY))) {
 			return true;
 		}
 
-			if ((mouseX>undoVisual.x*scaleX)&&(mouseX<(undoVisual.x*scaleX+undoVisual.width*scaleX))
+		if ((mouseX>selectionDialogeVisual.x*scaleX)&&(mouseX<(selectionDialogeVisual.x*scaleX+selectionDialogeVisual.width*scaleX))
 			&&
-				(mouseY>undoVisual.y*scaleY)&&(mouseY<(undoVisual.y*scaleY+undoVisual.height*scaleY))) {
+			(mouseY>selectionDialogeVisual.y*scaleY)&&(mouseY<(selectionDialogeVisual.y*scaleY+selectionDialogeVisual.height*scaleY))) {
 			return true;
 		}
 
-			if ((mouseX>notificationVisual.x*scaleX)&&(mouseX<(notificationVisual.x*scaleX+notificationVisual.width*scaleX))
+		if ((mouseX>undoVisual.x*scaleX)&&(mouseX<(undoVisual.x*scaleX+undoVisual.width*scaleX))
 			&&
-				(mouseY>notificationVisual.y*scaleY)&&(mouseY<(notificationVisual.y*scaleY+notificationVisual.height*scaleY))) {
+			(mouseY>undoVisual.y*scaleY)&&(mouseY<(undoVisual.y*scaleY+undoVisual.height*scaleY))) {
 			return true;
 		}
 
-			if ((mouseX>nearbyRect.x*scaleX)&&(mouseX<(nearbyRect.x*scaleX+nearbyRect.width*scaleX))
+		if ((mouseX>notificationVisual.x*scaleX)&&(mouseX<(notificationVisual.x*scaleX+notificationVisual.width*scaleX))
 			&&
-				(mouseY>nearbyRect.y*scaleY)&&(mouseY<(nearbyRect.y*scaleY+nearbyRect.height*scaleY))) {
+			(mouseY>notificationVisual.y*scaleY)&&(mouseY<(notificationVisual.y*scaleY+notificationVisual.height*scaleY))) {
 			return true;
 		}
 
-			if ((mouseX>toolsRect.x*scaleX)&&(mouseX<(toolsRect.x*scaleX+toolsRect.width*scaleX))
+		if ((mouseX>nearbyRect.x*scaleX)&&(mouseX<(nearbyRect.x*scaleX+nearbyRect.width*scaleX))
 			&&
-				(mouseY>toolsRect.y*scaleY)&&(mouseY<(toolsRect.y*scaleY+toolsRect.height*scaleY))) {
+			(mouseY>nearbyRect.y*scaleY)&&(mouseY<(nearbyRect.y*scaleY+nearbyRect.height*scaleY))) {
 			return true;
 		}
 
-			if ((mouseX>typeselectionRect.x*scaleX)&&(mouseX<(typeselectionRect.x*scaleX+typeselectionRect.width*scaleX))
+		if ((mouseX>toolsRect.x*scaleX)&&(mouseX<(toolsRect.x*scaleX+toolsRect.width*scaleX))
 			&&
-				(mouseY>typeselectionRect.y*scaleY)&&(mouseY<(typeselectionRect.y*scaleY+typeselectionRect.height*scaleY))) {
+			(mouseY>toolsRect.y*scaleY)&&(mouseY<(toolsRect.y*scaleY+toolsRect.height*scaleY))) {
+			return true;
+		}
+
+		if ((mouseX>typeselectionRect.x*scaleX)&&(mouseX<(typeselectionRect.x*scaleX+typeselectionRect.width*scaleX))
+			&&
+			(mouseY>typeselectionRect.y*scaleY)&&(mouseY<(typeselectionRect.y*scaleY+typeselectionRect.height*scaleY))) {
 			return true;
 		}
 
@@ -4061,8 +4076,8 @@ public class LevelEditor : MonoBehaviour {
 				UpdateElementVisual(arg);
 			}
 			if (createAtType.Equals("camera")) {
-				GameObject container=GameObject.Find ("editorCameraContainer");
-				GameObject editorcamera=GameObject.Find ("editorcamera");
+				GameObject container=GetEditorContainer();
+				GameObject editorcamera=GetEditorCamera();
 
 				arg.position.x=container.transform.position.x;
 				arg.position.y=container.transform.position.y;
@@ -4117,6 +4132,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 	}
 
+
 	// buttons
 	public Texture2D cursorIconCam;
 	public Texture2D cursorIconObject;
@@ -4135,10 +4151,26 @@ public class LevelEditor : MonoBehaviour {
 	public Texture2D cursorIconExpand;
 	public Texture2D cursorIconShrink;
 
+	// fps
+	bool flagFPS = true;
+	float deltaTime = 0.0f;
+
 	void OnGUI() {
 
 		bool debugThis = false;
 
+		// FPS
+		if (flagFPS) {
+			float msec = deltaTime * 1000.0f;
+			float fps = 1.0f / deltaTime;
+			string text = string.Format("  {0:0.0} ms ({1:0.} fps)", msec, fps);
+			UnityEngine.GUI.Label (new Rect (20, Screen.height-80, 180, 40), ""+text, guiEvaluation);
+
+			// UnityEngine.GUI.Label(new Rect(0, Screen.height*0.5f, 100, 100), ""+(int)(1.0f / Time.smoothDeltaTime));        
+
+		}
+
+		// handle mouse down
 		if (Event.current.type == EventType.MouseUp && Event.current.button == 0 && GUIUtility.hotControl == 0 && // This code will be ignored if the user had mouse-downed on a GUI element.
 			gameLogic !=null &&  gameLogic.modal==GameLogic.GameLogicModal.Editor) { // check if in editormode, not in playmode
 
@@ -4401,7 +4433,7 @@ public class LevelEditor : MonoBehaviour {
 
 						// screen pos
 						Camera cam  = Camera.main;
-						GameObject camx = GameObject.Find ("editorcamera");
+						GameObject camx = GetEditorCamera();
 						if ( camx!=null ) {
 							cam = camx.GetComponent<Camera>();
 						}
@@ -4552,21 +4584,21 @@ public class LevelEditor : MonoBehaviour {
 										float raster=GetRaster();
 										// Debug.Log ("raster: "+raster);
 										if (raster!=0.0f) {
-										//	if (editorSelected!=null) {
-												// Debug.Log ("Selected: "+editorSelected.position.x+"/"+editorSelected.position.y);
+											//	if (editorSelected!=null) {
+											// Debug.Log ("Selected: "+editorSelected.position.x+"/"+editorSelected.position.y);
 
 
 
-												float offsetX=0.0f;
-												float offsetY=0.0f;
+											float offsetX=0.0f;
+											float offsetY=0.0f;
 
-												// editorSelected.position.x=((int)((editorSelected.position.x+offsetX)/raster))*raster;
-												// editorSelected.position.y=((int)((editorSelected.position.y+offsetY)/raster))*raster;
+											// editorSelected.position.x=((int)((editorSelected.position.x+offsetX)/raster))*raster;
+											// editorSelected.position.y=((int)((editorSelected.position.y+offsetY)/raster))*raster;
 
-												editorSelected.position.x=(Mathf.Floor((editorSelected.position.x+offsetX)/raster))*raster;
-												editorSelected.position.z=(Mathf.Floor((editorSelected.position.z+offsetY)/raster))*raster;
+											editorSelected.position.x=(Mathf.Floor((editorSelected.position.x+offsetX)/raster))*raster;
+											editorSelected.position.z=(Mathf.Floor((editorSelected.position.z+offsetY)/raster))*raster;
 
-										//	}
+											//	}
 										}
 
 										UpdateElementVisual(editorSelected);
@@ -5394,7 +5426,7 @@ public class LevelEditor : MonoBehaviour {
 				}
 				toolsXTmp = toolsXTmp + 62;
 
-			
+
 
 				// COPYTO > NOT ANYMORE USED > USE COPY/PASTE > YOU SEE WHAT YOU OVERWRITE!
 				/*
@@ -5831,8 +5863,8 @@ public class LevelEditor : MonoBehaviour {
 
 							// take from camera
 							if (GUIScalerButton (new Rect (inspectorXTmp , inspectorYTmp, 180, 20), "TAKE FROM CAMERA", editorButtonStyle)) {
-								GameObject container=GameObject.Find ("editorCameraContainer");
-								GameObject editorcamera=GameObject.Find ("editorcamera");
+								GameObject container=GetEditorContainer();
+								GameObject editorcamera=GetEditorCamera();
 
 								editorSelected.position.x=container.transform.position.x;
 								editorSelected.position.y=container.transform.position.y;
@@ -7354,6 +7386,13 @@ public class LevelEditor : MonoBehaviour {
 
 		// Debug.Log("LeveleEditor.Update() // "+editorTool);
 
+		// fps
+		// fps
+		deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+		if (Input.GetKeyDown("-")) {
+			flagFPS = ! flagFPS;
+		}
+
 		// editor
 		if (gameLogic !=null &&  gameLogic.modal==GameLogic.GameLogicModal.Editor) {
 
@@ -7445,7 +7484,7 @@ public class LevelEditor : MonoBehaviour {
 				// rot
 			}
 
-		
+
 			// todo: with a array or case
 			/*
 			if (Input.GetKeyDown ("w")) {
@@ -7618,6 +7657,7 @@ public class LevelEditor : MonoBehaviour {
 
 			// rotate preview
 			GameObject preview = GameObject.Find("editorpreview");
+			if (preview!=null)
 			preview.transform.Rotate(0.0f, 1.0f, 0.0f);
 
 
@@ -7631,8 +7671,8 @@ public class LevelEditor : MonoBehaviour {
 
 				// Debug.Log("LeveleEditor.Update() // "+editorTool+" // INEDITOR // HOT EDGES");
 
-				GameObject xcontainer=GameObject.Find ("editorCameraContainer");
-				GameObject xeditorcamera=GameObject.Find ("editorcamera");
+				GameObject xcontainer=GetEditorContainer();
+				GameObject xeditorcamera=GetEditorCamera();
 
 				if (enabledEditorEdges) 
 				if (!CheckMouseInEditor())
@@ -7692,8 +7732,8 @@ public class LevelEditor : MonoBehaviour {
 							int menu = (int) (def / 20.0f);
 							// print("MENU"+menu);
 
-							GameObject xcontainer=GameObject.Find ("editorCameraContainer");
-							GameObject xeditorcamera=GameObject.Find ("editorcamera");
+							GameObject xcontainer=GetEditorContainer();
+							GameObject xeditorcamera=GetEditorCamera();
 
 							float rotatex = 0.5f;
 							float rotatey = 0.3f;
@@ -7729,8 +7769,13 @@ public class LevelEditor : MonoBehaviour {
 
 			// mouse pointer
 			RaycastHit hit;
+
 			Camera cam  = Camera.main;
-			cam = GameObject.Find ("editorcamera").GetComponent<Camera>();
+
+ 
+			if (cam!=null) {
+
+			// cam = GetEditorCamera().GetComponent<Camera>();
 
 			Ray ray = cam.ScreenPointToRay(Input.mousePosition);   
 			if (Physics.Raycast(ray,out hit)) {
@@ -7782,7 +7827,9 @@ public class LevelEditor : MonoBehaviour {
 
 				}
 			}
-
+			} else { 
+				Debug.Log("NO EDITOR CAM");
+			}
 			//bool updateCamera = false;
 
 			// speed
@@ -7793,8 +7840,8 @@ public class LevelEditor : MonoBehaviour {
 
 			// sorry really dirty programming
 			// Vector3 matrixSpeed = new 
-			GameObject container=GameObject.Find ("editorCameraContainer");
-			GameObject editorcamera=GameObject.Find ("editorcamera");
+			GameObject container=GetEditorContainer();
+			GameObject editorcamera=GetEditorCamera();
 
 			// Debug.Log ("...."+container.transform.localRotation.y);
 
@@ -7865,20 +7912,20 @@ public class LevelEditor : MonoBehaviour {
 
 					// go through cameras
 					if ((Input.GetKey ("q"))) {
-						//GameObject containerx=GameObject.Find ("editorCameraContainer");
+						//GameObject containerx=GetEditorContainer();
 						// version 1.0
 						//						container.transform.Rotate ( new Vector3(0.0f, 90.0f, 0.0f));
 						container.transform.Rotate ( new Vector3(0.0f, -2.0f, 0.0f));
 					}
 					if ((Input.GetKey ("e"))) {
-						//GameObject containerx=GameObject.Find ("editorCameraContainer");
+						//GameObject containerx=GetEditorContainer();
 						//						container.transform.Rotate ( new Vector3(0.0f, 90.0f, 0.0f));
 						container.transform.Rotate ( new Vector3(0.0f,  2.0f, 0.0f));
 					}
 
 					if ((Input.GetKey ("c"))) {
 						// reset 
-						//GameObject containerx=GameObject.Find ("editorCameraContainer");
+						//GameObject containerx=GetEditorContainer();
 						//						container.transform.Rotate ( new Vector3(0.0f, 90.0f, 0.0f));
 						//						container.transform.Rotate ( new Vector3(0.0f,  2.0f, 0.0f));
 						ResetRotation();
@@ -7972,7 +8019,7 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	void ResetRotation() {
-		GameObject container=GameObject.Find ("editorCameraContainer");
+		GameObject container=GetEditorContainer();
 		container.transform.position = new Vector3( positionReset.x, positionReset.y, positionReset.z );
 		container.transform.localRotation = Quaternion.Euler( rotationReset.eulerAngles.x, rotationReset.eulerAngles.y, rotationReset.eulerAngles.z  );
 	}

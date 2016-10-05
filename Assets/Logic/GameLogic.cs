@@ -36,12 +36,31 @@ public class GameLogic : MonoBehaviour {
 		return versionEditor;
 	}
 
+	// camera center
+	public void SetCamera( GameObject cameragameObject ) {
+		DisableCameras();
+		// audiolistener
+		if (cameragameObject!=null) {
+		Camera newCam = cameragameObject.GetComponent<Camera>();
+		if (newCam!=null) {
+			newCam.enabled = true	;
+		}}
+	}
+
+	public void DisableCameras() {
+		foreach (Camera cam in FindObjectsOfType<Camera>()) {
+			cam.enabled = false;
+		}
+	}
+
 	// cam
 	Camera camGame = null;
 	Camera camEditor = null;
 	public void SetGameCamera( GameObject camObj ){
 		// Debug.Log("SetGameCamera() "+camObj.name);
-		camGame = camObj.GetComponent<Camera>();
+		if (camObj!=null) {
+			camGame = camObj.GetComponent<Camera>();
+		}
 	//	camObj.SetActive(false);
 	}
 	public void SetEditorCamera( GameObject camObj ){
@@ -112,22 +131,31 @@ public class GameLogic : MonoBehaviour {
 
 	void ActivateStateIngame() {
 		// Debug.Log("GameLogic.ActivateStateIngame();");
-		DeactivateBoth();
-		camGame.enabled = true ;
-
+		if (camGame!=null) {
+			camGame.enabled = true ;
+			SetCamera(camGame.gameObject);
+		}
 	}
 
 	void ActivateStateEditor() {
 		// Debug.Log("GameLogic.ActivateStateIngame();");
-		DeactivateBoth();
-		camEditor.enabled = true ;
+//		DeactivateBoth();
+		// camEditor.enabled = true ;
+		SetCamera(camEditor.gameObject);
 
 	}
 
-		void DeactivateBoth() {
+		// to delete ...
+		void _DeactivateBoth() {
+			DisableCameras();
+			/*
 			// Debug.Log("GameLogic.DeactivateBoth();");
-			camGame.enabled = false ;
+			if (camGame!=null) {
+				camGame.enabled = false ;	
+
+			}
 			camEditor.enabled = false ;
+			*/
 		}
 
 	public bool CheckIngameState() {
