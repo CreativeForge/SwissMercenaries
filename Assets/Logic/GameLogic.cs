@@ -111,6 +111,8 @@ public class GameLogic : MonoBehaviour {
 		DeactivateRunning();
 		*/
 
+		DisableCameras();
+
 		// Attention: running > leveleditor
 		modal = newmodal;
 
